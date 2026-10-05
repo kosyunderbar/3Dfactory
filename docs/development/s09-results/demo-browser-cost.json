@@ -1,0 +1,200 @@
+{
+  "scope": "Foreground actual same-run Chrome; includes paused observation holds, map/detail/quality transitions and finished state. Not a standardized 1440x900 or animation FPS trial.",
+  "viewports": [
+    [
+      731,
+      685,
+      3.5
+    ],
+    [
+      823,
+      514,
+      1.75
+    ]
+  ],
+  "tasks": {
+    "count": 13,
+    "p50": 5.299999952316284,
+    "p95": 22.799999952316284,
+    "max": 22.799999952316284
+  },
+  "taskSamples": [
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207796921.5,
+      "durationMs": 22.799999952316284,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 3.699951171875
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207796955.5,
+      "durationMs": 7.400000095367432,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 3.10009765625
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207806955.6,
+      "durationMs": 4.5,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 3.89990234375
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207816959.2,
+      "durationMs": 9.700000047683716,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 4.10009765625
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207826952.4,
+      "durationMs": 3.8999998569488525,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 3.699951171875
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207836955.4,
+      "durationMs": 5.299999952316284,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 4.300048828125
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207846967.3,
+      "durationMs": 7.1000001430511475,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 4.60009765625
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207856965.9,
+      "durationMs": 6.099999904632568,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 5
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207861701,
+      "durationMs": 4.5,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 5.5
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207866956.8,
+      "durationMs": 6,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 5.199951171875
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207876958.8,
+      "durationMs": 3.200000047683716,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 5.89990234375
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207886954.9,
+      "durationMs": 4.5,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 5.60009765625
+    },
+    {
+      "kind": "task",
+      "name": "echarts-set-option",
+      "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+      "at": 1791207896955.3,
+      "durationMs": 5.299999952316284,
+      "visibility": "visible",
+      "focused": true,
+      "width": 731,
+      "height": 685,
+      "dpr": 3.5,
+      "clockOffsetMs": 6.39990234375
+    }
+  ],
+  "vueToFrameMs": {
+    "count": 463,
+    "p50": 1.6999999046383891,
+    "p95": 6.100000000005821,
+    "max": 7.099999952304643
+  },
+  "longTaskCount": 0,
+  "viewportOverrideReset": true
+}

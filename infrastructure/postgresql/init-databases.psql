@@ -1,0 +1,55 @@
+-- Fresh, dedicated project PostgreSQL instance only. Never drop existing roles/databases.
+\set ON_ERROR_STOP on
+\getenv ingestion_app_password INGESTION_DB_PASSWORD
+\getenv ingestion_migration_password INGESTION_MIGRATION_PASSWORD
+\getenv operations_app_password OPERATIONS_DB_PASSWORD
+\getenv operations_migration_password OPERATIONS_MIGRATION_PASSWORD
+
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname IN
+        ('ingestion_app','ingestion_migrator','operations_app','operations_migrator'))
+       OR EXISTS (SELECT 1 FROM pg_database WHERE datname IN ('ingestion_db','operations_db')) THEN
+        RAISE EXCEPTION 'Project roles/databases already exist. Refusing to reset or overwrite them.';
+    END IF;
+END $$;
+
+BEGIN;
+SET LOCAL password_encryption = 'scram-sha-256';
+CREATE ROLE ingestion_migrator LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD :'ingestion_migration_password';
+CREATE ROLE ingestion_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD :'ingestion_app_password';
+CREATE ROLE operations_migrator LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD :'operations_migration_password';
+CREATE ROLE operations_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD :'operations_app_password';
+COMMIT;
+
+CREATE DATABASE ingestion_db OWNER ingestion_migrator TEMPLATE template0 ENCODING 'UTF8';
+CREATE DATABASE operations_db OWNER operations_migrator TEMPLATE template0 ENCODING 'UTF8';
+REVOKE ALL ON DATABASE ingestion_db, operations_db, postgres, template1, template0 FROM PUBLIC;
+GRANT CONNECT ON DATABASE ingestion_db TO ingestion_app, ingestion_migrator;
+GRANT CONNECT ON DATABASE operations_db TO operations_app, operations_migrator;
+
+\connect ingestion_db
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT USAGE ON SCHEMA public TO ingestion_app;
+GRANT USAGE, CREATE ON SCHEMA public TO ingestion_migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE ingestion_migrator IN SCHEMA public
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ingestion_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE ingestion_migrator IN SCHEMA public
+    GRANT USAGE, SELECT ON SEQUENCES TO ingestion_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE ingestion_migrator
+    REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE ingestion_migrator IN SCHEMA public
+    GRANT EXECUTE ON FUNCTIONS TO ingestion_app;
+
+\connect operations_db
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT USAGE ON SCHEMA public TO operations_app;
+GRANT USAGE, CREATE ON SCHEMA public TO operations_migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE operations_migrator IN SCHEMA public
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO operations_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE operations_migrator IN SCHEMA public
+    GRANT USAGE, SELECT ON SEQUENCES TO operations_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE operations_migrator
+    REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE operations_migrator IN SCHEMA public
+    GRANT EXECUTE ON FUNCTIONS TO operations_app;

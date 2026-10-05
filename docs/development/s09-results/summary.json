@@ -1,0 +1,2582 @@
+{
+  "suite": "S09 measured native pipeline",
+  "completedTrials": 12,
+  "requestedTrials": 12,
+  "trials": [
+    {
+      "name": "normal-1",
+      "runId": "run-20261005-5abe085fc92f458086a53f148ddb753d",
+      "targetEventsPerSecond": 25,
+      "requestedSeconds": 300,
+      "actualSeconds": 300.00018804194406,
+      "activeStartWallMs": 1791203899450.041,
+      "activeEndWallMs": 1791204199446.061,
+      "activeUniqueEvents": 7712,
+      "actualUniqueRate": 25.706650553571517,
+      "activeSnapshotEvents": 7473,
+      "snapshotScheduleMisses": 0,
+      "tickScheduleMisses": 0,
+      "originals": 8838,
+      "ingestionRows": 8838,
+      "operationsRows": 8838,
+      "wireAttempts": 8838,
+      "ackStatuses": {
+        "RECEIVED": 8838,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 3,
+      "maxSampledDeliveryBytes": 14216,
+      "frameBytes": {
+        "count": 8838,
+        "p50": 5244,
+        "p95": 6762,
+        "max": 7117
+      },
+      "ackRoundTripMs": {
+        "count": 7712,
+        "p50": 4.193125,
+        "p95": 7.041875,
+        "max": 32.985666
+      },
+      "receiveToObservedSseMs": {
+        "count": 588,
+        "p50": 63.676025390625,
+        "p95": 95.416015625,
+        "max": 129.05810546875
+      },
+      "observedActiveSseFrames": 588,
+      "physicalBodies": 8,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 8,
+        "passCount": 6,
+        "failCount": 2,
+        "failRate": 0.25
+      },
+      "drainSeconds": 109.8570547499694,
+      "targetReached": true,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 7712,
+          "p50": 3.603,
+          "p95": 6.356625,
+          "max": 31.985083
+        },
+        "ingestion-queue": {
+          "count": 7711,
+          "p50": 0.016209,
+          "p95": 0.02925,
+          "max": 0.424375
+        },
+        "delivery-http": {
+          "count": 7711,
+          "p50": 6.467042,
+          "p95": 9.800542,
+          "max": 32.364042
+        },
+        "operations-transaction": {
+          "count": 7711,
+          "p50": 5.134333,
+          "p95": 8.593584,
+          "max": 30.118708
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 8838,
+          "uniqueSequences": 8838,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 8838,
+          "uniqueSequences": 8838,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 8838,
+          "uniqueSequences": 8838,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 8838,
+          "uniqueSequences": 8838,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 7712,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 18.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 7712,
+        "p50": 39.0,
+        "p95": 65.0,
+        "max": 104.0
+      },
+      "browser": {
+        "totalRenderSamples": 589,
+        "foregroundRenderSamples": 589,
+        "viewports": [
+          [
+            731,
+            685,
+            3.5
+          ]
+        ],
+        "receiveToFrameMs": {
+          "count": 589,
+          "p50": 65.900146484375,
+          "p95": 98.199951171875,
+          "max": 454.89990234375
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 589,
+          "p50": 68.699951171875,
+          "p95": 101.5,
+          "max": 460.099853515625
+        },
+        "browserClockOffsetMs": {
+          "count": 589,
+          "p50": -2.89990234375,
+          "p95": -0.89990234375,
+          "max": -0.300048828125
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 589,
+          "p50": 1.799999904633296,
+          "p95": 5.8999998569488525,
+          "max": 7.599999999998545
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 36721,
+          "p50": 8.30000000000291,
+          "p95": 9.099999999991269,
+          "max": 16.800000000046566
+        },
+        "foregroundObservedFps": 119.960772066366,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 1.0282660221428608,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 33,
+          "cpuPercent": {
+            "count": 33,
+            "p50": 3.7,
+            "p95": 21.6,
+            "max": 61.7
+          },
+          "rssMiB": {
+            "count": 33,
+            "p50": 355.6875,
+            "p95": 357.546875,
+            "max": 357.5625
+          }
+        },
+        "operations": {
+          "samples": 33,
+          "cpuPercent": {
+            "count": 33,
+            "p50": 4.3,
+            "p95": 29.3,
+            "max": 43.1
+          },
+          "rssMiB": {
+            "count": 33,
+            "p50": 526.078125,
+            "p95": 527.546875,
+            "max": 528.0
+          }
+        },
+        "coverageSeconds": 160.3027880859375,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "normal-2",
+      "runId": "run-20261005-749bc99eaebd44bda8ddda0ed0d793a7",
+      "targetEventsPerSecond": 25,
+      "requestedSeconds": 300,
+      "actualSeconds": 300.0033180410974,
+      "activeStartWallMs": 1791204379918.5122,
+      "activeEndWallMs": 1791204679917.686,
+      "activeUniqueEvents": 7715,
+      "actualUniqueRate": 25.716382239956175,
+      "activeSnapshotEvents": 7476,
+      "snapshotScheduleMisses": 0,
+      "tickScheduleMisses": 0,
+      "originals": 8929,
+      "ingestionRows": 8929,
+      "operationsRows": 8929,
+      "wireAttempts": 8929,
+      "ackStatuses": {
+        "RECEIVED": 8929,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 5,
+      "maxSampledDeliveryBytes": 14129,
+      "frameBytes": {
+        "count": 8929,
+        "p50": 5105,
+        "p95": 6762,
+        "max": 7117
+      },
+      "ackRoundTripMs": {
+        "count": 7715,
+        "p50": 4.374292,
+        "p95": 6.318458,
+        "max": 22.697583
+      },
+      "receiveToObservedSseMs": {
+        "count": 589,
+        "p50": 62.869140625,
+        "p95": 96.606201171875,
+        "max": 112.685791015625
+      },
+      "observedActiveSseFrames": 589,
+      "physicalBodies": 8,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 8,
+        "passCount": 6,
+        "failCount": 2,
+        "failRate": 0.25
+      },
+      "drainSeconds": 110.24032929097302,
+      "targetReached": true,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 7715,
+          "p50": 3.837583,
+          "p95": 5.699042,
+          "max": 20.888416
+        },
+        "ingestion-queue": {
+          "count": 7715,
+          "p50": 0.0135,
+          "p95": 0.029667,
+          "max": 0.662417
+        },
+        "delivery-http": {
+          "count": 7715,
+          "p50": 7.491417,
+          "p95": 9.824375,
+          "max": 42.053084
+        },
+        "operations-transaction": {
+          "count": 7715,
+          "p50": 6.714125,
+          "p95": 8.831791,
+          "max": 35.613542
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 8929,
+          "uniqueSequences": 8929,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 8929,
+          "uniqueSequences": 8929,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 8929,
+          "uniqueSequences": 8929,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 8929,
+          "uniqueSequences": 8929,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 7715,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 26.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 7715,
+        "p50": 41.0,
+        "p95": 66.0,
+        "max": 83.0
+      },
+      "browser": {
+        "totalRenderSamples": 589,
+        "foregroundRenderSamples": 589,
+        "viewports": [
+          [
+            731,
+            685,
+            3.5
+          ]
+        ],
+        "receiveToFrameMs": {
+          "count": 589,
+          "p50": 64.300048828125,
+          "p95": 98.5,
+          "max": 113.7001953125
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 589,
+          "p50": -1956.599853515625,
+          "p95": -1921.800048828125,
+          "max": -1906.099853515625
+        },
+        "browserClockOffsetMs": {
+          "count": 589,
+          "p50": 2020.800048828125,
+          "p95": 2022.800048828125,
+          "max": 2023.300048828125
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 589,
+          "p50": 1.3000000953616109,
+          "p95": 5.900000190740684,
+          "max": 7.500000047682988
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 35991,
+          "p50": 8.30000000000291,
+          "p95": 9.100000000034925,
+          "max": 17.5
+        },
+        "foregroundObservedFps": 119.96992002005331,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 1.028655289598247,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 60,
+          "cpuPercent": {
+            "count": 60,
+            "p50": 2.8,
+            "p95": 5.0,
+            "max": 10.3
+          },
+          "rssMiB": {
+            "count": 60,
+            "p50": 345.9375,
+            "p95": 350.390625,
+            "max": 350.390625
+          }
+        },
+        "operations": {
+          "samples": 60,
+          "cpuPercent": {
+            "count": 60,
+            "p50": 2.6,
+            "p95": 4.3,
+            "max": 13.5
+          },
+          "rssMiB": {
+            "count": 60,
+            "p50": 352.578125,
+            "p95": 353.296875,
+            "max": 353.40625
+          }
+        },
+        "coverageSeconds": 295.5411311035156,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "normal-3",
+      "runId": "run-20261005-0555e9d5a6b34e6fa72a65481012547a",
+      "targetEventsPerSecond": 25,
+      "requestedSeconds": 300,
+      "actualSeconds": 300.0034001248423,
+      "activeStartWallMs": 1791204847385.137,
+      "activeEndWallMs": 1791205147384.367,
+      "activeUniqueEvents": 7690,
+      "actualUniqueRate": 25.633042814847805,
+      "activeSnapshotEvents": 7451,
+      "snapshotScheduleMisses": 0,
+      "tickScheduleMisses": 0,
+      "originals": 8884,
+      "ingestionRows": 8884,
+      "operationsRows": 8884,
+      "wireAttempts": 8884,
+      "ackStatuses": {
+        "RECEIVED": 8884,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 3,
+      "maxSampledDeliveryBytes": 14216,
+      "frameBytes": {
+        "count": 8884,
+        "p50": 5105,
+        "p95": 6762,
+        "max": 7116
+      },
+      "ackRoundTripMs": {
+        "count": 7690,
+        "p50": 5.42725,
+        "p95": 7.253208,
+        "max": 13.138292
+      },
+      "receiveToObservedSseMs": {
+        "count": 587,
+        "p50": 63.283935546875,
+        "p95": 96.427978515625,
+        "max": 114.433837890625
+      },
+      "observedActiveSseFrames": 587,
+      "physicalBodies": 8,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 8,
+        "passCount": 6,
+        "failCount": 2,
+        "failRate": 0.25
+      },
+      "drainSeconds": 113.71401470899582,
+      "targetReached": true,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 7690,
+          "p50": 4.899042,
+          "p95": 6.627792,
+          "max": 12.290084
+        },
+        "ingestion-queue": {
+          "count": 7690,
+          "p50": 0.01275,
+          "p95": 0.022708,
+          "max": 0.063958
+        },
+        "delivery-http": {
+          "count": 7688,
+          "p50": 7.615083,
+          "p95": 10.034959,
+          "max": 17.518583
+        },
+        "operations-transaction": {
+          "count": 7688,
+          "p50": 6.916584,
+          "p95": 9.066042,
+          "max": 16.48775
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 8884,
+          "uniqueSequences": 8884,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 8884,
+          "uniqueSequences": 8884,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 8884,
+          "uniqueSequences": 8884,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 8884,
+          "uniqueSequences": 8884,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 7690,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 19.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 7690,
+        "p50": 42.0,
+        "p95": 69.0,
+        "max": 84.0
+      },
+      "browser": {
+        "totalRenderSamples": 587,
+        "foregroundRenderSamples": 587,
+        "viewports": [
+          [
+            731,
+            685,
+            3.5
+          ]
+        ],
+        "receiveToFrameMs": {
+          "count": 587,
+          "p50": 65.099853515625,
+          "p95": 98.39990234375,
+          "max": 118.900146484375
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 587,
+          "p50": 67.5,
+          "p95": 100.800048828125,
+          "max": 122.800048828125
+        },
+        "browserClockOffsetMs": {
+          "count": 587,
+          "p50": -2.60009765625,
+          "p95": -0.800048828125,
+          "max": -0.300048828125
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 587,
+          "p50": 0.8000000000029104,
+          "p95": 5.299999904633296,
+          "max": 7.399999952314829
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 35998,
+          "p50": 8.30000000000291,
+          "p95": 9.80000000000291,
+          "max": 16.69999999999709
+        },
+        "foregroundObservedFps": 119.99337333112443,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 1.0253217125939122,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 60,
+          "cpuPercent": {
+            "count": 60,
+            "p50": 2.7,
+            "p95": 3.7,
+            "max": 9.9
+          },
+          "rssMiB": {
+            "count": 60,
+            "p50": 350.578125,
+            "p95": 350.71875,
+            "max": 350.71875
+          }
+        },
+        "operations": {
+          "samples": 60,
+          "cpuPercent": {
+            "count": 60,
+            "p50": 2.4,
+            "p95": 5.5,
+            "max": 20.3
+          },
+          "rssMiB": {
+            "count": 60,
+            "p50": 355.046875,
+            "p95": 356.296875,
+            "max": 356.3125
+          }
+        },
+        "coverageSeconds": 295.6782138671875,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-100-1",
+      "runId": "run-20261005-cff131f71d774d398d524da100d06cfc",
+      "targetEventsPerSecond": 100,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.00790574983694,
+      "activeStartWallMs": 1791205266815.1628,
+      "activeEndWallMs": 1791205384857.168,
+      "activeUniqueEvents": 11768,
+      "actualUniqueRate": 98.06020633783112,
+      "activeSnapshotEvents": 11674,
+      "snapshotScheduleMisses": 16,
+      "tickScheduleMisses": 0,
+      "originals": 12378,
+      "ingestionRows": 12378,
+      "operationsRows": 12378,
+      "wireAttempts": 12378,
+      "ackStatuses": {
+        "RECEIVED": 12378,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 633,
+      "maxSampledDeliveryBytes": 3134412,
+      "frameBytes": {
+        "count": 12378,
+        "p50": 4058,
+        "p95": 5074,
+        "max": 5119
+      },
+      "ackRoundTripMs": {
+        "count": 11768,
+        "p50": 5.506875,
+        "p95": 7.62675,
+        "max": 16.496667
+      },
+      "receiveToObservedSseMs": {
+        "count": 233,
+        "p50": 104.3330078125,
+        "p95": 5478.63916015625,
+        "max": 6589.26611328125
+      },
+      "observedActiveSseFrames": 233,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 61.16218408290297,
+      "targetReached": false,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 11768,
+          "p50": 5.130333,
+          "p95": 7.190833,
+          "max": 16.030708
+        },
+        "ingestion-queue": {
+          "count": 11769,
+          "p50": 0.007708,
+          "p95": 0.013292,
+          "max": 0.057125
+        },
+        "delivery-http": {
+          "count": 11123,
+          "p50": 8.208,
+          "p95": 10.715416,
+          "max": 22.523375
+        },
+        "operations-transaction": {
+          "count": 11123,
+          "p50": 7.709167,
+          "p95": 10.160583,
+          "max": 21.860708
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 12378,
+          "uniqueSequences": 12378,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 12378,
+          "uniqueSequences": 12378,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 12378,
+          "uniqueSequences": 12378,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 12378,
+          "uniqueSequences": 12378,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 11768,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 20.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 11768,
+        "p50": 93.0,
+        "p95": 6666.0,
+        "max": 7205.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 0.9806020633783112,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 8.2,
+            "p95": 12.7,
+            "max": 26.2
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 351.390625,
+            "p95": 352.171875,
+            "max": 352.265625
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 7.0,
+            "p95": 9.1,
+            "max": 9.3
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 359.21875,
+            "p95": 360.84375,
+            "max": 360.890625
+          }
+        },
+        "coverageSeconds": 113.25893237304687,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-100-2",
+      "runId": "run-20261005-9286456a72e240c5b2f464a7ba049d65",
+      "targetEventsPerSecond": 100,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.0058499169536,
+      "activeStartWallMs": 1791205451902.406,
+      "activeEndWallMs": 1791205571906.588,
+      "activeUniqueEvents": 11724,
+      "actualUniqueRate": 97.69523742478586,
+      "activeSnapshotEvents": 11630,
+      "snapshotScheduleMisses": 30,
+      "tickScheduleMisses": 0,
+      "originals": 12334,
+      "ingestionRows": 12334,
+      "operationsRows": 12334,
+      "wireAttempts": 12334,
+      "ackStatuses": {
+        "RECEIVED": 12334,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 2866,
+      "maxSampledDeliveryBytes": 13330549,
+      "frameBytes": {
+        "count": 12334,
+        "p50": 4058,
+        "p95": 5074,
+        "max": 5118
+      },
+      "ackRoundTripMs": {
+        "count": 11724,
+        "p50": 5.951958,
+        "p95": 9.786208,
+        "max": 18.916333
+      },
+      "receiveToObservedSseMs": {
+        "count": 233,
+        "p50": 4499.397216796875,
+        "p95": 26651.3828125,
+        "max": 29567.212890625
+      },
+      "observedActiveSseFrames": 233,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 67.57738812500611,
+      "targetReached": false,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 11724,
+          "p50": 5.552625,
+          "p95": 9.371208,
+          "max": 17.964708
+        },
+        "ingestion-queue": {
+          "count": 11724,
+          "p50": 0.00825,
+          "p95": 0.013666,
+          "max": 0.054917
+        },
+        "delivery-http": {
+          "count": 8849,
+          "p50": 9.658583,
+          "p95": 17.741875,
+          "max": 32.662208
+        },
+        "operations-transaction": {
+          "count": 8849,
+          "p50": 9.135375,
+          "p95": 17.179333,
+          "max": 31.962208
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 12334,
+          "uniqueSequences": 12334,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 12334,
+          "uniqueSequences": 12334,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 12334,
+          "uniqueSequences": 12334,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 12334,
+          "uniqueSequences": 12334,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 11724,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 36.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 11724,
+        "p50": 6889.0,
+        "p95": 50571.0,
+        "max": 56188.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 0.9769523742478586,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 7.1,
+            "p95": 7.7,
+            "max": 8.3
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 352.3125,
+            "p95": 352.453125,
+            "max": 352.546875
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 4.7,
+            "p95": 6.9,
+            "max": 9.5
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 361.953125,
+            "p95": 362.34375,
+            "max": 362.359375
+          }
+        },
+        "coverageSeconds": 115.278751953125,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-100-3",
+      "runId": "run-20261005-09e53ab041534d9badf1c731d92e2336",
+      "targetEventsPerSecond": 100,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.00176374986768,
+      "activeStartWallMs": 1791205645274.4429,
+      "activeEndWallMs": 1791205765274.538,
+      "activeUniqueEvents": 11597,
+      "actualUniqueRate": 96.6402462564871,
+      "activeSnapshotEvents": 11503,
+      "snapshotScheduleMisses": 62,
+      "tickScheduleMisses": 0,
+      "originals": 12211,
+      "ingestionRows": 12211,
+      "operationsRows": 12211,
+      "wireAttempts": 12211,
+      "ackStatuses": {
+        "RECEIVED": 12211,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 2457,
+      "maxSampledDeliveryBytes": 11484081,
+      "frameBytes": {
+        "count": 12211,
+        "p50": 4058,
+        "p95": 5074,
+        "max": 5118
+      },
+      "ackRoundTripMs": {
+        "count": 11597,
+        "p50": 6.6765,
+        "p95": 10.68175,
+        "max": 48.436625
+      },
+      "receiveToObservedSseMs": {
+        "count": 233,
+        "p50": 5788.373046875,
+        "p95": 23907.617919921875,
+        "max": 26406.878173828125
+      },
+      "observedActiveSseFrames": 233,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 61.311275749932975,
+      "targetReached": false,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 11597,
+          "p50": 6.29175,
+          "p95": 10.1995,
+          "max": 44.170042
+        },
+        "ingestion-queue": {
+          "count": 11597,
+          "p50": 0.008083,
+          "p95": 0.014042,
+          "max": 1.067458
+        },
+        "delivery-http": {
+          "count": 9122,
+          "p50": 10.688,
+          "p95": 15.679291,
+          "max": 33.98525
+        },
+        "operations-transaction": {
+          "count": 9122,
+          "p50": 10.17325,
+          "p95": 15.017458,
+          "max": 33.161083
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 12211,
+          "uniqueSequences": 12211,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 12211,
+          "uniqueSequences": 12211,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 12211,
+          "uniqueSequences": 12211,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 12211,
+          "uniqueSequences": 12211,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 11597,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 54.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 11597,
+        "p50": 7009.0,
+        "p95": 36663.0,
+        "max": 41025.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 0.9664024625648711,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 7.8,
+            "p95": 9.1,
+            "max": 9.2
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 352.734375,
+            "p95": 352.84375,
+            "max": 352.84375
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 5.7,
+            "p95": 6.6,
+            "max": 8.0
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 363.0,
+            "p95": 363.1875,
+            "max": 363.203125
+          }
+        },
+        "coverageSeconds": 115.24149926757812,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-300-1",
+      "runId": "run-20261005-5c632d9585d44dd8a428aa3ad84a22b3",
+      "targetEventsPerSecond": 300,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.00934920785949,
+      "activeStartWallMs": 1791205832438.1052,
+      "activeEndWallMs": 1791205952445.786,
+      "activeUniqueEvents": 14492,
+      "actualUniqueRate": 120.7572584607509,
+      "activeSnapshotEvents": 14407,
+      "snapshotScheduleMisses": 15109,
+      "tickScheduleMisses": 0,
+      "originals": 15181,
+      "ingestionRows": 15181,
+      "operationsRows": 15181,
+      "wireAttempts": 15181,
+      "ackStatuses": {
+        "RECEIVED": 15181,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 4847,
+      "maxSampledDeliveryBytes": 20917455,
+      "frameBytes": {
+        "count": 15181,
+        "p50": 3738,
+        "p95": 4640,
+        "max": 5047
+      },
+      "ackRoundTripMs": {
+        "count": 14492,
+        "p50": 7.620917,
+        "p95": 13.855083,
+        "max": 37.366542
+      },
+      "receiveToObservedSseMs": {
+        "count": 219,
+        "p50": 25864.55908203125,
+        "p95": 54033.479736328125,
+        "max": 57069.547119140625
+      },
+      "observedActiveSseFrames": 219,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 104.06183912488632,
+      "targetReached": false,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 14492,
+          "p50": 7.255958,
+          "p95": 13.405583,
+          "max": 36.781333
+        },
+        "ingestion-queue": {
+          "count": 14491,
+          "p50": 0.006375,
+          "p95": 0.011125,
+          "max": 0.166792
+        },
+        "delivery-http": {
+          "count": 9630,
+          "p50": 11.019625,
+          "p95": 15.963084,
+          "max": 48.40475
+        },
+        "operations-transaction": {
+          "count": 9630,
+          "p50": 10.493875,
+          "p95": 15.273333,
+          "max": 47.497542
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 15181,
+          "uniqueSequences": 15181,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 15181,
+          "uniqueSequences": 15181,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 15181,
+          "uniqueSequences": 15181,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 15181,
+          "uniqueSequences": 15181,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 14492,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 51.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 14492,
+        "p50": 31007.0,
+        "p95": 86672.0,
+        "max": 90601.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 0.4025241948691697,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 7.8,
+            "p95": 14.2,
+            "max": 17.8
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 353.03125,
+            "p95": 353.203125,
+            "max": 353.203125
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 4.7,
+            "p95": 10.1,
+            "max": 17.8
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 364.796875,
+            "p95": 364.90625,
+            "max": 364.90625
+          }
+        },
+        "coverageSeconds": 115.2110654296875,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-300-2",
+      "runId": "run-20261005-54cc56c9972b44a7b6544b97a30ab505",
+      "targetEventsPerSecond": 300,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.0009487089701,
+      "activeStartWallMs": 1791206063331.23,
+      "activeEndWallMs": 1791206183330.509,
+      "activeUniqueEvents": 12789,
+      "actualUniqueRate": 106.57415743450717,
+      "activeSnapshotEvents": 12704,
+      "snapshotScheduleMisses": 17589,
+      "tickScheduleMisses": 0,
+      "originals": 13484,
+      "ingestionRows": 13484,
+      "operationsRows": 13484,
+      "wireAttempts": 13484,
+      "ackStatuses": {
+        "RECEIVED": 13484,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 3854,
+      "maxSampledDeliveryBytes": 16702516,
+      "frameBytes": {
+        "count": 13484,
+        "p50": 3728,
+        "p95": 4640,
+        "max": 5045
+      },
+      "ackRoundTripMs": {
+        "count": 12789,
+        "p50": 8.521083,
+        "p95": 15.546208,
+        "max": 64.670167
+      },
+      "receiveToObservedSseMs": {
+        "count": 214,
+        "p50": 23550.18896484375,
+        "p95": 51539.7421875,
+        "max": 54213.2080078125
+      },
+      "observedActiveSseFrames": 214,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 110.26738120894879,
+      "targetReached": false,
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 12789,
+          "p50": 8.161334,
+          "p95": 15.06575,
+          "max": 63.260625
+        },
+        "ingestion-queue": {
+          "count": 12789,
+          "p50": 0.007042,
+          "p95": 0.012583,
+          "max": 1.989458
+        },
+        "delivery-http": {
+          "count": 8925,
+          "p50": 8.100292,
+          "p95": 19.620208,
+          "max": 57.705167
+        },
+        "operations-transaction": {
+          "count": 8925,
+          "p50": 7.508667,
+          "p95": 18.868916,
+          "max": 56.910042
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 13484,
+          "uniqueSequences": 13484,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 13484,
+          "uniqueSequences": 13484,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 13484,
+          "uniqueSequences": 13484,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 13484,
+          "uniqueSequences": 13484,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          65541
+        ],
+        "ingestion-queue": [
+          65541
+        ],
+        "delivery-http": [
+          65541
+        ],
+        "operations-transaction": [
+          65529
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 12789,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 70.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 12789,
+        "p50": 21851.0,
+        "p95": 88557.0,
+        "max": 94071.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "sourceResultFile": "partial-result.json",
+      "nominalRateFraction": 0.35524719144835726,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 7.3,
+            "p95": 14.5,
+            "max": 17.9
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 335.65625,
+            "p95": 335.671875,
+            "max": 335.671875
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 4.4,
+            "p95": 11.7,
+            "max": 16.4
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 365.71875,
+            "p95": 365.78125,
+            "max": 365.78125
+          }
+        },
+        "coverageSeconds": 115.20239892578125,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-300-3",
+      "runId": "run-20261005-4d59bcc59b464dfba70a1610645aaf84",
+      "targetEventsPerSecond": 300,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.00583504210226,
+      "activeStartWallMs": 1791206615347.6,
+      "activeEndWallMs": 1791206735351.767,
+      "activeUniqueEvents": 15383,
+      "actualUniqueRate": 128.18543360498347,
+      "activeSnapshotEvents": 15295,
+      "snapshotScheduleMisses": 15048,
+      "tickScheduleMisses": 0,
+      "originals": 16021,
+      "ingestionRows": 16021,
+      "operationsRows": 16021,
+      "wireAttempts": 16021,
+      "ackStatuses": {
+        "RECEIVED": 16021,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 6,
+      "maxSampledDeliveryPending": 4556,
+      "maxSampledDeliveryBytes": 20029456,
+      "frameBytes": {
+        "count": 16021,
+        "p50": 3727,
+        "p95": 5074,
+        "max": 5120
+      },
+      "ackRoundTripMs": {
+        "count": 15383,
+        "p50": 7.239917,
+        "p95": 13.498,
+        "max": 34.191542
+      },
+      "receiveToObservedSseMs": {
+        "count": 196,
+        "p50": 40092.9521484375,
+        "p95": 51389.619140625,
+        "max": 53353.161865234375
+      },
+      "observedActiveSseFrames": 196,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 73.91791837499477,
+      "targetReached": false,
+      "nominalRateFraction": 0.42728477868327824,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 15383,
+          "p50": 6.878916,
+          "p95": 13.07725,
+          "max": 33.760542
+        },
+        "ingestion-queue": {
+          "count": 15383,
+          "p50": 0.008042,
+          "p95": 0.015791,
+          "max": 0.665542
+        },
+        "delivery-http": {
+          "count": 10828,
+          "p50": 8.111334,
+          "p95": 16.776542,
+          "max": 39.230917
+        },
+        "operations-transaction": {
+          "count": 10828,
+          "p50": 7.391459,
+          "p95": 15.932333,
+          "max": 38.075084
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 16021,
+          "uniqueSequences": 16021,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 16021,
+          "uniqueSequences": 16021,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 16021,
+          "uniqueSequences": 16021,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 16021,
+          "uniqueSequences": 16021,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          74360
+        ],
+        "ingestion-queue": [
+          74360
+        ],
+        "delivery-http": [
+          74360
+        ],
+        "operations-transaction": [
+          74347
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 15383,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 49.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 15383,
+        "p50": 47318.0,
+        "p95": 61904.0,
+        "max": 63462.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/ce1ce8232a6d4e7f9abed615725af6a4",
+      "sourceResultFile": "result.json",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 10.1,
+            "p95": 39.1,
+            "max": 57.4
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 506.90625,
+            "p95": 509.609375,
+            "max": 509.734375
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 9.8,
+            "p95": 56.3,
+            "max": 86.7
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 553.984375,
+            "p95": 557.890625,
+            "max": 558.3125
+          }
+        },
+        "coverageSeconds": 115.22522021484374,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-500-1",
+      "runId": "run-20261005-031e129b59bf4dfe8c1f5b001c1368ee",
+      "targetEventsPerSecond": 500,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.01002783398144,
+      "activeStartWallMs": 1791206815770.198,
+      "activeEndWallMs": 1791206935778.558,
+      "activeUniqueEvents": 13697,
+      "actualUniqueRate": 114.13212918297171,
+      "activeSnapshotEvents": 13612,
+      "snapshotScheduleMisses": 39505,
+      "tickScheduleMisses": 0,
+      "originals": 14389,
+      "ingestionRows": 14389,
+      "operationsRows": 14389,
+      "wireAttempts": 14389,
+      "ackStatuses": {
+        "RECEIVED": 14389,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 3380,
+      "maxSampledDeliveryBytes": 14882851,
+      "frameBytes": {
+        "count": 14389,
+        "p50": 3738,
+        "p95": 4641,
+        "max": 5045
+      },
+      "ackRoundTripMs": {
+        "count": 13697,
+        "p50": 8.789958,
+        "p95": 13.936541,
+        "max": 95.373792
+      },
+      "receiveToObservedSseMs": {
+        "count": 230,
+        "p50": 13677.279052734375,
+        "p95": 39758.65576171875,
+        "max": 42562.76904296875
+      },
+      "observedActiveSseFrames": 230,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 75.93659304198809,
+      "targetReached": false,
+      "nominalRateFraction": 0.2282642583659434,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 13697,
+          "p50": 8.408208,
+          "p95": 13.48225,
+          "max": 94.952459
+        },
+        "ingestion-queue": {
+          "count": 13696,
+          "p50": 0.009084,
+          "p95": 0.015708,
+          "max": 0.424375
+        },
+        "delivery-http": {
+          "count": 10306,
+          "p50": 8.029125,
+          "p95": 16.33575,
+          "max": 52.836542
+        },
+        "operations-transaction": {
+          "count": 10306,
+          "p50": 7.422958,
+          "p95": 15.5955,
+          "max": 51.391375
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 14389,
+          "uniqueSequences": 14389,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 14389,
+          "uniqueSequences": 14389,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 14389,
+          "uniqueSequences": 14389,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 14389,
+          "uniqueSequences": 14389,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          74360
+        ],
+        "ingestion-queue": [
+          74360
+        ],
+        "delivery-http": [
+          74360
+        ],
+        "operations-transaction": [
+          74347
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 13697,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 50.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 13697,
+        "p50": 11651.0,
+        "p95": 60747.0,
+        "max": 63075.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/ce1ce8232a6d4e7f9abed615725af6a4",
+      "sourceResultFile": "result.json",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 7.7,
+            "p95": 22.5,
+            "max": 22.7
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 444.46875,
+            "p95": 514.265625,
+            "max": 514.34375
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 5.3,
+            "p95": 34.1,
+            "max": 56.6
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 335.546875,
+            "p95": 382.3125,
+            "max": 382.359375
+          }
+        },
+        "coverageSeconds": 115.2175458984375,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-500-2",
+      "runId": "run-20261005-2b8aade43a4044e586d96af77ddd3cb4",
+      "targetEventsPerSecond": 500,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.0073104579933,
+      "activeStartWallMs": 1791207018714.4622,
+      "activeEndWallMs": 1791207138720.1018,
+      "activeUniqueEvents": 12904,
+      "actualUniqueRate": 107.52678274976294,
+      "activeSnapshotEvents": 12819,
+      "snapshotScheduleMisses": 40732,
+      "tickScheduleMisses": 0,
+      "originals": 13596,
+      "ingestionRows": 13596,
+      "operationsRows": 13596,
+      "wireAttempts": 13596,
+      "ackStatuses": {
+        "RECEIVED": 13596,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 3105,
+      "maxSampledDeliveryBytes": 13750847,
+      "frameBytes": {
+        "count": 13596,
+        "p50": 4006,
+        "p95": 4641,
+        "max": 5046
+      },
+      "ackRoundTripMs": {
+        "count": 12904,
+        "p50": 8.766834,
+        "p95": 13.4675,
+        "max": 31.749042
+      },
+      "receiveToObservedSseMs": {
+        "count": 226,
+        "p50": 21176.211181640625,
+        "p95": 37847.134033203125,
+        "max": 39229.8720703125
+      },
+      "observedActiveSseFrames": 226,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 70.48052474996075,
+      "targetReached": false,
+      "nominalRateFraction": 0.2150535654995259,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 12904,
+          "p50": 8.371917,
+          "p95": 13.056541,
+          "max": 31.341875
+        },
+        "ingestion-queue": {
+          "count": 12905,
+          "p50": 0.00725,
+          "p95": 0.012459,
+          "max": 4.086709
+        },
+        "delivery-http": {
+          "count": 9797,
+          "p50": 9.850542,
+          "p95": 11.487208,
+          "max": 38.722209
+        },
+        "operations-transaction": {
+          "count": 9797,
+          "p50": 9.233917,
+          "p95": 10.767,
+          "max": 34.553792
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 13596,
+          "uniqueSequences": 13596,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 13596,
+          "uniqueSequences": 13596,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 13596,
+          "uniqueSequences": 13596,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 13596,
+          "uniqueSequences": 13596,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          74360
+        ],
+        "ingestion-queue": [
+          74360
+        ],
+        "delivery-http": [
+          74360
+        ],
+        "operations-transaction": [
+          74347
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 12904,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 48.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 12904,
+        "p50": 24315.0,
+        "p95": 41872.0,
+        "max": 42249.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/ce1ce8232a6d4e7f9abed615725af6a4",
+      "sourceResultFile": "result.json",
+      "resources": {
+        "ingestion": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 8.7,
+            "p95": 16.7,
+            "max": 19.0
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 330.140625,
+            "p95": 448.34375,
+            "max": 448.375
+          }
+        },
+        "operations": {
+          "samples": 24,
+          "cpuPercent": {
+            "count": 24,
+            "p50": 6.2,
+            "p95": 11.8,
+            "max": 15.8
+          },
+          "rssMiB": {
+            "count": 24,
+            "p50": 333.71875,
+            "p95": 334.203125,
+            "max": 334.25
+          }
+        },
+        "coverageSeconds": 115.21444287109375,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    },
+    {
+      "name": "stress-500-3",
+      "runId": "run-20261005-76f8e17fb0de4b969a37ea2a57ee78e7",
+      "targetEventsPerSecond": 500,
+      "requestedSeconds": 120,
+      "actualSeconds": 120.0076598750893,
+      "activeStartWallMs": 1791207215906.647,
+      "activeEndWallMs": 1791207335956.7603,
+      "activeUniqueEvents": 14147,
+      "actualUniqueRate": 117.88414185165338,
+      "activeSnapshotEvents": 14062,
+      "snapshotScheduleMisses": 39035,
+      "tickScheduleMisses": 0,
+      "originals": 14828,
+      "ingestionRows": 14828,
+      "operationsRows": 14828,
+      "wireAttempts": 14828,
+      "ackStatuses": {
+        "RECEIVED": 14828,
+        "DUPLICATE_RECEIVED": 0,
+        "RETRY_LATER": 0,
+        "REJECTED": 0
+      },
+      "unacknowledged": 0,
+      "deliveryPending": 0,
+      "maxSourcePendingEvents": 5,
+      "maxSampledDeliveryPending": 4413,
+      "maxSampledDeliveryBytes": 19241824,
+      "frameBytes": {
+        "count": 14828,
+        "p50": 4007,
+        "p95": 4641,
+        "max": 5045
+      },
+      "ackRoundTripMs": {
+        "count": 14147,
+        "p50": 7.690375,
+        "p95": 12.755666,
+        "max": 29.095292
+      },
+      "receiveToObservedSseMs": {
+        "count": 233,
+        "p50": 24944.183837890625,
+        "p95": 47038.662841796875,
+        "max": 49651.909912109375
+      },
+      "observedActiveSseFrames": 233,
+      "physicalBodies": 3,
+      "physicalVehicles": 3,
+      "cumulativeQuality": {
+        "inspectedCount": 3,
+        "passCount": 2,
+        "failCount": 1,
+        "failRate": 0.3333333333333333
+      },
+      "drainSeconds": 73.71954308403656,
+      "targetReached": false,
+      "nominalRateFraction": 0.23576828370330677,
+      "targetCriteria": "Actual unique rate >= nominal target; proximity is not exact offered-load verification",
+      "byteExactBothDatabases": true,
+      "ownRowsCleaned": true,
+      "internalPhasesMs": {
+        "ingestion-transaction": {
+          "count": 14147,
+          "p50": 7.299,
+          "p95": 12.330041,
+          "max": 28.635833
+        },
+        "ingestion-queue": {
+          "count": 14147,
+          "p50": 0.007417,
+          "p95": 0.01325,
+          "max": 1.299417
+        },
+        "delivery-http": {
+          "count": 9731,
+          "p50": 9.930708,
+          "p95": 12.785833,
+          "max": 35.615125
+        },
+        "operations-transaction": {
+          "count": 9731,
+          "p50": 9.300125,
+          "p95": 12.083125,
+          "max": 34.705917
+        }
+      },
+      "internalTraceCounts": {
+        "ingestion-transaction": {
+          "rows": 14828,
+          "uniqueSequences": 14828,
+          "missingSequences": 0
+        },
+        "ingestion-queue": {
+          "rows": 14828,
+          "uniqueSequences": 14828,
+          "missingSequences": 0
+        },
+        "delivery-http": {
+          "rows": 14828,
+          "uniqueSequences": 14828,
+          "missingSequences": 0
+        },
+        "operations-transaction": {
+          "rows": 14828,
+          "uniqueSequences": 14828,
+          "missingSequences": 0
+        }
+      },
+      "internalTracePids": {
+        "ingestion-transaction": [
+          74360
+        ],
+        "ingestion-queue": [
+          74360
+        ],
+        "delivery-http": [
+          74360
+        ],
+        "operations-transaction": [
+          74347
+        ]
+      },
+      "generatedToReceivedMs": {
+        "count": 14147,
+        "p50": 0.0,
+        "p95": 1.0,
+        "max": 51.0
+      },
+      "receivedToOperationsCommitMs": {
+        "count": 14147,
+        "p50": 33406.0,
+        "p95": 61539.0,
+        "max": 62523.0
+      },
+      "browser": {
+        "totalRenderSamples": 0,
+        "foregroundRenderSamples": 0,
+        "viewports": [],
+        "receiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "uncorrectedReceiveToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "browserClockOffsetMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "clockOriginCorrected": true,
+        "frameWindowAlignment": "Per-frame offset if recorded; otherwise median render offset of this trial",
+        "vueToFrameMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundFrameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "foregroundObservedFps": null,
+        "longTasks": 0
+      },
+      "sourceEvidence": ".build-cache/performance-verification/ce1ce8232a6d4e7f9abed615725af6a4",
+      "sourceResultFile": "result.json",
+      "resources": {
+        "ingestion": {
+          "samples": 23,
+          "cpuPercent": {
+            "count": 23,
+            "p50": 9.6,
+            "p95": 14.1,
+            "max": 23.1
+          },
+          "rssMiB": {
+            "count": 23,
+            "p50": 330.375,
+            "p95": 330.5,
+            "max": 330.515625
+          }
+        },
+        "operations": {
+          "samples": 23,
+          "cpuPercent": {
+            "count": 23,
+            "p50": 6.6,
+            "p95": 9.0,
+            "max": 9.4
+          },
+          "rssMiB": {
+            "count": 23,
+            "p50": 337.75,
+            "p95": 338.59375,
+            "max": 338.65625
+          }
+        },
+        "coverageSeconds": 110.23332104492188,
+        "scope": "ps CPU estimate and Java main-process RSS, 5s samples; excludes browser, simulator, PG backends and total system usage"
+      }
+    }
+  ],
+  "byteExactBothDatabases": true,
+  "ownedProcessesStopped": true,
+  "retainedDatabase": true,
+  "analysisOnlyFolder": true,
+  "sourceEvidence": [
+    {
+      "evidence": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df",
+      "completedTrials": 8,
+      "sourceResultFile": "partial-result.json",
+      "entireParentSucceeded": false,
+      "failedProbeFile": ".build-cache/performance-verification/bca790583b724470b382286b31dee5df/failed-probe.json"
+    },
+    {
+      "evidence": ".build-cache/performance-verification/ce1ce8232a6d4e7f9abed615725af6a4",
+      "completedTrials": 4,
+      "sourceResultFile": "result.json",
+      "entireParentSucceeded": true,
+      "failedProbeFile": null
+    }
+  ],
+  "retainedDatabasePaths": [
+    ".build-cache/performance-verification/bca790583b724470b382286b31dee5df/data",
+    ".build-cache/performance-verification/ce1ce8232a6d4e7f9abed615725af6a4/data"
+  ],
+  "conditions": "Same host/config/seed, 5s warmup and empty live trial tables; continuation used a new owned JVM/PG after setup-tool correction. Not identical physical caches or JVM uptime"
+}

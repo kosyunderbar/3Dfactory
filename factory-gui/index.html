@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>FLOOR — 셀 기반 제조 통합 관제</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="rail" aria-label="주 메뉴">
+    <a class="brand" href="#" aria-label="FLOOR 전체 관제">F<span>↗</span></a>
+    <nav>
+      <button class="rail-item active" data-nav="overview" aria-label="전체 관제"><span>▦</span>관제</button>
+      <button class="rail-item" data-nav="cells" aria-label="작업 셀 상세"><span>⬡</span>셀</button>
+      <button class="rail-item" data-nav="logistics" aria-label="물류 상세"><span>⇄</span>물류</button>
+      <button class="rail-item" data-nav="quality" aria-label="품질 추이"><span>▥</span>품질</button>
+      <button class="rail-item" data-nav="alarms" aria-label="알람 기록"><span>♧</span>알람<b id="nav-alarm" hidden>0</b></button>
+    </nav>
+    <div class="rail-bottom"><span class="connection-dot"></span><span class="avatar">OP</span></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div><strong>FLOOR</strong><span class="slash">/</span>제조 운영 센터</div><div class="topbar-right"><span class="demo-badge">LOCAL SIMULATION</span><time id="clock">--:--:--</time><span>KST</span></div></header>
+    <main>
+      <section class="page-heading">
+        <div><div class="eyebrow">CELL-BASED FACTORY OPERATIONS</div><h1>셀과 차체의 흐름을, 한눈에<span>.</span></h1><p>독립 작업 셀 · 차체 운반 AGV · 부품 공급 AMR</p></div>
+        <div class="heading-actions"><div class="site-label"><strong>가상 제조공장</strong><small>P0 · 3 CELLS / 3 VEHICLES</small></div><button class="button" id="pause">Ⅱ 일시정지</button></div>
+      </section>
+      <section class="metrics" aria-label="공장 전체 핵심 지표">
+        <article class="metric"><div class="metric-label">검사 완료 <span>↗</span></div><div class="metric-main"><strong id="total">0</strong><span>대</span></div><div class="metric-foot"><span>양품 <b id="passed">0</b></span><small>이번 실행 누적</small></div></article>
+        <article class="metric"><div class="metric-label">최근 불량률 <span>◎</span></div><div class="metric-main"><strong id="defect">—</strong><span>%</span><span class="badge" id="quality-tag">표본 없음</span></div><div class="metric-foot"><span id="sample">검사 0 · 불량 0</span><small>최근 5분</small></div></article>
+        <article class="metric"><div class="metric-label">작업 셀 <span>⬡</span></div><div class="metric-main"><strong id="running">3</strong><span>/ 3 가동</span></div><div class="metric-foot"><span id="cell-summary">가동 3 · 대기 0</span><small id="fresh-summary">수신 정상</small></div></article>
+        <article class="metric"><div class="metric-label">차체 물류 <span>⇄</span></div><div class="metric-main"><strong id="moving">0</strong><span>/ 2 AGV 이동</span></div><div class="metric-foot"><span id="buffer-summary">대기 3 · 예약 0</span><small>부품 AMR 1대 별도</small></div></article>
+        <article class="metric"><div class="metric-label">활성 알람 <span>♧</span></div><div class="metric-main"><strong id="alarm-count">0</strong><span>건</span></div><div class="metric-foot"><span id="alarm-summary">정상 흐름</span><button id="show-alarms">기록 보기 ↗</button></div></article>
+      </section>
+      <section class="main-grid">
+        <article class="map-card" id="map-card">
+          <div class="map-toolbar"><div class="section-title"><span class="live-dot" id="live-dot"></span><h2>실시간 셀 맵</h2><span class="live-label" id="live-label">LIVE</span></div><div class="map-tools"><label class="sr-only" for="cell-filter">셀 강조</label><select id="cell-filter"><option value="ALL">전체 셀</option><option>ASM-01</option><option>ASM-02</option><option>QC-01</option></select><button class="icon-button" id="expand" aria-label="공장 맵 확대" title="공장 맵 확대">⛶</button></div></div>
+          <div class="factory-canvas"><div class="map-caption"><span>F01 / FLEXIBLE ASSEMBLY FLOOR</span><span id="map-status">스냅샷 500 ms</span></div><div class="map-scroll"><svg id="factory-map" viewBox="0 0 1000 435" role="group" aria-label="독립 셀 3개, 셀별 Parking Bay, 차체 AGV 2대와 부품 AMR 1대 배치도"></svg></div><div class="map-legend"><span><b class="legend-dot mint"></b>가동</span><span><b class="legend-dot gray"></b>대기</span><span><b class="legend-dot amber"></b>배출 대기</span><span><b class="legend-dot red"></b>정지</span><span class="legend-route">┄</span><span>차체 AGV 경로</span><small>차체 클릭 → 가상 태그 상세</small></div><div class="offline-overlay" id="offline-overlay" hidden><strong>통신 단절 · 마지막 수신 화면</strong><span>시뮬레이터는 계속 동작합니다. 재연결 시 최신 상태를 받습니다.</span></div></div>
+          <div class="map-footer"><span>ASM-01 → ASM-02 → QC-01 <em>·</em> 부품 공급 경로 별도</span><span id="updated">마지막 수신 --:--:--</span></div>
+        </article>
+        <aside class="detail-card" id="detail-card" aria-label="선택 대상 상세"></aside>
+      </section>
+      <section class="buffer-section" aria-label="물리적 버퍼와 예약 슬롯">
+        <div class="buffer-heading"><div><h2>Parking Bay · 물리적 버퍼</h2><p>현재 대기 + 도착 예약 ≥ 전체 슬롯이면 신규 배출 차단</p></div><span>예약에는 픽업 전 배차와 이동 중 차량이 모두 포함됩니다.</span></div>
+        <div class="bay-grid" id="bay-grid"></div>
+      </section>
+      <section class="scenario-guide" id="scenario-guide" hidden aria-label="버퍼 만석 검증 안내"><div><span class="eyebrow">BUFFER CAPACITY WALKTHROUGH</span><h2 id="guide-title"></h2><p id="guide-description"></p></div><button class="button primary" id="capacity-step"></button></section>
+      <section class="body-panel panel" id="body-panel">
+        <div class="panel-heading"><div><h2>차체 · 가상 스마트태그</h2><p>태그와 차체를 1:1로 연결한 상태 조회</p></div><form id="body-search"><label class="sr-only" for="tag-search">차체 ID 또는 태그 ID 검색</label><input id="tag-search" type="search" placeholder="body-00001 또는 tag-00001" autocomplete="off"><button class="button" type="submit">찾기 ↗</button></form></div>
+        <div class="body-list" id="body-list"></div><p class="search-result" id="search-result" role="status"></p>
+      </section>
+      <section class="bottom-grid">
+        <article class="panel trend-panel" id="trend-panel"><div class="panel-heading"><div><h2>검사 · 품질 추이</h2><p>최근 5분 · 1분 단위 구간</p></div><span class="chart-key"><b></b>검사 <b class="fail"></b>불량</span></div><div class="chart-summary"><strong id="throughput">0</strong><span>대 / 최근 1분</span><small id="chart-note">검사 이벤트에서 집계</small></div><div id="production-chart" role="img" aria-label="최근 5분 검사 및 불량 수"></div></article>
+        <article class="panel activity-panel" id="activity-panel"><div class="activity-header"><div class="tabs" role="tablist" aria-label="운영 기록"><button role="tab" id="tab-events" aria-controls="activity-content" aria-selected="true" class="active" data-tab="events">이벤트</button><button role="tab" id="tab-alarms" aria-controls="activity-content" aria-selected="false" tabindex="-1" data-tab="alarms">알람 <span id="tab-count">0</span></button></div><button class="text-button" id="all-events">전체 기록</button></div><div id="activity-content" role="tabpanel" aria-labelledby="tab-events"></div><div class="activity-footer"><span id="event-filter">차체 · 예약 · 이동 · 작업 이력</span><span>로컬 데모</span></div></article>
+      </section>
+      <footer class="page-footer"><span>FLOOR / 셀 기반 제조 통합 관제</span><span>PREVIEW 0.2 · 가상 태그 · 실제 설비 / 서버 미연결</span></footer>
+    </main>
+    <div class="demo-dock"><div class="demo-dock-label"><strong>시나리오</strong><small>장면 전환 시 실행 초기화</small></div><div class="scenario-buttons" aria-label="데모 시나리오"><button data-scenario="normal" class="active">정상 운영</button><button data-scenario="capacity">버퍼 만석</button><button data-scenario="down">셀 정지</button><button data-scenario="quality">품질 이상</button><button data-scenario="offline">통신 단절</button></div><button class="icon-button" id="reset" aria-label="실행 초기화" title="실행 초기화">↻</button></div>
+  </div>
+  <dialog id="body-dialog" aria-labelledby="body-dialog-title"><div class="dialog-heading"><div><span class="eyebrow">VIRTUAL SMART TAG</span><h2 id="body-dialog-title">차체 상태</h2></div><button class="icon-button" id="close-body" aria-label="차체 상세 닫기">×</button></div><div id="body-dialog-content"></div></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="model.js"></script><script src="app.js"></script>
+</body>
+</html>

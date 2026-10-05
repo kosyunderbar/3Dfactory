@@ -1,0 +1,16 @@
+{
+  "htmlSyntaxParsed": true,
+  "inlineJavaScriptSyntaxChecked": true,
+  "localMediaLinksExist": true,
+  "originalCaptureHashes": {
+    "UI-FULL_RESERVED.jpg": "c22b49677f4e5b17457ad2666b088629d599227cb5d13a17c948dc8a67f7d41a",
+    "UI-FULL_IN_TRANSIT.jpg": "259029bbc109bac24edb05ab3b7512ad5948ae4a6a7d8cf9f7d3ecdd3e40e2ed",
+    "UI-FULL_ARRIVED.jpg": "25850c8f945e29f2f939f69e5969585420e385d57c6c361e26f71c0a3e014d95",
+    "UI-CELL_DOWN.jpg": "21f5a906a68c8d14da0743ca3877c730e92501822d8bf9f9e4ddb513f255effa",
+    "UI-SLOT_RELEASED.jpg": "cc32ee9cbc71e78b195128126cf7c7c7b3a09e2a5ec4184634790a286b74a389",
+    "UI-FINISHED.jpg": "0712ea02962b3b641d98691363acd02e69a49ae16ed98ca2914848772e5e6c78",
+    "UI-TAG_HOLD.jpg": "1ea480a866d9e4a82be7d3bae339411eea4082031176723b30c395b9eee33fc8"
+  },
+  "browserPreviewVerified": false,
+  "browserPreviewLimit": "Browser tool blocks file: URLs by its allowed-protocol policy; no workaround used. MP4 actual playback separately verified."
+}

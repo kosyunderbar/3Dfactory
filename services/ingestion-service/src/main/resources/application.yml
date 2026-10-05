@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: ingestion-service
+  datasource:
+    url: ${INGESTION_DB_URL}
+    username: ${INGESTION_DB_USERNAME}
+    password: ${INGESTION_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 4
+      connection-timeout: 3000
+      initialization-fail-timeout: 3000
+  flyway:
+    url: ${INGESTION_DB_URL}
+    user: ${INGESTION_MIGRATION_USERNAME}
+    password: ${INGESTION_MIGRATION_PASSWORD}
+    locations: classpath:db/migration
+    fail-on-missing-locations: true
+    clean-disabled: true
+    validate-on-migrate: true
+
+server:
+  address: ${INGESTION_HTTP_ADDRESS:127.0.0.1}
+  port: ${INGESTION_HTTP_PORT:8081}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+spring.lifecycle.timeout-per-shutdown-phase: 5s
+logging.pattern.console: "%d{HH:mm:ss.SSS} %-5level [ingestion-service] %logger{36} - %msg%n"
+
+# Readiness covers ingestion DB, TCP and the delivery loop; remote operations availability is diagnostic.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+        add-additional-paths: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,db,tcp,delivery
+
+factory.tcp:
+  address: ${INGESTION_TCP_ADDRESS:127.0.0.1}
+  port: ${INGESTION_TCP_PORT:9090}
+  rejection-log: ${INGESTION_REJECTION_LOG:./logs/ingestion-rejections.ndjson}
+
+factory.delivery:
+  enabled: ${INGESTION_DELIVERY_ENABLED:true}
+  operations-url: ${OPERATIONS_BASE_URL:http://127.0.0.1:8082}

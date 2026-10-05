@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: operations-service
+  datasource:
+    url: ${OPERATIONS_DB_URL}
+    username: ${OPERATIONS_DB_USERNAME}
+    password: ${OPERATIONS_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 4
+      connection-timeout: 3000
+      initialization-fail-timeout: 3000
+  flyway:
+    url: ${OPERATIONS_DB_URL}
+    user: ${OPERATIONS_MIGRATION_USERNAME}
+    password: ${OPERATIONS_MIGRATION_PASSWORD}
+    locations: classpath:db/migration
+    fail-on-missing-locations: true
+    clean-disabled: true
+    validate-on-migrate: true
+
+server:
+  address: ${OPERATIONS_HTTP_ADDRESS:127.0.0.1}
+  port: ${OPERATIONS_HTTP_PORT:8082}
+  shutdown: graceful
+  tomcat:
+    connection-timeout: 5s
+  error:
+    include-message: never
+    include-stacktrace: never
+
+spring.lifecycle.timeout-per-shutdown-phase: 5s
+logging.pattern.console: "%d{HH:mm:ss.SSS} %-5level [operations-service] %logger{36} - %msg%n"
+
+# Infrastructure readiness: DB connectivity; delivery/SSE readiness is a separate observation.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+        add-additional-paths: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,db
+
+factory.ingestion-diagnostic-url: ${INGESTION_DIAGNOSTIC_URL:http://127.0.0.1:8081}

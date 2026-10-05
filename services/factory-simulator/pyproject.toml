@@ -1,0 +1,10 @@
+[project]
+name = "factory-simulator"
+version = "0.1.0"
+description = "Factory simulator runtime foundation"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[tool.factory]
+# No build backend or downloaded runtime dependencies in S01-04.
+# Execute from this directory with python -m factory_simulator.

@@ -1,0 +1,25 @@
+# Local build outputs and downloaded dependencies
+.build-cache/
+**/target/
+**/__pycache__/
+*.py[cod]
+.DS_Store
+
+# PostgreSQL configure stamp files generated during local tool preparation
+/src/include/stamp-h
+/src/include/stamp-ext-h
+/src/interfaces/ecpg/include/stamp-h
+
+# Local credentials; keep templates reviewable
+.env
+.env.*
+!.env.example
+!*.env.example
+
+# Python and Vue local environments/builds
+**/.venv/
+**/node_modules/
+**/dist/
+
+# Bounded local transport diagnostics (not source files)
+**/logs/

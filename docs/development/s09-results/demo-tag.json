@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+  "sourceId": "simulator-01",
+  "serverEpoch": "6d812ff8-97d4-4a2b-bad6-7fe564c5c932",
+  "revision": 497,
+  "publishedAt": "2026-10-05T13:44:58.935Z",
+  "viewAsOfAt": "2026-10-05T13:44:58.929Z",
+  "snapshotCapturedAt": "2026-10-05T13:44:01.628Z",
+  "sourceSeq": 1077,
+  "runState": "FINISHED",
+  "simElapsedMs": 60800,
+  "observedAfterEpoch": true,
+  "dataStatus": "FINISHED",
+  "freshness": {
+    "evaluatedAt": "2026-10-05T13:44:58.929Z",
+    "sourceAgeMs": 57301,
+    "clockLeadMs": 0,
+    "state": "ARCHIVED",
+    "staleAfterMs": 3000,
+    "disconnectAfterMs": 10000
+  },
+  "delivery": {
+    "runId": "run-20261005-f4cc4badcf984f569146f5b1d57b1aed",
+    "sourceId": "simulator-01",
+    "sampledAt": "2026-10-05T13:44:58.927Z",
+    "sourceConnected": true,
+    "lastReceivedAt": "2026-10-05T13:44:01.639Z",
+    "lastAcceptedSeq": 1078,
+    "nextSourceSeq": 1079,
+    "streamState": "ACTIVE",
+    "blockedSeq": null,
+    "blockedCode": null,
+    "pendingCount": 0,
+    "pendingBytes": 0,
+    "oldestPendingReceivedAt": null,
+    "retryCount": 0,
+    "rejectedCount": 0,
+    "diagnosticState": "AVAILABLE"
+  },
+  "data": {
+    "tagId": "tag-00001",
+    "bodyId": "body-00001",
+    "status": "COMPLETED",
+    "specCode": "STANDARD",
+    "modelCode": "DEMO-EV-A",
+    "locationId": "HOLD",
+    "nextCellId": null,
+    "inspectedAt": "2026-10-05T13:43:09.945Z",
+    "transportId": null,
+    "locationType": "RESULT",
+    "currentCellId": null,
+    "reservationId": null,
+    "lastObservedAt": "2026-10-05T13:44:01.628Z",
+    "locationSlotId": null,
+    "completedCellIds": [
+      "ASM-01",
+      "ASM-02",
+      "QC-01"
+    ],
+    "inspectionResult": "FAIL"
+  }
+}

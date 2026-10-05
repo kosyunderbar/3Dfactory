@@ -1,0 +1,338 @@
+{
+  "seed": 42,
+  "sourceId": "simulator-01",
+  "config": {
+    "tickMs": 100,
+    "snapshotIntervalMs": 500,
+    "speed": 1,
+    "maxBodies": 100,
+    "failProbability": 0.01,
+    "locations": [
+      {
+        "locationType": "INPUT",
+        "locationId": "BODY-IN",
+        "x": 0,
+        "y": 100
+      },
+      {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-01",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "locationType": "CELL",
+        "locationId": "ASM-01",
+        "x": 150,
+        "y": 100
+      },
+      {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "locationType": "CELL",
+        "locationId": "ASM-02",
+        "x": 350,
+        "y": 100
+      },
+      {
+        "locationType": "BUFFER",
+        "locationId": "BAY-QC-01",
+        "x": 500,
+        "y": 100
+      },
+      {
+        "locationType": "CELL",
+        "locationId": "QC-01",
+        "x": 550,
+        "y": 100
+      },
+      {
+        "locationType": "RESULT",
+        "locationId": "GOOD",
+        "x": 700,
+        "y": 70
+      },
+      {
+        "locationType": "RESULT",
+        "locationId": "HOLD",
+        "x": 700,
+        "y": 130
+      },
+      {
+        "locationType": "STORE",
+        "locationId": "PARTS-STORE",
+        "x": 0,
+        "y": 300
+      },
+      {
+        "locationType": "PARTS_DOCK",
+        "locationId": "PARTS-ASM-01",
+        "x": 150,
+        "y": 250
+      },
+      {
+        "locationType": "PARTS_DOCK",
+        "locationId": "PARTS-ASM-02",
+        "x": 350,
+        "y": 250
+      }
+    ],
+    "equipment": [
+      {
+        "cellId": "ASM-01",
+        "equipmentId": "ASM-01",
+        "bufferId": "BAY-ASM-01",
+        "workDurationMs": 4000
+      },
+      {
+        "cellId": "ASM-02",
+        "equipmentId": "ASM-02",
+        "bufferId": "BAY-ASM-02",
+        "workDurationMs": 6000
+      },
+      {
+        "cellId": "QC-01",
+        "equipmentId": "QC-01",
+        "bufferId": "BAY-QC-01",
+        "workDurationMs": 3000
+      }
+    ],
+    "buffers": [
+      {
+        "bufferId": "BAY-ASM-01",
+        "cellId": "ASM-01",
+        "capacity": 3,
+        "slotIds": [
+          "BAY-ASM-01-S1",
+          "BAY-ASM-01-S2",
+          "BAY-ASM-01-S3"
+        ]
+      },
+      {
+        "bufferId": "BAY-ASM-02",
+        "cellId": "ASM-02",
+        "capacity": 3,
+        "slotIds": [
+          "BAY-ASM-02-S1",
+          "BAY-ASM-02-S2",
+          "BAY-ASM-02-S3"
+        ]
+      },
+      {
+        "bufferId": "BAY-QC-01",
+        "cellId": "QC-01",
+        "capacity": 3,
+        "slotIds": [
+          "BAY-QC-01-S1",
+          "BAY-QC-01-S2",
+          "BAY-QC-01-S3"
+        ]
+      }
+    ],
+    "vehicles": [
+      {
+        "vehicleId": "AGV-001",
+        "kind": "AGV",
+        "home": {
+          "locationType": "INPUT",
+          "locationId": "BODY-IN"
+        },
+        "initialPosition": {
+          "x": 0,
+          "y": 100
+        }
+      },
+      {
+        "vehicleId": "AGV-002",
+        "kind": "AGV",
+        "home": {
+          "locationType": "INPUT",
+          "locationId": "BODY-IN"
+        },
+        "initialPosition": {
+          "x": 0,
+          "y": 100
+        }
+      },
+      {
+        "vehicleId": "AMR-001",
+        "kind": "AMR",
+        "home": {
+          "locationType": "STORE",
+          "locationId": "PARTS-STORE"
+        },
+        "initialPosition": {
+          "x": 0,
+          "y": 300
+        }
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "ROUTE-INPUT-ASM-01",
+        "cargoType": "BODY",
+        "source": {
+          "locationType": "INPUT",
+          "locationId": "BODY-IN"
+        },
+        "destination": {
+          "locationType": "BUFFER",
+          "locationId": "BAY-ASM-01"
+        },
+        "points": [
+          {
+            "x": 0,
+            "y": 100
+          },
+          {
+            "x": 100,
+            "y": 100
+          }
+        ],
+        "travelDurationMs": 4000
+      },
+      {
+        "routeId": "ROUTE-ASM-01-ASM-02",
+        "cargoType": "BODY",
+        "source": {
+          "locationType": "CELL",
+          "locationId": "ASM-01"
+        },
+        "destination": {
+          "locationType": "BUFFER",
+          "locationId": "BAY-ASM-02"
+        },
+        "points": [
+          {
+            "x": 150,
+            "y": 100
+          },
+          {
+            "x": 300,
+            "y": 100
+          }
+        ],
+        "travelDurationMs": 4000
+      },
+      {
+        "routeId": "ROUTE-ASM-02-QC-01",
+        "cargoType": "BODY",
+        "source": {
+          "locationType": "CELL",
+          "locationId": "ASM-02"
+        },
+        "destination": {
+          "locationType": "BUFFER",
+          "locationId": "BAY-QC-01"
+        },
+        "points": [
+          {
+            "x": 350,
+            "y": 100
+          },
+          {
+            "x": 500,
+            "y": 100
+          }
+        ],
+        "travelDurationMs": 4000
+      },
+      {
+        "routeId": "ROUTE-QC-01-GOOD",
+        "cargoType": "BODY",
+        "source": {
+          "locationType": "CELL",
+          "locationId": "QC-01"
+        },
+        "destination": {
+          "locationType": "RESULT",
+          "locationId": "GOOD"
+        },
+        "points": [
+          {
+            "x": 550,
+            "y": 100
+          },
+          {
+            "x": 700,
+            "y": 70
+          }
+        ],
+        "travelDurationMs": 4000
+      },
+      {
+        "routeId": "ROUTE-QC-01-HOLD",
+        "cargoType": "BODY",
+        "source": {
+          "locationType": "CELL",
+          "locationId": "QC-01"
+        },
+        "destination": {
+          "locationType": "RESULT",
+          "locationId": "HOLD"
+        },
+        "points": [
+          {
+            "x": 550,
+            "y": 100
+          },
+          {
+            "x": 700,
+            "y": 130
+          }
+        ],
+        "travelDurationMs": 4000
+      },
+      {
+        "routeId": "ROUTE-PARTS-ASM-01",
+        "cargoType": "PARTS",
+        "source": {
+          "locationType": "STORE",
+          "locationId": "PARTS-STORE"
+        },
+        "destination": {
+          "locationType": "PARTS_DOCK",
+          "locationId": "PARTS-ASM-01"
+        },
+        "points": [
+          {
+            "x": 0,
+            "y": 300
+          },
+          {
+            "x": 150,
+            "y": 250
+          }
+        ],
+        "travelDurationMs": 4000
+      },
+      {
+        "routeId": "ROUTE-PARTS-ASM-02",
+        "cargoType": "PARTS",
+        "source": {
+          "locationType": "STORE",
+          "locationId": "PARTS-STORE"
+        },
+        "destination": {
+          "locationType": "PARTS_DOCK",
+          "locationId": "PARTS-ASM-02"
+        },
+        "points": [
+          {
+            "x": 0,
+            "y": 300
+          },
+          {
+            "x": 350,
+            "y": 250
+          }
+        ],
+        "travelDurationMs": 4000
+      }
+    ]
+  }
+}

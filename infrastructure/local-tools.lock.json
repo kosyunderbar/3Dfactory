@@ -1,0 +1,35 @@
+{
+  "platform": "Darwin-arm64",
+  "tools": {
+    "node": {
+      "file": "node.tar.gz",
+      "url": "https://nodejs.org/dist/v24.21.0/node-v24.21.0-darwin-arm64.tar.gz",
+      "sha256": "bed7eea5325e1108f32ce5228ddd6a5f0f08a499ee42aa7442aea583702f6057",
+      "extractTo": "node"
+    },
+    "lima": {
+      "file": "lima.tar.gz",
+      "url": "https://github.com/lima-vm/lima/releases/download/v2.2.1/lima-2.2.1-Darwin-arm64.tar.gz",
+      "sha256": "9e9eacce88f37e185c346bad73aa6136f738d8cdf8c3bb23cd42b071824bc66e",
+      "extractTo": "lima-2.2.1"
+    },
+    "docker": {
+      "file": "docker.tgz",
+      "url": "https://download.docker.com/mac/static/stable/aarch64/docker-29.8.2.tgz",
+      "sha256": "5ffa2bafbabe073470f0333f4a129599230b73d1170bb61146b3d9b08e1d1325",
+      "extractTo": "."
+    },
+    "compose": {
+      "file": "docker-compose",
+      "url": "https://github.com/docker/compose/releases/download/v5.6.0/docker-compose-darwin-aarch64",
+      "sha256": "bd714a42b46e51757fc1121085b3096b9064e3f80d3ca5a991e33f44df4f43c9",
+      "extractTo": null
+    },
+    "buildx": {
+      "file": "buildx",
+      "url": "https://github.com/docker/buildx/releases/download/v0.37.2/buildx-v0.37.2.darwin-arm64",
+      "sha256": "149e6a006edaa430f297b2bdcf65baaa6d7ee5ccfc7aa67dd50ce1c2b1db47e2",
+      "extractTo": null
+    }
+  }
+}

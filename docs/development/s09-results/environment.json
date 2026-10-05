@@ -1,0 +1,22 @@
+{
+  "os": "macOS-26.6.2-arm64-arm-64bit",
+  "architecture": "arm64",
+  "python": "3.12.1 (v3.12.1:2305ca5144, Dec  7 2023, 17:23:38) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "workload": "Single SourceSession writer, one original in flight, model snapshots plus actual body transitions",
+  "clock": "Same-host wall clock for cross-process estimates; process-monotonic for internal spans",
+  "repeatConditions": "Fresh UUID, own successful rows removed after byte-exact reconciliation; same 5s warmup",
+  "observer": "Native REST diagnostics 1Hz and SSE; optional actual Chrome GUI",
+  "measurementOverhead": "Enabled CSV and dev browser collectors; not a production instrumentation guarantee",
+  "cpu": "Apple M3 Pro",
+  "memoryBytes": 38654705664,
+  "logicalCores": 12,
+  "postgres": "17.11",
+  "node": "24.21.0",
+  "vue": "3.5.43",
+  "vite": "8.3.2",
+  "springBoot": "4.1.1",
+  "echarts": "6.1.0",
+  "dockerContext": "Existing developer Compose remains up, native benchmark runs on host; VM resources are not benchmark limits",
+  "chrome": "154.0.8037.95",
+  "java": "openjdk version \"21.0.7\" 2025-04-15 LTS\nOpenJDK Runtime Environment Temurin-21.0.7+6 (build 21.0.7+6-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.7+6 (build 21.0.7+6-LTS, mixed mode, sharing)"
+}

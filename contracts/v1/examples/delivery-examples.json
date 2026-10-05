@@ -1,0 +1,230 @@
+{
+  "description": "서로 다른 상황의 독립 예제. 실제 처리 로그/한 HTTP 호출의 연속 응답이 아니다.",
+  "request": {
+    "method": "POST",
+    "path": "/internal/v1/events/apply",
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "protocolVersion": 1,
+      "rawEvent": "{\"schemaVersion\":1,\"eventId\":\"00000000-0000-4000-8000-00000001adb7\",\"runId\":\"run-20261004-011\",\"sourceId\":\"simulator-01\",\"sourceSeq\":7,\"eventType\":\"INSPECTION_COMPLETED\",\"occurredAt\":\"2026-10-04T04:00:10.000Z\",\"payload\":{\"inspectionId\":\"inspection-00042\",\"equipmentId\":\"QC-01\",\"unitId\":\"body-00042\",\"result\":\"FAIL\",\"defectCode\":\"SIM_DEFECT_01\"}}",
+      "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+      "receivedAt": "2026-10-04T04:00:10.015Z"
+    }
+  },
+  "tcpAcks": [
+    {
+      "protocolVersion": 1,
+      "kind": "INGESTION_ACK",
+      "runId": "run-20261004-011",
+      "sourceId": "simulator-01",
+      "eventId": "00000000-0000-4000-8000-00000001adb7",
+      "sourceSeq": 7,
+      "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+      "status": "RECEIVED",
+      "code": "OK",
+      "receivedAt": "2026-10-04T04:00:10.015Z",
+      "committedAt": "2026-10-04T04:00:10.024Z",
+      "retryAfterMs": null
+    },
+    {
+      "protocolVersion": 1,
+      "kind": "INGESTION_ACK",
+      "runId": "run-20261004-011",
+      "sourceId": "simulator-01",
+      "eventId": "00000000-0000-4000-8000-00000001adb7",
+      "sourceSeq": 7,
+      "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+      "status": "DUPLICATE_RECEIVED",
+      "code": "OK",
+      "receivedAt": "2026-10-04T04:00:10.015Z",
+      "committedAt": "2026-10-04T04:00:11.000Z",
+      "retryAfterMs": null
+    },
+    {
+      "protocolVersion": 1,
+      "kind": "INGESTION_ACK",
+      "runId": "run-20261004-011",
+      "sourceId": "simulator-01",
+      "eventId": "00000000-0000-4000-8000-00000001adb7",
+      "sourceSeq": 7,
+      "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+      "status": "RETRY_LATER",
+      "code": "DB_UNAVAILABLE",
+      "receivedAt": "2026-10-04T04:00:10.015Z",
+      "committedAt": null,
+      "retryAfterMs": 1000
+    },
+    {
+      "protocolVersion": 1,
+      "kind": "INGESTION_ACK",
+      "runId": "run-20261004-011",
+      "sourceId": "simulator-01",
+      "eventId": "00000000-0000-4000-8000-00000001adb7",
+      "sourceSeq": 7,
+      "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+      "status": "REJECTED",
+      "code": "ID_CONFLICT",
+      "receivedAt": "2026-10-04T04:00:10.015Z",
+      "committedAt": null,
+      "retryAfterMs": null
+    },
+    {
+      "protocolVersion": 1,
+      "kind": "INGESTION_ACK",
+      "runId": null,
+      "sourceId": null,
+      "eventId": null,
+      "sourceSeq": null,
+      "eventSha256": null,
+      "status": "REJECTED",
+      "code": "FRAME_TOO_LARGE",
+      "receivedAt": "2026-10-04T04:00:10.015Z",
+      "committedAt": null,
+      "retryAfterMs": null
+    }
+  ],
+  "applicationResponses": [
+    {
+      "httpStatus": 200,
+      "headers": {},
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": "run-20261004-011",
+        "sourceId": "simulator-01",
+        "eventId": "00000000-0000-4000-8000-00000001adb7",
+        "sourceSeq": 7,
+        "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+        "status": "APPLIED",
+        "code": "OK",
+        "appliedAt": "2026-10-04T04:00:10.040Z",
+        "recordedAt": "2026-10-04T04:00:10.040Z",
+        "retryAfterMs": null
+      }
+    },
+    {
+      "httpStatus": 200,
+      "headers": {},
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": "run-20261004-011",
+        "sourceId": "simulator-01",
+        "eventId": "00000000-0000-4000-8000-00000001adb7",
+        "sourceSeq": 7,
+        "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+        "status": "DUPLICATE_APPLIED",
+        "code": "OK",
+        "appliedAt": "2026-10-04T04:00:10.040Z",
+        "recordedAt": "2026-10-04T04:00:10.040Z",
+        "retryAfterMs": null
+      }
+    },
+    {
+      "httpStatus": 422,
+      "headers": {},
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": "run-20261004-011",
+        "sourceId": "simulator-01",
+        "eventId": "00000000-0000-4000-8000-00000001adb7",
+        "sourceSeq": 7,
+        "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+        "status": "REJECTED",
+        "code": "MODEL_INVALID",
+        "appliedAt": null,
+        "recordedAt": "2026-10-04T04:00:10.050Z",
+        "retryAfterMs": null
+      }
+    },
+    {
+      "httpStatus": 409,
+      "headers": {},
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": "run-20261004-011",
+        "sourceId": "simulator-01",
+        "eventId": "00000000-0000-4000-8000-00000001adb7",
+        "sourceSeq": 7,
+        "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+        "status": "REJECTED",
+        "code": "ID_CONFLICT",
+        "appliedAt": null,
+        "recordedAt": "2026-10-04T04:00:10.040Z",
+        "retryAfterMs": null
+      }
+    },
+    {
+      "httpStatus": 409,
+      "headers": {
+        "Retry-After": "1"
+      },
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": "run-20261004-011",
+        "sourceId": "simulator-01",
+        "eventId": "00000000-0000-4000-8000-00000001adb7",
+        "sourceSeq": 7,
+        "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+        "status": "RETRY_LATER",
+        "code": "REFERENCE_NOT_READY",
+        "appliedAt": null,
+        "recordedAt": null,
+        "retryAfterMs": 500
+      }
+    },
+    {
+      "httpStatus": 503,
+      "headers": {
+        "Retry-After": "1"
+      },
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": "run-20261004-011",
+        "sourceId": "simulator-01",
+        "eventId": "00000000-0000-4000-8000-00000001adb7",
+        "sourceSeq": 7,
+        "eventSha256": "bb9789b32b954038a1599e45bea50f2f464d09853e802a2aee0c198df3076182",
+        "status": "RETRY_LATER",
+        "code": "DB_UNAVAILABLE",
+        "appliedAt": null,
+        "recordedAt": null,
+        "retryAfterMs": 1000
+      }
+    },
+    {
+      "httpStatus": 400,
+      "headers": {},
+      "body": {
+        "protocolVersion": 1,
+        "kind": "APPLICATION_RESULT",
+        "runId": null,
+        "sourceId": null,
+        "eventId": null,
+        "sourceSeq": null,
+        "eventSha256": null,
+        "status": "REJECTED",
+        "code": "INVALID_DELIVERY",
+        "appliedAt": null,
+        "recordedAt": null,
+        "retryAfterMs": null
+      }
+    }
+  ],
+  "backoffWithZeroJitterMs": [
+    500,
+    1000,
+    2000,
+    4000,
+    8000,
+    16000,
+    30000,
+    30000
+  ]
+}

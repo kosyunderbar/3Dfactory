@@ -1,0 +1,75 @@
+# Vue 실제 공장 관제 화면
+
+> S07-01~04 GUI·S08 장애/복구 검증 완료 · Vue 3 / JavaScript / Vite · Node 24.21.0 · Apache ECharts 6.1.0
+
+실제 관제 REST/SSE를 사용하는 화면이다. 독립 셀 3개·차체 AGV 2대·부품 AMR 1대·Bay 슬롯 지도, 태그 검색과 차체/셀/Bay/차량 상세, 품질 지표와 ECharts, 알람 확인·복구 관측, 사건/알람 기록을 제공한다. 현재 지도와 상세는 같은 전체 상태 묶음을 읽는다. `factory-gui/`의 브라우저 모델이나 임의 숫자를 공급부로 사용하지 않는다.
+
+## 실행
+
+프로젝트 루트에서 실행한다. Compose는 독립 빌드한 Vue 파일을 Nginx로 제공한다.
+
+```sh
+scripts/dev-stack.sh up
+# 수정한 화면/시뮬레이터만 반영, 기존 DB와 볼륨 보존
+scripts/dev-stack.sh compose up -d --build --wait --no-deps factory-console factory-simulator
+# 기존 최소 1대 GOOD/PASS 시나리오
+INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --connected-demo
+# S07 5대·AMR·만석·정지/복구·최종 검사 시나리오
+INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --connected-p0-demo
+```
+
+화면은 http://127.0.0.1:5173이다. 콘솔에 출력된 새 runId를 실행 목록에서 선택하거나 직접 입력한다. `http://127.0.0.1:5173/?run=실제runId`로 선택할 수도 있다. 두 demo 명령은 실제 두 DB에 새 실행을 남긴다. 일반 Python 컨테이너 기동은 자동 생산하지 않는다. P0 demo는 정상 등록 후 주요 단계를 4초씩 PAUSED로 보여 주고 자동으로 진행한다. 기본 작업/운송 시간을 사용하므로 수 분 걸릴 수 있다.
+
+독립 개발은 `scripts/console.sh install`, `scripts/console.sh dev`다. 선택적인 macOS arm64 Node 도구는 `python3 scripts/prepare-dev-tools.py node`로 준비한다. install은 잠금 파일을 따라 npm ci로 설치한다. build는 정적 빌드, preview는4173이다.
+
+## 화면 사용
+
+- **공장 · 스마트태그:** SVG 셀/Bay/차량을 클릭하거나 Enter/Space로 상세를 연다. 태그·차체·모델·사양 일부 문자열과 상태로 검색한다. 작은 화면은 지도 내부를 좌우로 스크롤한다.
+- **상세:** 차체 위치·공정·예약·검사, 셀 작업/차단 이유, Bay 칸별 소유자, 차량의 실제 cargo와 배정 운송을 구분한다. Escape/닫기로 돌아간다. 관련 이력은 해당 대상의 별도 REST 조회다. Bay는 연결된 셀의 이력으로 안내한다.
+- **품질 · 알람:** 최근 5분·15분·1시간의 검사/PASS/FAIL/불량률과 같은 기간의 1분 차트를 읽는다. 표로도 확인한다. 검사0건의 비율은 ‘—’다. 확인자(영문·숫자·밑줄·하이픈,1~64자)로 알람 확인 기록을 남긴다. 확인해도 고장/예약/슬롯은 바뀌지 않는다. 실제 복구는 새 공장 보고에서 표시한다.
+- **기록 조회:** 기간·사건 종류 또는 알람 상태/심각도로 조회한다. 20건씩 최대100건 표시한다. 새 보고가 와도 조회 기준은 유지하며 ‘기록 새로고침’으로 최신 기준을 만든다.
+
+흰색 바탕·네이비 글씨·네이비~파란색 강조를 유지한다. 이름·숫자·실선/점선도 함께 사용한다. 공장 지도의 예약에는 픽업 전도 포함하며, 배정한 차체를 실제 적재로 표시하지 않는다. 차량은 보고된 좌표로만 갱신하고 통신 부재 시 마지막 위치를 보존한다.
+
+지도 겹침 수정에서는 같은 위치의 차량을 각각 독립 카드로 표시한다. **연결선 끝 점이 보고된 실제 위치**이며, 카드는 다른 이름·셀·Bay를 가리지 않도록 배치한다. BODY-IN/GOOD/HOLD는 현재 차체 총수와 최대 4대의 개별 번호를 표시하고, 나머지는 아래 스마트태그 목록에서 찾는다. 화면 배치만 변경하며 물리 좌표·예약·적재 사실을 바꾸지 않는다. [작업 41 설명](<../../docs/work-notes/작업 41. 공장 지도 겹침과 좁은 화면 배치 수정.md>).
+
+## 데이터와 연결 상태
+
+개발 서버 `/api`·`/readyz`의 기본 중계 대상은 http://127.0.0.1:8082다. 이 디렉토리의 로컬 `.env`에서 OPERATIONS_PROXY_TARGET으로 변경할 수 있다. Compose Nginx는 operations-service로 같은 경로를 중계하고 SSE buffering/cache를 끈다. 브라우저에 DB 암호를 넘기지 않는다. `/healthz`는 정적 파일 제공, `/readyz`는 관제 DB 준비이며 제조 데이터 LIVE와 다르다.
+
+`ConsoleFeed`는 실행/연결별 이전 요청·연결·타이머를 정리한다. 첫 유효 SSE가 epoch를 정하고 같은 epoch의 더 큰 revision만 적용한다. sourceSeq 감소나 예전 실행/epoch의 늦은 REST가 현재 상태를 덮지 못한다. 중복/heartbeat/onopen은 새 관측이 아니다. 유효 묶음3초 부재는 마지막 확인값,10초 부재는 화면 연결 확인 필요이며 공장 보고 나이도 별도로 판단한다. 종료 ARCHIVED는 보관값이다.
+
+`ScopedQueries`는 실행·epoch·대상·필터와 요청 순서로 조회 응답을 구분한다. 교체한 요청을 취소하고 5초를 제한한다. 품질 합계/차트는 같은 기간의 두 응답이 모두 맞을 때 함께 표시한다. 이력·알람 확인 응답은 물리 상태를 바꾸지 않는다. 같은 실행의 새 묶음과 재연결은 선택/필터를 유지한다. 다른 실행을 선택하면 상세 선택과 현재값을 비운다.
+
+## 필요한 검증과 실제 화면
+
+```sh
+scripts/console.sh test       # Node 내장5개, 별도 테스트 프레임워크 없음
+scripts/console.sh build
+# 최종 빌드 후 실행 중인 Compose에서 정상 등록 P0 전체 경로를 확인
+python3 scripts/verify-p0-console.py
+```
+
+**테스트는 최소한으로, 이번 변경에 꼭 필요한 것만 수행한다.** 기존 feed2개를 재사용하고 조회 범위2개·표시 데이터 경계1개를 추가했다. 실제 DB/TCP/SSE와 브라우저 성공은 Node 테스트와 별개로 확인한다. helper 기본 모드는 browserVerified=false이며 실제 GUI 확인 증거로 사용하지 않는다. 브라우저 단계 모드는 별도의 실제 조작/캡처를 요구한다. 검증 중 컨테이너를 재배포하지 않는다. 성공한 새 검증 UUID만 정리하고 실패 기록·기존 DB/볼륨은 보존한다.
+
+- [실제 S07 지도와 배출 차단](preview-s07-map.jpg)
+- [겹침 수정 후 실제 지도](preview-map-fixed.jpg): 같은 위치의 AGV와 GOOD 차체를 각각 표시한 기존 종료 실행.
+- [실제 S07 품질 차트](preview-s07-quality.jpg)
+- [최종 HOLD/FAIL 태그 상세](preview-s07-tag.jpg)
+- [390px 모바일 태그 상세](preview-s07-mobile.jpg)
+
+캡처는 검증 당시 실제 실행이다. 모바일은 보존한 이전 실행의390px 확인이며 공개 품질 캡처는 범례 위치 수정 후 같은 보존 실행의 최근1시간 조회다. 최종 성공한 전체 검증 실행과 캡처 실행의 구분은 공유 검증 기록에 남겼다. 성공한 검증 run은 자기 행만 정리했으므로 현재 목록에는 해당 번호가 없을 수 있다. 화면을 직접 보려면 새 demo 실행을 선택한다. S06 캡처와 초기 preview-foundation.jpg도 과거 증거로 유지한다. S08에서 양 서비스/개별 DB/PG 재시작과100대 기능 정확성을 확인했다. 실제 성능 수치와 조건은 S09 측정 기록에 있다.
+
+[작업29/S07-01](<../../docs/work-notes/작업 29. S07-01 실제 공장 SVG 지도와 차량·슬롯.md>) · [작업30/S07-02](<../../docs/work-notes/작업 30. S07-02 스마트태그 검색과 대상별 상세·이력.md>) · [작업31/S07-03](<../../docs/work-notes/작업 31. S07-03 품질 차트와 알람 확인·기록 조회.md>) · [작업32/S07-04](<../../docs/work-notes/작업 32. S07-04 선택·조회 순서와 모바일·키보드 접근.md>) · [공유 검증 기록](<../../docs/validation/최소 검증 시나리오와 도구.md>) · [전체 실행 안내](../../infrastructure/README.md)
+
+## S08 실제 SSE 단절·복구 확인
+
+Python TCP 보고와 REST를 계속 통과시키고 브라우저 SSE만 끊었다. 실제 Chrome에서 화면 연결 경고·마지막 위치/예약·tag-00004 검색/선택 보존, 재접속 후 LIVE를 확인했다. 실제 run은 `run-20261005-7c9ec070fab84bf4a5a6573ca5695242`이며 최종216/3,533건 DB 통합 실행과 구별한다. 화면 코드는 변경하지 않았다. [S08 통합 기록](<../../docs/development/S08 장애·복구 통합 검증.md>)과 [실제 복구 캡처](../../docs/development/s08-sse-recovered.jpg)를 따른다.
+
+## S09 완료와 재실행
+
+[실제 측정/P0 완료표](<../../docs/development/S09 측정·완료 기록.md>) · [처음 실행/기존 데이터/복구/시연](<../../docs/development/초기 실행·재실행·복구·시연.md>) · [새 실제 시연 캡처/단계 재생](<../../docs/development/s09-demo/index.html>).
+
+S09-01~04를 완료했습니다. 측정은 별도 네이티브 검증 DB/임의 loopback 포트를 사용하며 개발 Compose DB/볼륨은 유지했습니다. 정상25.63~25.72건/s·작은 화면 반영 p95 약98ms, 높은 입력 목표 미생성·업무 전달 지연을 구분합니다. SQL 병목이 확인되지 않아 새 index/DDL/의존성은 추가하지 않았습니다. 수집 Flyway1/2·관제1 그대로이며 같은 기존 data 재시작의 선택8개 표 지문이 일치했습니다. 일반 기동은 자동 생산하지 않습니다.
+
+개발 계측은 `VITE_FACTORY_MEASUREMENT=true FACTORY_BROWSER_MEASUREMENT_FILE=<전용 NDJSON 경로> scripts/console.sh dev`에서만 켭니다. 생산 빌드/일반 화면에는 수집 요청이 없습니다. Vue→프레임/rAF/전경·크기/시계 차이·ECharts 호출 비용을 기록합니다. 단일 요청256KiB·배치1,000행·파일64MiB 상한, HMR/페이지 종료 정리를 적용합니다. 실제 화면 조건의 결과를 기준1440×900 또는 GPU FPS의 보장으로 확대하지 않습니다.

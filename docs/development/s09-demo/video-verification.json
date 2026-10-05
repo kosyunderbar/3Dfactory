@@ -1,0 +1,14 @@
+{
+  "file": "s09-stage-playback.mp4",
+  "source": "7 same-run actual JPEG captures; 3 seconds each",
+  "continuousRealtimeRecording": false,
+  "converter": "macOS /usr/bin/avconvert PresetHighestQuality",
+  "conversionExitCode": 0,
+  "actualPlayer": "QuickTime Player",
+  "durationObserved": "00:21",
+  "playStarted": true,
+  "timelineEndObservedSeconds": 21,
+  "lastFrameObserved": "Smart tag body-00001/tag-00001 HOLD RESULT / final FAIL",
+  "playerWindowClosed": true,
+  "playbackCapture": "video-playback.jpg"
+}

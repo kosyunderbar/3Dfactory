@@ -1,0 +1,53 @@
+{
+  "protocolVersion": 1,
+  "tcp": {
+    "frameMaxBytes": 65536,
+    "ackMaxBytes": 4096,
+    "connectTimeoutMs": 2000,
+    "ackTimeoutMs": 3000,
+    "partialFrameTimeoutMs": 3000,
+    "maxConnections": 8,
+    "inputQueueMaxFrames": 128,
+    "inputQueueMaxBytes": 8388608
+  },
+  "source": {
+    "sendWindow": 1,
+    "pendingMaxEvents": 1000,
+    "pendingMaxBytes": 67108864,
+    "pauseAtEvents": 900,
+    "pauseAtBytes": 62914560,
+    "resumeBelowEvents": 500,
+    "resumeBelowBytes": 33554432,
+    "maxAttempts": 10
+  },
+  "http": {
+    "connectTimeoutMs": 1000,
+    "responseTimeoutMs": 5000,
+    "requestMaxBytes": 524288,
+    "responseMaxBytes": 8192
+  },
+  "outbox": {
+    "maxPendingEvents": 5000,
+    "maxPendingBytes": 134217728,
+    "maxAttempts": 20
+  },
+  "retention": {
+    "perRunMaxEvents": 50000,
+    "perRunMaxBytes": 536870912,
+    "totalMaxEvents": 250000,
+    "totalMaxBytes": 1073741824
+  },
+  "retry": {
+    "baseDelayMs": 500,
+    "maxDelayMs": 30000,
+    "jitterRatio": 0.1,
+    "gapWaitMs": 30000,
+    "dependencyWaitMs": 30000
+  },
+  "futureToleranceMs": 5000,
+  "rejectionLog": {
+    "maxFileBytes": 10485760,
+    "maxFiles": 3,
+    "previewBytes": 1024
+  }
+}

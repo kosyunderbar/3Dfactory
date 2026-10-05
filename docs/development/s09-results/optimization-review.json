@@ -1,0 +1,6 @@
+{
+  "adopted": false,
+  "reason": "Fence SQL warm 0.035 to 0.019ms saves only 0.016ms; first-page SQL unchanged/slightly slower. Sequential HTTP change also includes cache/JIT progression and does not establish index causality. Both existing queries are already far under 500ms. Extra 7774208 bytes and rollback-write p50 34.276 to 35.130ms do not justify a migration.",
+  "operationsMigrationRemains": "1",
+  "experimentalIndexDropped": true
+}

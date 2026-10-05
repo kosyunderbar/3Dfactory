@@ -1,0 +1,1276 @@
+{
+  "snapshot": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "sourceId": "simulator-01",
+    "serverEpoch": "11111111-1111-4111-8111-111111111111",
+    "revision": 1,
+    "publishedAt": "2026-10-04T04:00:01.510Z",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "snapshotCapturedAt": "2026-10-04T04:00:01.000Z",
+    "sourceSeq": 30,
+    "runState": "RUNNING",
+    "simElapsedMs": 1000,
+    "observedAfterEpoch": true,
+    "dataStatus": "LIVE",
+    "freshness": {
+      "evaluatedAt": "2026-10-04T04:00:01.500Z",
+      "sourceAgeMs": 500,
+      "clockLeadMs": 0,
+      "state": "FRESH",
+      "staleAfterMs": 3000,
+      "disconnectAfterMs": 10000
+    },
+    "delivery": {
+      "runId": "run-20261004-001",
+      "sourceId": "simulator-01",
+      "sampledAt": "2026-10-04T04:00:01.500Z",
+      "sourceConnected": true,
+      "lastReceivedAt": "2026-10-04T04:00:01.020Z",
+      "lastAcceptedSeq": 30,
+      "nextSourceSeq": 31,
+      "streamState": "ACTIVE",
+      "blockedSeq": null,
+      "blockedCode": null,
+      "pendingCount": 0,
+      "pendingBytes": 0,
+      "oldestPendingReceivedAt": null,
+      "retryCount": 0,
+      "rejectedCount": 0,
+      "diagnosticState": "AVAILABLE"
+    },
+    "qualityWindow": {
+      "start": "2026-10-04T03:55:01.500Z",
+      "end": "2026-10-04T04:00:01.500Z"
+    },
+    "equipment": [
+      {
+        "cellId": "ASM-01",
+        "equipmentId": "ASM-01",
+        "state": "BLOCKED",
+        "resumeState": null,
+        "bodyId": "body-00042",
+        "operationId": "operation-00042",
+        "remainingWorkMs": 0,
+        "blockedReason": "WAITING_PICKUP",
+        "destinationCellId": "ASM-02"
+      },
+      {
+        "cellId": "ASM-02",
+        "equipmentId": "ASM-02",
+        "state": "DOWN",
+        "resumeState": "IDLE",
+        "bodyId": null,
+        "operationId": null,
+        "remainingWorkMs": 0,
+        "blockedReason": null,
+        "destinationCellId": null
+      },
+      {
+        "cellId": "QC-01",
+        "equipmentId": "QC-01",
+        "state": "IDLE",
+        "resumeState": null,
+        "bodyId": null,
+        "operationId": null,
+        "remainingWorkMs": 0,
+        "blockedReason": null,
+        "destinationCellId": null
+      }
+    ],
+    "buffers": [
+      {
+        "bufferId": "BAY-ASM-01",
+        "cellId": "ASM-01",
+        "capacity": 3,
+        "waitingCount": 0,
+        "reservedInboundCount": 0,
+        "availableSlots": 3,
+        "slots": [
+          {
+            "slotId": "BAY-ASM-01-S1",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-ASM-01-S2",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-ASM-01-S3",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          }
+        ]
+      },
+      {
+        "bufferId": "BAY-ASM-02",
+        "cellId": "ASM-02",
+        "capacity": 3,
+        "waitingCount": 2,
+        "reservedInboundCount": 1,
+        "availableSlots": 0,
+        "slots": [
+          {
+            "slotId": "BAY-ASM-02-S1",
+            "status": "OCCUPIED",
+            "bodyId": "body-00040",
+            "vehicleId": null,
+            "transportId": "transport-00040",
+            "reservationId": "reserve-00040"
+          },
+          {
+            "slotId": "BAY-ASM-02-S2",
+            "status": "OCCUPIED",
+            "bodyId": "body-00041",
+            "vehicleId": null,
+            "transportId": "transport-00041",
+            "reservationId": "reserve-00041"
+          },
+          {
+            "slotId": "BAY-ASM-02-S3",
+            "status": "RESERVED",
+            "bodyId": "body-00042",
+            "vehicleId": "AGV-001",
+            "transportId": "transport-00042",
+            "reservationId": "reserve-00042"
+          }
+        ]
+      },
+      {
+        "bufferId": "BAY-QC-01",
+        "cellId": "QC-01",
+        "capacity": 3,
+        "waitingCount": 0,
+        "reservedInboundCount": 0,
+        "availableSlots": 3,
+        "slots": [
+          {
+            "slotId": "BAY-QC-01-S1",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-QC-01-S2",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-QC-01-S3",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          }
+        ]
+      }
+    ],
+    "bodies": [
+      {
+        "bodyId": "body-00040",
+        "tagId": "tag-00040",
+        "modelCode": "DEMO-EV-A",
+        "specCode": "STANDARD",
+        "status": "WAITING",
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02",
+        "locationSlotId": "BAY-ASM-02-S1",
+        "currentCellId": null,
+        "completedCellIds": [
+          "ASM-01"
+        ],
+        "nextCellId": "ASM-02",
+        "transportId": null,
+        "reservationId": null,
+        "inspectionResult": "NOT_INSPECTED",
+        "inspectedAt": null,
+        "lastObservedAt": "2026-10-04T04:00:01.000Z"
+      },
+      {
+        "bodyId": "body-00041",
+        "tagId": "tag-00041",
+        "modelCode": "DEMO-EV-A",
+        "specCode": "STANDARD",
+        "status": "WAITING",
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02",
+        "locationSlotId": "BAY-ASM-02-S2",
+        "currentCellId": null,
+        "completedCellIds": [
+          "ASM-01"
+        ],
+        "nextCellId": "ASM-02",
+        "transportId": null,
+        "reservationId": null,
+        "inspectionResult": "NOT_INSPECTED",
+        "inspectedAt": null,
+        "lastObservedAt": "2026-10-04T04:00:01.000Z"
+      },
+      {
+        "bodyId": "body-00042",
+        "tagId": "tag-00042",
+        "modelCode": "DEMO-EV-A",
+        "specCode": "STANDARD",
+        "status": "WAITING_UNLOAD",
+        "locationType": "CELL",
+        "locationId": "ASM-01",
+        "locationSlotId": null,
+        "currentCellId": "ASM-01",
+        "completedCellIds": [
+          "ASM-01"
+        ],
+        "nextCellId": "ASM-02",
+        "transportId": "transport-00042",
+        "reservationId": "reserve-00042",
+        "inspectionResult": "NOT_INSPECTED",
+        "inspectedAt": null,
+        "lastObservedAt": "2026-10-04T04:00:01.000Z"
+      }
+    ],
+    "vehicles": [
+      {
+        "vehicleId": "AGV-001",
+        "kind": "AGV",
+        "state": "LOADING",
+        "position": {
+          "x": 150,
+          "y": 100
+        },
+        "bodyId": null,
+        "partsKitId": null,
+        "transportId": "transport-00042"
+      },
+      {
+        "vehicleId": "AGV-002",
+        "kind": "AGV",
+        "state": "IDLE",
+        "position": {
+          "x": 0,
+          "y": 100
+        },
+        "bodyId": null,
+        "partsKitId": null,
+        "transportId": null
+      },
+      {
+        "vehicleId": "AMR-001",
+        "kind": "AMR",
+        "state": "IDLE",
+        "position": {
+          "x": 0,
+          "y": 300
+        },
+        "bodyId": null,
+        "partsKitId": null,
+        "transportId": null
+      }
+    ],
+    "activeTransports": [
+      {
+        "transportId": "transport-00042",
+        "vehicleId": "AGV-001",
+        "routeId": "ROUTE-ASM-01-ASM-02",
+        "cargoType": "BODY",
+        "status": "ASSIGNED",
+        "bodyId": "body-00042",
+        "partsKitId": null,
+        "source": {
+          "locationType": "CELL",
+          "locationId": "ASM-01"
+        },
+        "destination": {
+          "locationType": "BUFFER",
+          "locationId": "BAY-ASM-02"
+        },
+        "reservationId": "reserve-00042",
+        "slotId": "BAY-ASM-02-S3",
+        "assignedAt": "2026-10-04T04:00:01.000Z",
+        "startedAt": null,
+        "completedAt": null,
+        "cancelledAt": null,
+        "cancelReason": null
+      }
+    ],
+    "metrics": {
+      "currentBodyCount": 3,
+      "runningCellCount": 0,
+      "blockedCellCount": 1,
+      "downCellCount": 1,
+      "cumulativeQuality": {
+        "inspectedCount": 0,
+        "passCount": 0,
+        "failCount": 0,
+        "failRate": null
+      },
+      "windowQuality": {
+        "inspectedCount": 0,
+        "passCount": 0,
+        "failCount": 0,
+        "failRate": null
+      },
+      "alarmSummary": {
+        "activeCount": 2,
+        "unacknowledgedActiveCount": 2
+      }
+    },
+    "alarms": [
+      {
+        "alarmId": "33333333-3333-4333-8333-333333333333",
+        "runId": "run-20261004-001",
+        "type": "EQUIPMENT_DOWN",
+        "severity": "CRITICAL",
+        "targetId": "ASM-02",
+        "occurredAt": "2026-10-04T04:00:00.000Z",
+        "conditionActive": true,
+        "resolvedAt": null,
+        "acknowledgedAt": null,
+        "acknowledgedBy": null,
+        "message": "ASM-02 설비 고장"
+      },
+      {
+        "alarmId": "44444444-4444-4444-8444-444444444444",
+        "runId": "run-20261004-001",
+        "type": "BUFFER_FULL",
+        "severity": "WARNING",
+        "targetId": "BAY-ASM-02",
+        "occurredAt": "2026-10-04T04:00:01.000Z",
+        "conditionActive": true,
+        "resolvedAt": null,
+        "acknowledgedAt": null,
+        "acknowledgedBy": null,
+        "message": "대기 2대 + 예약 1대 = 전체 3칸"
+      }
+    ],
+    "recentEvents": []
+  },
+  "bodyDetail": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "sourceId": "simulator-01",
+    "serverEpoch": "11111111-1111-4111-8111-111111111111",
+    "revision": 1,
+    "publishedAt": "2026-10-04T04:00:01.510Z",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "snapshotCapturedAt": "2026-10-04T04:00:01.000Z",
+    "sourceSeq": 30,
+    "runState": "RUNNING",
+    "simElapsedMs": 1000,
+    "observedAfterEpoch": true,
+    "dataStatus": "LIVE",
+    "freshness": {
+      "evaluatedAt": "2026-10-04T04:00:01.500Z",
+      "sourceAgeMs": 500,
+      "clockLeadMs": 0,
+      "state": "FRESH",
+      "staleAfterMs": 3000,
+      "disconnectAfterMs": 10000
+    },
+    "delivery": {
+      "runId": "run-20261004-001",
+      "sourceId": "simulator-01",
+      "sampledAt": "2026-10-04T04:00:01.500Z",
+      "sourceConnected": true,
+      "lastReceivedAt": "2026-10-04T04:00:01.020Z",
+      "lastAcceptedSeq": 30,
+      "nextSourceSeq": 31,
+      "streamState": "ACTIVE",
+      "blockedSeq": null,
+      "blockedCode": null,
+      "pendingCount": 0,
+      "pendingBytes": 0,
+      "oldestPendingReceivedAt": null,
+      "retryCount": 0,
+      "rejectedCount": 0,
+      "diagnosticState": "AVAILABLE"
+    },
+    "data": {
+      "bodyId": "body-00042",
+      "tagId": "tag-00042",
+      "modelCode": "DEMO-EV-A",
+      "specCode": "STANDARD",
+      "status": "WAITING_UNLOAD",
+      "locationType": "CELL",
+      "locationId": "ASM-01",
+      "locationSlotId": null,
+      "currentCellId": "ASM-01",
+      "completedCellIds": [
+        "ASM-01"
+      ],
+      "nextCellId": "ASM-02",
+      "transportId": "transport-00042",
+      "reservationId": "reserve-00042",
+      "inspectionResult": "NOT_INSPECTED",
+      "inspectedAt": null,
+      "lastObservedAt": "2026-10-04T04:00:01.000Z"
+    }
+  },
+  "tagDetail": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "sourceId": "simulator-01",
+    "serverEpoch": "11111111-1111-4111-8111-111111111111",
+    "revision": 1,
+    "publishedAt": "2026-10-04T04:00:01.510Z",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "snapshotCapturedAt": "2026-10-04T04:00:01.000Z",
+    "sourceSeq": 30,
+    "runState": "RUNNING",
+    "simElapsedMs": 1000,
+    "observedAfterEpoch": true,
+    "dataStatus": "LIVE",
+    "freshness": {
+      "evaluatedAt": "2026-10-04T04:00:01.500Z",
+      "sourceAgeMs": 500,
+      "clockLeadMs": 0,
+      "state": "FRESH",
+      "staleAfterMs": 3000,
+      "disconnectAfterMs": 10000
+    },
+    "delivery": {
+      "runId": "run-20261004-001",
+      "sourceId": "simulator-01",
+      "sampledAt": "2026-10-04T04:00:01.500Z",
+      "sourceConnected": true,
+      "lastReceivedAt": "2026-10-04T04:00:01.020Z",
+      "lastAcceptedSeq": 30,
+      "nextSourceSeq": 31,
+      "streamState": "ACTIVE",
+      "blockedSeq": null,
+      "blockedCode": null,
+      "pendingCount": 0,
+      "pendingBytes": 0,
+      "oldestPendingReceivedAt": null,
+      "retryCount": 0,
+      "rejectedCount": 0,
+      "diagnosticState": "AVAILABLE"
+    },
+    "data": {
+      "bodyId": "body-00042",
+      "tagId": "tag-00042",
+      "modelCode": "DEMO-EV-A",
+      "specCode": "STANDARD",
+      "status": "WAITING_UNLOAD",
+      "locationType": "CELL",
+      "locationId": "ASM-01",
+      "locationSlotId": null,
+      "currentCellId": "ASM-01",
+      "completedCellIds": [
+        "ASM-01"
+      ],
+      "nextCellId": "ASM-02",
+      "transportId": "transport-00042",
+      "reservationId": "reserve-00042",
+      "inspectionResult": "NOT_INSPECTED",
+      "inspectedAt": null,
+      "lastObservedAt": "2026-10-04T04:00:01.000Z"
+    }
+  },
+  "eventPage": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "items": [
+      {
+        "eventId": "00000000-0000-4000-8000-00000000001c",
+        "sourceSeq": 28,
+        "eventType": "SLOT_RESERVED",
+        "occurredAt": "2026-10-04T04:00:01.000Z",
+        "receivedAt": "2026-10-04T04:00:01.010Z",
+        "appliedAt": "2026-10-04T04:00:01.025Z",
+        "cellId": "ASM-02",
+        "bodyId": "body-00042",
+        "vehicleId": "AGV-001",
+        "payload": {
+          "reservationId": "reserve-00042",
+          "transportId": "transport-00042",
+          "bufferId": "BAY-ASM-02",
+          "slotId": "BAY-ASM-02-S3",
+          "bodyId": "body-00042",
+          "vehicleId": "AGV-001"
+        }
+      }
+    ],
+    "nextCursor": null
+  },
+  "emptyQuality": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "window": {
+      "start": "2026-10-04T03:55:01.500Z",
+      "end": "2026-10-04T04:00:01.500Z"
+    },
+    "quality": {
+      "inspectedCount": 0,
+      "passCount": 0,
+      "failCount": 0,
+      "failRate": null
+    },
+    "delivery": {
+      "runId": "run-20261004-001",
+      "sourceId": "simulator-01",
+      "sampledAt": "2026-10-04T04:00:01.500Z",
+      "sourceConnected": true,
+      "lastReceivedAt": "2026-10-04T04:00:01.020Z",
+      "lastAcceptedSeq": 30,
+      "nextSourceSeq": 31,
+      "streamState": "ACTIVE",
+      "blockedSeq": null,
+      "blockedCode": null,
+      "pendingCount": 0,
+      "pendingBytes": 0,
+      "oldestPendingReceivedAt": null,
+      "retryCount": 0,
+      "rejectedCount": 0,
+      "diagnosticState": "AVAILABLE"
+    }
+  },
+  "error": {
+    "schemaVersion": 1,
+    "code": "INVALID_QUERY",
+    "message": "조회 구간은 최대 24시간입니다.",
+    "requestId": "22222222-2222-4222-8222-222222222222"
+  },
+  "statusCases": [
+    {
+      "name": "recent",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "LIVE"
+    },
+    {
+      "name": "short_normal_backlog",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 1,
+        "oldestPendingAgeMs": 999,
+        "runState": "RUNNING"
+      },
+      "expected": "LIVE"
+    },
+    {
+      "name": "delivery_budget_boundary",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 1,
+        "oldestPendingAgeMs": 1000,
+        "runState": "RUNNING"
+      },
+      "expected": "CATCHING_UP"
+    },
+    {
+      "name": "freshness_boundary",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 3000,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "STALE"
+    },
+    {
+      "name": "expired_boundary",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 10000,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "DISCONNECTED"
+    },
+    {
+      "name": "tcp_closed",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": false,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "DISCONNECTED"
+    },
+    {
+      "name": "diagnostic_unavailable",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "UNAVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "UNKNOWN"
+    },
+    {
+      "name": "clock_ahead",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 5001,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "UNKNOWN"
+    },
+    {
+      "name": "restored_cache",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": false,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "RESTORING"
+    },
+    {
+      "name": "no_snapshot",
+      "input": {
+        "snapshotPresent": false,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "WAITING"
+    },
+    {
+      "name": "intentional_pause",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "PAUSED"
+      },
+      "expected": "PAUSED"
+    },
+    {
+      "name": "gap_wait",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "GAP_WAIT",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "CATCHING_UP"
+    },
+    {
+      "name": "quarantine_even_if_stale",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "BLOCKED",
+        "sourceConnected": true,
+        "sourceAgeMs": 20000,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "BLOCKED"
+    },
+    {
+      "name": "retry_exhausted",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": false,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "PAUSED_RETRY",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "BLOCKED"
+    },
+    {
+      "name": "finished_archive",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": false,
+        "finishedConfirmed": true,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": false,
+        "sourceAgeMs": 20000,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "FINISHED"
+    },
+    {
+      "name": "finished_but_blocked",
+      "input": {
+        "snapshotPresent": true,
+        "observedAfterEpoch": true,
+        "operationsBlocked": true,
+        "finishedConfirmed": true,
+        "diagnosticState": "AVAILABLE",
+        "streamState": "ACTIVE",
+        "sourceConnected": true,
+        "sourceAgeMs": 500,
+        "clockLeadMs": 0,
+        "pendingCount": 0,
+        "oldestPendingAgeMs": null,
+        "runState": "RUNNING"
+      },
+      "expected": "BLOCKED"
+    }
+  ],
+  "waitingSnapshot": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "sourceId": "simulator-01",
+    "serverEpoch": "11111111-1111-4111-8111-111111111111",
+    "revision": 1,
+    "publishedAt": "2026-10-04T04:00:01.510Z",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "snapshotCapturedAt": null,
+    "sourceSeq": null,
+    "runState": null,
+    "simElapsedMs": null,
+    "observedAfterEpoch": false,
+    "dataStatus": "WAITING",
+    "freshness": {
+      "evaluatedAt": "2026-10-04T04:00:01.500Z",
+      "sourceAgeMs": null,
+      "clockLeadMs": null,
+      "state": "NO_DATA",
+      "staleAfterMs": 3000,
+      "disconnectAfterMs": 10000
+    },
+    "delivery": {
+      "runId": "run-20261004-001",
+      "sourceId": "simulator-01",
+      "sampledAt": "2026-10-04T04:00:01.500Z",
+      "sourceConnected": true,
+      "lastReceivedAt": "2026-10-04T04:00:01.020Z",
+      "lastAcceptedSeq": 1,
+      "nextSourceSeq": 2,
+      "streamState": "ACTIVE",
+      "blockedSeq": null,
+      "blockedCode": null,
+      "pendingCount": 0,
+      "pendingBytes": 0,
+      "oldestPendingReceivedAt": null,
+      "retryCount": 0,
+      "rejectedCount": 0,
+      "diagnosticState": "AVAILABLE"
+    },
+    "qualityWindow": {
+      "start": "2026-10-04T03:55:01.500Z",
+      "end": "2026-10-04T04:00:01.500Z"
+    },
+    "equipment": [],
+    "buffers": [],
+    "bodies": [],
+    "vehicles": [],
+    "activeTransports": [],
+    "metrics": {
+      "currentBodyCount": null,
+      "runningCellCount": null,
+      "blockedCellCount": null,
+      "downCellCount": null,
+      "cumulativeQuality": {
+        "inspectedCount": 0,
+        "passCount": 0,
+        "failCount": 0,
+        "failRate": null
+      },
+      "windowQuality": {
+        "inspectedCount": 0,
+        "passCount": 0,
+        "failCount": 0,
+        "failRate": null
+      },
+      "alarmSummary": {
+        "activeCount": 0,
+        "unacknowledgedActiveCount": 0
+      }
+    },
+    "alarms": [],
+    "recentEvents": []
+  },
+  "unknownSnapshot": {
+    "schemaVersion": 1,
+    "runId": "run-20261004-001",
+    "sourceId": "simulator-01",
+    "serverEpoch": "11111111-1111-4111-8111-111111111111",
+    "revision": 1,
+    "publishedAt": "2026-10-04T04:00:01.510Z",
+    "viewAsOfAt": "2026-10-04T04:00:01.500Z",
+    "snapshotCapturedAt": "2026-10-04T04:00:01.000Z",
+    "sourceSeq": 30,
+    "runState": "RUNNING",
+    "simElapsedMs": 1000,
+    "observedAfterEpoch": true,
+    "dataStatus": "UNKNOWN",
+    "freshness": {
+      "evaluatedAt": "2026-10-04T04:00:01.500Z",
+      "sourceAgeMs": 500,
+      "clockLeadMs": 0,
+      "state": "FRESH",
+      "staleAfterMs": 3000,
+      "disconnectAfterMs": 10000
+    },
+    "delivery": {
+      "runId": "run-20261004-001",
+      "sourceId": "simulator-01",
+      "sampledAt": "2026-10-04T04:00:01.500Z",
+      "sourceConnected": true,
+      "lastReceivedAt": "2026-10-04T04:00:01.020Z",
+      "lastAcceptedSeq": 30,
+      "nextSourceSeq": 31,
+      "streamState": "ACTIVE",
+      "blockedSeq": null,
+      "blockedCode": null,
+      "pendingCount": 0,
+      "pendingBytes": 0,
+      "oldestPendingReceivedAt": null,
+      "retryCount": 0,
+      "rejectedCount": 0,
+      "diagnosticState": "UNAVAILABLE"
+    },
+    "qualityWindow": {
+      "start": "2026-10-04T03:55:01.500Z",
+      "end": "2026-10-04T04:00:01.500Z"
+    },
+    "equipment": [
+      {
+        "cellId": "ASM-01",
+        "equipmentId": "ASM-01",
+        "state": "BLOCKED",
+        "resumeState": null,
+        "bodyId": "body-00042",
+        "operationId": "operation-00042",
+        "remainingWorkMs": 0,
+        "blockedReason": "WAITING_PICKUP",
+        "destinationCellId": "ASM-02"
+      },
+      {
+        "cellId": "ASM-02",
+        "equipmentId": "ASM-02",
+        "state": "DOWN",
+        "resumeState": "IDLE",
+        "bodyId": null,
+        "operationId": null,
+        "remainingWorkMs": 0,
+        "blockedReason": null,
+        "destinationCellId": null
+      },
+      {
+        "cellId": "QC-01",
+        "equipmentId": "QC-01",
+        "state": "IDLE",
+        "resumeState": null,
+        "bodyId": null,
+        "operationId": null,
+        "remainingWorkMs": 0,
+        "blockedReason": null,
+        "destinationCellId": null
+      }
+    ],
+    "buffers": [
+      {
+        "bufferId": "BAY-ASM-01",
+        "cellId": "ASM-01",
+        "capacity": 3,
+        "waitingCount": 0,
+        "reservedInboundCount": 0,
+        "availableSlots": 3,
+        "slots": [
+          {
+            "slotId": "BAY-ASM-01-S1",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-ASM-01-S2",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-ASM-01-S3",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          }
+        ]
+      },
+      {
+        "bufferId": "BAY-ASM-02",
+        "cellId": "ASM-02",
+        "capacity": 3,
+        "waitingCount": 2,
+        "reservedInboundCount": 1,
+        "availableSlots": 0,
+        "slots": [
+          {
+            "slotId": "BAY-ASM-02-S1",
+            "status": "OCCUPIED",
+            "bodyId": "body-00040",
+            "vehicleId": null,
+            "transportId": "transport-00040",
+            "reservationId": "reserve-00040"
+          },
+          {
+            "slotId": "BAY-ASM-02-S2",
+            "status": "OCCUPIED",
+            "bodyId": "body-00041",
+            "vehicleId": null,
+            "transportId": "transport-00041",
+            "reservationId": "reserve-00041"
+          },
+          {
+            "slotId": "BAY-ASM-02-S3",
+            "status": "RESERVED",
+            "bodyId": "body-00042",
+            "vehicleId": "AGV-001",
+            "transportId": "transport-00042",
+            "reservationId": "reserve-00042"
+          }
+        ]
+      },
+      {
+        "bufferId": "BAY-QC-01",
+        "cellId": "QC-01",
+        "capacity": 3,
+        "waitingCount": 0,
+        "reservedInboundCount": 0,
+        "availableSlots": 3,
+        "slots": [
+          {
+            "slotId": "BAY-QC-01-S1",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-QC-01-S2",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          },
+          {
+            "slotId": "BAY-QC-01-S3",
+            "status": "FREE",
+            "bodyId": null,
+            "vehicleId": null,
+            "transportId": null,
+            "reservationId": null
+          }
+        ]
+      }
+    ],
+    "bodies": [
+      {
+        "bodyId": "body-00040",
+        "tagId": "tag-00040",
+        "modelCode": "DEMO-EV-A",
+        "specCode": "STANDARD",
+        "status": "WAITING",
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02",
+        "locationSlotId": "BAY-ASM-02-S1",
+        "currentCellId": null,
+        "completedCellIds": [
+          "ASM-01"
+        ],
+        "nextCellId": "ASM-02",
+        "transportId": null,
+        "reservationId": null,
+        "inspectionResult": "NOT_INSPECTED",
+        "inspectedAt": null,
+        "lastObservedAt": "2026-10-04T04:00:01.000Z"
+      },
+      {
+        "bodyId": "body-00041",
+        "tagId": "tag-00041",
+        "modelCode": "DEMO-EV-A",
+        "specCode": "STANDARD",
+        "status": "WAITING",
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02",
+        "locationSlotId": "BAY-ASM-02-S2",
+        "currentCellId": null,
+        "completedCellIds": [
+          "ASM-01"
+        ],
+        "nextCellId": "ASM-02",
+        "transportId": null,
+        "reservationId": null,
+        "inspectionResult": "NOT_INSPECTED",
+        "inspectedAt": null,
+        "lastObservedAt": "2026-10-04T04:00:01.000Z"
+      },
+      {
+        "bodyId": "body-00042",
+        "tagId": "tag-00042",
+        "modelCode": "DEMO-EV-A",
+        "specCode": "STANDARD",
+        "status": "WAITING_UNLOAD",
+        "locationType": "CELL",
+        "locationId": "ASM-01",
+        "locationSlotId": null,
+        "currentCellId": "ASM-01",
+        "completedCellIds": [
+          "ASM-01"
+        ],
+        "nextCellId": "ASM-02",
+        "transportId": "transport-00042",
+        "reservationId": "reserve-00042",
+        "inspectionResult": "NOT_INSPECTED",
+        "inspectedAt": null,
+        "lastObservedAt": "2026-10-04T04:00:01.000Z"
+      }
+    ],
+    "vehicles": [
+      {
+        "vehicleId": "AGV-001",
+        "kind": "AGV",
+        "state": "LOADING",
+        "position": {
+          "x": 150,
+          "y": 100
+        },
+        "bodyId": null,
+        "partsKitId": null,
+        "transportId": "transport-00042"
+      },
+      {
+        "vehicleId": "AGV-002",
+        "kind": "AGV",
+        "state": "IDLE",
+        "position": {
+          "x": 0,
+          "y": 100
+        },
+        "bodyId": null,
+        "partsKitId": null,
+        "transportId": null
+      },
+      {
+        "vehicleId": "AMR-001",
+        "kind": "AMR",
+        "state": "IDLE",
+        "position": {
+          "x": 0,
+          "y": 300
+        },
+        "bodyId": null,
+        "partsKitId": null,
+        "transportId": null
+      }
+    ],
+    "activeTransports": [
+      {
+        "transportId": "transport-00042",
+        "vehicleId": "AGV-001",
+        "routeId": "ROUTE-ASM-01-ASM-02",
+        "cargoType": "BODY",
+        "status": "ASSIGNED",
+        "bodyId": "body-00042",
+        "partsKitId": null,
+        "source": {
+          "locationType": "CELL",
+          "locationId": "ASM-01"
+        },
+        "destination": {
+          "locationType": "BUFFER",
+          "locationId": "BAY-ASM-02"
+        },
+        "reservationId": "reserve-00042",
+        "slotId": "BAY-ASM-02-S3",
+        "assignedAt": "2026-10-04T04:00:01.000Z",
+        "startedAt": null,
+        "completedAt": null,
+        "cancelledAt": null,
+        "cancelReason": null
+      }
+    ],
+    "metrics": {
+      "currentBodyCount": 3,
+      "runningCellCount": 0,
+      "blockedCellCount": 1,
+      "downCellCount": 1,
+      "cumulativeQuality": {
+        "inspectedCount": 0,
+        "passCount": 0,
+        "failCount": 0,
+        "failRate": null
+      },
+      "windowQuality": {
+        "inspectedCount": 0,
+        "passCount": 0,
+        "failCount": 0,
+        "failRate": null
+      },
+      "alarmSummary": {
+        "activeCount": 2,
+        "unacknowledgedActiveCount": 2
+      }
+    },
+    "alarms": [
+      {
+        "alarmId": "33333333-3333-4333-8333-333333333333",
+        "runId": "run-20261004-001",
+        "type": "EQUIPMENT_DOWN",
+        "severity": "CRITICAL",
+        "targetId": "ASM-02",
+        "occurredAt": "2026-10-04T04:00:00.000Z",
+        "conditionActive": true,
+        "resolvedAt": null,
+        "acknowledgedAt": null,
+        "acknowledgedBy": null,
+        "message": "ASM-02 설비 고장"
+      },
+      {
+        "alarmId": "44444444-4444-4444-8444-444444444444",
+        "runId": "run-20261004-001",
+        "type": "BUFFER_FULL",
+        "severity": "WARNING",
+        "targetId": "BAY-ASM-02",
+        "occurredAt": "2026-10-04T04:00:01.000Z",
+        "conditionActive": true,
+        "resolvedAt": null,
+        "acknowledgedAt": null,
+        "acknowledgedBy": null,
+        "message": "대기 2대 + 예약 1대 = 전체 3칸"
+      }
+    ],
+    "recentEvents": []
+  }
+}

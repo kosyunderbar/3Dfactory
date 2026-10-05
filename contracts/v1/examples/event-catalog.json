@@ -1,0 +1,938 @@
+[
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000002711",
+    "runId": "run-20261004-001",
+    "sourceId": "simulator-01",
+    "sourceSeq": 1,
+    "eventType": "RUN_STARTED",
+    "occurredAt": "2026-10-04T04:00:00.000Z",
+    "payload": {
+      "seed": 42,
+      "config": {
+        "tickMs": 100,
+        "snapshotIntervalMs": 500,
+        "speed": 1,
+        "maxBodies": 100,
+        "failProbability": 0.01,
+        "locations": [
+          {
+            "locationType": "INPUT",
+            "locationId": "BODY-IN",
+            "x": 0,
+            "y": 100
+          },
+          {
+            "locationType": "BUFFER",
+            "locationId": "BAY-ASM-01",
+            "x": 100,
+            "y": 100
+          },
+          {
+            "locationType": "CELL",
+            "locationId": "ASM-01",
+            "x": 150,
+            "y": 100
+          },
+          {
+            "locationType": "BUFFER",
+            "locationId": "BAY-ASM-02",
+            "x": 300,
+            "y": 100
+          },
+          {
+            "locationType": "CELL",
+            "locationId": "ASM-02",
+            "x": 350,
+            "y": 100
+          },
+          {
+            "locationType": "BUFFER",
+            "locationId": "BAY-QC-01",
+            "x": 500,
+            "y": 100
+          },
+          {
+            "locationType": "CELL",
+            "locationId": "QC-01",
+            "x": 550,
+            "y": 100
+          },
+          {
+            "locationType": "RESULT",
+            "locationId": "GOOD",
+            "x": 700,
+            "y": 70
+          },
+          {
+            "locationType": "RESULT",
+            "locationId": "HOLD",
+            "x": 700,
+            "y": 130
+          },
+          {
+            "locationType": "STORE",
+            "locationId": "PARTS-STORE",
+            "x": 0,
+            "y": 300
+          },
+          {
+            "locationType": "PARTS_DOCK",
+            "locationId": "PARTS-ASM-01",
+            "x": 150,
+            "y": 250
+          },
+          {
+            "locationType": "PARTS_DOCK",
+            "locationId": "PARTS-ASM-02",
+            "x": 350,
+            "y": 250
+          }
+        ],
+        "equipment": [
+          {
+            "cellId": "ASM-01",
+            "equipmentId": "ASM-01",
+            "bufferId": "BAY-ASM-01",
+            "workDurationMs": 4000
+          },
+          {
+            "cellId": "ASM-02",
+            "equipmentId": "ASM-02",
+            "bufferId": "BAY-ASM-02",
+            "workDurationMs": 6000
+          },
+          {
+            "cellId": "QC-01",
+            "equipmentId": "QC-01",
+            "bufferId": "BAY-QC-01",
+            "workDurationMs": 3000
+          }
+        ],
+        "buffers": [
+          {
+            "bufferId": "BAY-ASM-01",
+            "cellId": "ASM-01",
+            "capacity": 3,
+            "slotIds": [
+              "BAY-ASM-01-S1",
+              "BAY-ASM-01-S2",
+              "BAY-ASM-01-S3"
+            ]
+          },
+          {
+            "bufferId": "BAY-ASM-02",
+            "cellId": "ASM-02",
+            "capacity": 3,
+            "slotIds": [
+              "BAY-ASM-02-S1",
+              "BAY-ASM-02-S2",
+              "BAY-ASM-02-S3"
+            ]
+          },
+          {
+            "bufferId": "BAY-QC-01",
+            "cellId": "QC-01",
+            "capacity": 3,
+            "slotIds": [
+              "BAY-QC-01-S1",
+              "BAY-QC-01-S2",
+              "BAY-QC-01-S3"
+            ]
+          }
+        ],
+        "vehicles": [
+          {
+            "vehicleId": "AGV-001",
+            "kind": "AGV",
+            "home": {
+              "locationType": "INPUT",
+              "locationId": "BODY-IN"
+            },
+            "initialPosition": {
+              "x": 0,
+              "y": 100
+            }
+          },
+          {
+            "vehicleId": "AGV-002",
+            "kind": "AGV",
+            "home": {
+              "locationType": "INPUT",
+              "locationId": "BODY-IN"
+            },
+            "initialPosition": {
+              "x": 0,
+              "y": 100
+            }
+          },
+          {
+            "vehicleId": "AMR-001",
+            "kind": "AMR",
+            "home": {
+              "locationType": "STORE",
+              "locationId": "PARTS-STORE"
+            },
+            "initialPosition": {
+              "x": 0,
+              "y": 300
+            }
+          }
+        ],
+        "routes": [
+          {
+            "routeId": "ROUTE-INPUT-ASM-01",
+            "cargoType": "BODY",
+            "source": {
+              "locationType": "INPUT",
+              "locationId": "BODY-IN"
+            },
+            "destination": {
+              "locationType": "BUFFER",
+              "locationId": "BAY-ASM-01"
+            },
+            "points": [
+              {
+                "x": 0,
+                "y": 100
+              },
+              {
+                "x": 100,
+                "y": 100
+              }
+            ],
+            "travelDurationMs": 4000
+          },
+          {
+            "routeId": "ROUTE-ASM-01-ASM-02",
+            "cargoType": "BODY",
+            "source": {
+              "locationType": "CELL",
+              "locationId": "ASM-01"
+            },
+            "destination": {
+              "locationType": "BUFFER",
+              "locationId": "BAY-ASM-02"
+            },
+            "points": [
+              {
+                "x": 150,
+                "y": 100
+              },
+              {
+                "x": 300,
+                "y": 100
+              }
+            ],
+            "travelDurationMs": 4000
+          },
+          {
+            "routeId": "ROUTE-ASM-02-QC-01",
+            "cargoType": "BODY",
+            "source": {
+              "locationType": "CELL",
+              "locationId": "ASM-02"
+            },
+            "destination": {
+              "locationType": "BUFFER",
+              "locationId": "BAY-QC-01"
+            },
+            "points": [
+              {
+                "x": 350,
+                "y": 100
+              },
+              {
+                "x": 500,
+                "y": 100
+              }
+            ],
+            "travelDurationMs": 4000
+          },
+          {
+            "routeId": "ROUTE-QC-01-GOOD",
+            "cargoType": "BODY",
+            "source": {
+              "locationType": "CELL",
+              "locationId": "QC-01"
+            },
+            "destination": {
+              "locationType": "RESULT",
+              "locationId": "GOOD"
+            },
+            "points": [
+              {
+                "x": 550,
+                "y": 100
+              },
+              {
+                "x": 700,
+                "y": 70
+              }
+            ],
+            "travelDurationMs": 4000
+          },
+          {
+            "routeId": "ROUTE-QC-01-HOLD",
+            "cargoType": "BODY",
+            "source": {
+              "locationType": "CELL",
+              "locationId": "QC-01"
+            },
+            "destination": {
+              "locationType": "RESULT",
+              "locationId": "HOLD"
+            },
+            "points": [
+              {
+                "x": 550,
+                "y": 100
+              },
+              {
+                "x": 700,
+                "y": 130
+              }
+            ],
+            "travelDurationMs": 4000
+          },
+          {
+            "routeId": "ROUTE-PARTS-ASM-01",
+            "cargoType": "PARTS",
+            "source": {
+              "locationType": "STORE",
+              "locationId": "PARTS-STORE"
+            },
+            "destination": {
+              "locationType": "PARTS_DOCK",
+              "locationId": "PARTS-ASM-01"
+            },
+            "points": [
+              {
+                "x": 0,
+                "y": 300
+              },
+              {
+                "x": 150,
+                "y": 250
+              }
+            ],
+            "travelDurationMs": 4000
+          },
+          {
+            "routeId": "ROUTE-PARTS-ASM-02",
+            "cargoType": "PARTS",
+            "source": {
+              "locationType": "STORE",
+              "locationId": "PARTS-STORE"
+            },
+            "destination": {
+              "locationType": "PARTS_DOCK",
+              "locationId": "PARTS-ASM-02"
+            },
+            "points": [
+              {
+                "x": 0,
+                "y": 300
+              },
+              {
+                "x": 350,
+                "y": 250
+              }
+            ],
+            "travelDurationMs": 4000
+          }
+        ]
+      }
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000004e22",
+    "runId": "run-20261004-002",
+    "sourceId": "simulator-01",
+    "sourceSeq": 2,
+    "eventType": "RUN_STATE_CHANGED",
+    "occurredAt": "2026-10-04T04:00:06.000Z",
+    "payload": {
+      "previousState": "RUNNING",
+      "state": "PAUSED",
+      "reason": "PAUSE_REQUEST"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000000754e",
+    "runId": "run-20261004-003",
+    "sourceId": "simulator-01",
+    "sourceSeq": 30,
+    "eventType": "FACTORY_SNAPSHOT",
+    "occurredAt": "2026-10-04T04:00:01.000Z",
+    "payload": {
+      "runState": "RUNNING",
+      "capturedAt": "2026-10-04T04:00:01.000Z",
+      "simElapsedMs": 1000,
+      "equipment": [
+        {
+          "cellId": "ASM-01",
+          "equipmentId": "ASM-01",
+          "state": "BLOCKED",
+          "resumeState": null,
+          "bodyId": "body-00042",
+          "operationId": "operation-00042",
+          "remainingWorkMs": 0,
+          "blockedReason": "WAITING_PICKUP",
+          "destinationCellId": "ASM-02"
+        },
+        {
+          "cellId": "ASM-02",
+          "equipmentId": "ASM-02",
+          "state": "DOWN",
+          "resumeState": "IDLE",
+          "bodyId": null,
+          "operationId": null,
+          "remainingWorkMs": 0,
+          "blockedReason": null,
+          "destinationCellId": null
+        },
+        {
+          "cellId": "QC-01",
+          "equipmentId": "QC-01",
+          "state": "IDLE",
+          "resumeState": null,
+          "bodyId": null,
+          "operationId": null,
+          "remainingWorkMs": 0,
+          "blockedReason": null,
+          "destinationCellId": null
+        }
+      ],
+      "buffers": [
+        {
+          "bufferId": "BAY-ASM-01",
+          "cellId": "ASM-01",
+          "capacity": 3,
+          "waitingCount": 0,
+          "reservedInboundCount": 0,
+          "availableSlots": 3,
+          "slots": [
+            {
+              "slotId": "BAY-ASM-01-S1",
+              "status": "FREE",
+              "bodyId": null,
+              "vehicleId": null,
+              "transportId": null,
+              "reservationId": null
+            },
+            {
+              "slotId": "BAY-ASM-01-S2",
+              "status": "FREE",
+              "bodyId": null,
+              "vehicleId": null,
+              "transportId": null,
+              "reservationId": null
+            },
+            {
+              "slotId": "BAY-ASM-01-S3",
+              "status": "FREE",
+              "bodyId": null,
+              "vehicleId": null,
+              "transportId": null,
+              "reservationId": null
+            }
+          ]
+        },
+        {
+          "bufferId": "BAY-ASM-02",
+          "cellId": "ASM-02",
+          "capacity": 3,
+          "waitingCount": 2,
+          "reservedInboundCount": 1,
+          "availableSlots": 0,
+          "slots": [
+            {
+              "slotId": "BAY-ASM-02-S1",
+              "status": "OCCUPIED",
+              "bodyId": "body-00040",
+              "vehicleId": null,
+              "transportId": "transport-00040",
+              "reservationId": "reserve-00040"
+            },
+            {
+              "slotId": "BAY-ASM-02-S2",
+              "status": "OCCUPIED",
+              "bodyId": "body-00041",
+              "vehicleId": null,
+              "transportId": "transport-00041",
+              "reservationId": "reserve-00041"
+            },
+            {
+              "slotId": "BAY-ASM-02-S3",
+              "status": "RESERVED",
+              "bodyId": "body-00042",
+              "vehicleId": "AGV-001",
+              "transportId": "transport-00042",
+              "reservationId": "reserve-00042"
+            }
+          ]
+        },
+        {
+          "bufferId": "BAY-QC-01",
+          "cellId": "QC-01",
+          "capacity": 3,
+          "waitingCount": 0,
+          "reservedInboundCount": 0,
+          "availableSlots": 3,
+          "slots": [
+            {
+              "slotId": "BAY-QC-01-S1",
+              "status": "FREE",
+              "bodyId": null,
+              "vehicleId": null,
+              "transportId": null,
+              "reservationId": null
+            },
+            {
+              "slotId": "BAY-QC-01-S2",
+              "status": "FREE",
+              "bodyId": null,
+              "vehicleId": null,
+              "transportId": null,
+              "reservationId": null
+            },
+            {
+              "slotId": "BAY-QC-01-S3",
+              "status": "FREE",
+              "bodyId": null,
+              "vehicleId": null,
+              "transportId": null,
+              "reservationId": null
+            }
+          ]
+        }
+      ],
+      "bodies": [
+        {
+          "bodyId": "body-00040",
+          "tagId": "tag-00040",
+          "modelCode": "DEMO-EV-A",
+          "specCode": "STANDARD",
+          "status": "WAITING",
+          "locationType": "BUFFER",
+          "locationId": "BAY-ASM-02",
+          "locationSlotId": "BAY-ASM-02-S1",
+          "currentCellId": null,
+          "completedCellIds": [
+            "ASM-01"
+          ],
+          "nextCellId": "ASM-02",
+          "transportId": null,
+          "reservationId": null,
+          "inspectionResult": "NOT_INSPECTED",
+          "inspectedAt": null,
+          "lastObservedAt": "2026-10-04T04:00:01.000Z"
+        },
+        {
+          "bodyId": "body-00041",
+          "tagId": "tag-00041",
+          "modelCode": "DEMO-EV-A",
+          "specCode": "STANDARD",
+          "status": "WAITING",
+          "locationType": "BUFFER",
+          "locationId": "BAY-ASM-02",
+          "locationSlotId": "BAY-ASM-02-S2",
+          "currentCellId": null,
+          "completedCellIds": [
+            "ASM-01"
+          ],
+          "nextCellId": "ASM-02",
+          "transportId": null,
+          "reservationId": null,
+          "inspectionResult": "NOT_INSPECTED",
+          "inspectedAt": null,
+          "lastObservedAt": "2026-10-04T04:00:01.000Z"
+        },
+        {
+          "bodyId": "body-00042",
+          "tagId": "tag-00042",
+          "modelCode": "DEMO-EV-A",
+          "specCode": "STANDARD",
+          "status": "WAITING_UNLOAD",
+          "locationType": "CELL",
+          "locationId": "ASM-01",
+          "locationSlotId": null,
+          "currentCellId": "ASM-01",
+          "completedCellIds": [
+            "ASM-01"
+          ],
+          "nextCellId": "ASM-02",
+          "transportId": "transport-00042",
+          "reservationId": "reserve-00042",
+          "inspectionResult": "NOT_INSPECTED",
+          "inspectedAt": null,
+          "lastObservedAt": "2026-10-04T04:00:01.000Z"
+        }
+      ],
+      "vehicles": [
+        {
+          "vehicleId": "AGV-001",
+          "kind": "AGV",
+          "state": "LOADING",
+          "position": {
+            "x": 150,
+            "y": 100
+          },
+          "bodyId": null,
+          "partsKitId": null,
+          "transportId": "transport-00042"
+        },
+        {
+          "vehicleId": "AGV-002",
+          "kind": "AGV",
+          "state": "IDLE",
+          "position": {
+            "x": 0,
+            "y": 100
+          },
+          "bodyId": null,
+          "partsKitId": null,
+          "transportId": null
+        },
+        {
+          "vehicleId": "AMR-001",
+          "kind": "AMR",
+          "state": "IDLE",
+          "position": {
+            "x": 0,
+            "y": 300
+          },
+          "bodyId": null,
+          "partsKitId": null,
+          "transportId": null
+        }
+      ],
+      "activeTransports": [
+        {
+          "transportId": "transport-00042",
+          "vehicleId": "AGV-001",
+          "routeId": "ROUTE-ASM-01-ASM-02",
+          "cargoType": "BODY",
+          "status": "ASSIGNED",
+          "bodyId": "body-00042",
+          "partsKitId": null,
+          "source": {
+            "locationType": "CELL",
+            "locationId": "ASM-01"
+          },
+          "destination": {
+            "locationType": "BUFFER",
+            "locationId": "BAY-ASM-02"
+          },
+          "reservationId": "reserve-00042",
+          "slotId": "BAY-ASM-02-S3",
+          "assignedAt": "2026-10-04T04:00:01.000Z",
+          "startedAt": null,
+          "completedAt": null,
+          "cancelledAt": null,
+          "cancelReason": null
+        }
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000009c43",
+    "runId": "run-20261004-004",
+    "sourceId": "simulator-01",
+    "sourceSeq": 3,
+    "eventType": "BODY_REGISTERED",
+    "occurredAt": "2026-10-04T04:00:00.000Z",
+    "payload": {
+      "bodyId": "body-00042",
+      "tagId": "tag-00042",
+      "modelCode": "DEMO-EV-A",
+      "specCode": "STANDARD",
+      "createdAt": "2026-10-04T04:00:00.000Z",
+      "initialLocation": {
+        "locationType": "INPUT",
+        "locationId": "BODY-IN"
+      }
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000000c36c",
+    "runId": "run-20261004-005",
+    "sourceId": "simulator-01",
+    "sourceSeq": 28,
+    "eventType": "SLOT_RESERVED",
+    "occurredAt": "2026-10-04T04:00:01.000Z",
+    "payload": {
+      "reservationId": "reserve-00042",
+      "transportId": "transport-00042",
+      "bufferId": "BAY-ASM-02",
+      "slotId": "BAY-ASM-02-S3",
+      "bodyId": "body-00042",
+      "vehicleId": "AGV-001"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000000ea83",
+    "runId": "run-20261004-006",
+    "sourceId": "simulator-01",
+    "sourceSeq": 35,
+    "eventType": "SLOT_RELEASED",
+    "occurredAt": "2026-10-04T04:00:06.500Z",
+    "payload": {
+      "bufferId": "BAY-ASM-02",
+      "slotId": "BAY-ASM-02-S1",
+      "bodyId": "body-00040",
+      "reservationId": "reserve-00040",
+      "transportId": "transport-00040",
+      "reason": "BODY_ENTERED_CELL"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000011194",
+    "runId": "run-20261004-007",
+    "sourceId": "simulator-01",
+    "sourceSeq": 36,
+    "eventType": "BODY_ENTERED_CELL",
+    "occurredAt": "2026-10-04T04:00:06.500Z",
+    "payload": {
+      "bodyId": "body-00040",
+      "cellId": "ASM-02",
+      "bufferId": "BAY-ASM-02",
+      "slotId": "BAY-ASM-02-S1",
+      "operationId": "operation-00044"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000013884",
+    "runId": "run-20261004-008",
+    "sourceId": "simulator-01",
+    "sourceSeq": 4,
+    "eventType": "TELEMETRY_UPDATED",
+    "occurredAt": "2026-10-04T04:00:00.000Z",
+    "payload": {
+      "entityType": "VEHICLE",
+      "entityId": "AMR-001",
+      "measurements": {},
+      "position": {
+        "x": 0,
+        "y": 300
+      }
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000015f95",
+    "runId": "run-20261004-009",
+    "sourceId": "simulator-01",
+    "sourceSeq": 5,
+    "eventType": "EQUIPMENT_STATE_CHANGED",
+    "occurredAt": "2026-10-04T04:00:00.000Z",
+    "payload": {
+      "cellId": "ASM-02",
+      "equipmentId": "ASM-02",
+      "previousState": "IDLE",
+      "state": "DOWN",
+      "bodyId": null,
+      "reason": "FAILURE_INJECTED"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-0000000186a6",
+    "runId": "run-20261004-010",
+    "sourceId": "simulator-01",
+    "sourceSeq": 6,
+    "eventType": "OPERATION_COMPLETED",
+    "occurredAt": "2026-10-04T04:00:04.000Z",
+    "payload": {
+      "operationId": "operation-00042",
+      "cellId": "ASM-01",
+      "equipmentId": "ASM-01",
+      "unitId": "body-00042",
+      "durationMs": 4000
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000001adb7",
+    "runId": "run-20261004-011",
+    "sourceId": "simulator-01",
+    "sourceSeq": 7,
+    "eventType": "INSPECTION_COMPLETED",
+    "occurredAt": "2026-10-04T04:00:10.000Z",
+    "payload": {
+      "inspectionId": "inspection-00042",
+      "equipmentId": "QC-01",
+      "unitId": "body-00042",
+      "result": "FAIL",
+      "defectCode": "SIM_DEFECT_01"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000001d4dd",
+    "runId": "run-20261004-012",
+    "sourceId": "simulator-01",
+    "sourceSeq": 29,
+    "eventType": "TRANSPORT_ASSIGNED",
+    "occurredAt": "2026-10-04T04:00:01.000Z",
+    "payload": {
+      "transportId": "transport-00042",
+      "vehicleId": "AGV-001",
+      "routeId": "ROUTE-ASM-01-ASM-02",
+      "cargoType": "BODY",
+      "status": "ASSIGNED",
+      "bodyId": "body-00042",
+      "partsKitId": null,
+      "source": {
+        "locationType": "CELL",
+        "locationId": "ASM-01"
+      },
+      "destination": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02"
+      },
+      "reservationId": "reserve-00042",
+      "slotId": "BAY-ASM-02-S3",
+      "assignedAt": "2026-10-04T04:00:01.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "cancelledAt": null,
+      "cancelReason": null
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000001fbd8",
+    "runId": "run-20261004-013",
+    "sourceId": "simulator-01",
+    "sourceSeq": 8,
+    "eventType": "TRANSPORT_STARTED",
+    "occurredAt": "2026-10-04T04:00:02.000Z",
+    "payload": {
+      "transportId": "transport-00080",
+      "vehicleId": "AMR-001",
+      "routeId": "ROUTE-PARTS-ASM-01",
+      "cargoType": "PARTS",
+      "status": "IN_TRANSIT",
+      "bodyId": null,
+      "partsKitId": "kit-00001",
+      "source": {
+        "locationType": "STORE",
+        "locationId": "PARTS-STORE"
+      },
+      "destination": {
+        "locationType": "PARTS_DOCK",
+        "locationId": "PARTS-ASM-01"
+      },
+      "reservationId": null,
+      "slotId": null,
+      "assignedAt": "2026-10-04T04:00:01.000Z",
+      "startedAt": "2026-10-04T04:00:02.000Z",
+      "completedAt": null,
+      "cancelledAt": null,
+      "cancelReason": null
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-0000000222e9",
+    "runId": "run-20261004-014",
+    "sourceId": "simulator-01",
+    "sourceSeq": 9,
+    "eventType": "TRANSPORT_COMPLETED",
+    "occurredAt": "2026-10-04T04:00:06.000Z",
+    "payload": {
+      "transportId": "transport-00090",
+      "vehicleId": "AGV-001",
+      "routeId": "ROUTE-QC-01-HOLD",
+      "cargoType": "BODY",
+      "status": "COMPLETED",
+      "bodyId": "body-00042",
+      "partsKitId": null,
+      "source": {
+        "locationType": "CELL",
+        "locationId": "QC-01"
+      },
+      "destination": {
+        "locationType": "RESULT",
+        "locationId": "HOLD"
+      },
+      "reservationId": null,
+      "slotId": null,
+      "assignedAt": "2026-10-04T04:00:01.000Z",
+      "startedAt": "2026-10-04T04:00:02.000Z",
+      "completedAt": "2026-10-04T04:00:06.000Z",
+      "cancelledAt": null,
+      "cancelReason": null
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-0000000249fa",
+    "runId": "run-20261004-015",
+    "sourceId": "simulator-01",
+    "sourceSeq": 10,
+    "eventType": "TRANSPORT_CANCELLED",
+    "occurredAt": "2026-10-04T04:00:01.500Z",
+    "payload": {
+      "transportId": "transport-00042",
+      "vehicleId": "AGV-001",
+      "routeId": "ROUTE-ASM-01-ASM-02",
+      "cargoType": "BODY",
+      "status": "CANCELLED",
+      "bodyId": "body-00042",
+      "partsKitId": null,
+      "source": {
+        "locationType": "CELL",
+        "locationId": "ASM-01"
+      },
+      "destination": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02"
+      },
+      "reservationId": "reserve-00042",
+      "slotId": "BAY-ASM-02-S3",
+      "assignedAt": "2026-10-04T04:00:01.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "cancelledAt": "2026-10-04T04:00:01.500Z",
+      "cancelReason": "SCENARIO_CANCEL"
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-00000002710b",
+    "runId": "run-20261004-016",
+    "sourceId": "simulator-01",
+    "sourceSeq": 11,
+    "eventType": "SCENARIO_CHANGED",
+    "occurredAt": "2026-10-04T04:00:00.000Z",
+    "payload": {
+      "scenarioId": "scenario-stop-asm-02",
+      "action": "CELL_DOWN",
+      "targetId": "ASM-02",
+      "parameters": {}
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "eventId": "00000000-0000-4000-8000-000000029874",
+    "runId": "run-20261004-017",
+    "sourceId": "simulator-01",
+    "sourceSeq": 100,
+    "eventType": "RUN_FINISHED",
+    "occurredAt": "2026-10-04T04:00:20.000Z",
+    "payload": {
+      "reason": "DRAINED",
+      "uniqueEventCount": 100
+    }
+  }
+]

@@ -1,0 +1,8 @@
+**
+!services/
+!services/ingestion-service/**
+!services/operations-service/**
+!infrastructure/
+!infrastructure/healthcheck/**
+**/target
+**/.env*
