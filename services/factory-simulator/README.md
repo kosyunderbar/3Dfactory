@@ -13,7 +13,7 @@ INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --
 INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run
 ```
 
-`setup`은 `.build-cache/simulator-venv/`에 격리 환경을 만들며 pip 다운로드도 필요 없다. `test`는 접속 설정 1개·등록/위치 3개·셀 작업/검사 3개·배차 3개·운송 3개·시나리오/단계 검증 4개로 송신 3개를 추가해 총 20개의 최소 unittest다. 일반 실행은 Ctrl+C로 종료한다. 환경 변수 예시는 [.env.example](.env.example)에 있다. 명령의 host/port는 수집 TCP 연결 대상이다. 실제 송신은 해당 주소에 일반 수집 서비스가 기동해야 한다.
+`setup`은 `.build-cache/simulator-venv/`에 격리 환경을 만들며 pip 다운로드도 필요 없다. `test`는 현재 24개의 unittest로 설정·등록·단일 위치·작업·검사·배차·운송·시나리오·송신을 확인한다. 정상 생산 1대/3대와 귀환 중 현재 위치에서 재배차하는 사례를 포함한다. 일반 실행은 Ctrl+C로 종료한다. 환경 변수 예시는 [.env.example](../../.env.example)에 있다. 명령의 host/port는 수집 TCP 연결 대상이다. 실제 송신은 해당 주소에 일반 수집 서비스가 기동해야 한다.
 
 Docker Compose에서는 환경 변수를 자동으로 전달한다. 컨테이너의 heartbeat 검사는 Python 프로세스의 기본 루프가 살아 있는지만 확인한다. 업무 정합성·네트워크 수집 상태와 별개다. 가상환경 없이 직접 실행하려면 이 디렉토리에서 `python3 -m factory_simulator`를 사용한다.
 
@@ -58,7 +58,7 @@ Python의 `start_work(cell_id)`, `tick()` / `advance(delta_ms)`, `pause()` / `re
 scripts/simulator.sh run --demo-dispatch
 ```
 
-`assign_transport(body_id)`는 INPUT의 신규 차체 또는 작업을 마친 BLOCKED 셀의 차체만 받는다. 다음 공정의 Bay와 설정 경로를 선택하고, 빈 슬롯과 IDLE 차체 AGV를 모두 확보한 뒤 ASSIGNED 운송을 만든다. 슬롯/운송/차체/AGV 참조와 번호를 한 소유 스레드에서 함께 갱신한다. AMR은 차체 배차 대상이 아니다. 마지막 QC는 PASS→GOOD, FAIL→HOLD이며 예약/slotId는 null이다.
+`assign_transport(body_id)`는 INPUT의 신규 차체 또는 작업을 마친 BLOCKED 셀의 차체만 받는다. 다음 공정의 Bay와 설정 경로를 선택하고, 빈 슬롯과 빈 차체 AGV(IDLE 또는 RETURNING)를 모두 확보한 뒤 ASSIGNED 운송을 만든다. 슬롯/운송/차체/AGV 참조와 번호를 한 소유 스레드에서 함께 갱신한다. AMR은 차체 배차 대상이 아니다. 마지막 QC는 PASS→GOOD, FAIL→HOLD이며 예약/slotId는 null이다.
 
 `buffer(buffer_id)`는 슬롯별 OCCUPIED/RESERVED/FREE를 실제 차체 위치와 활성 운송에서 계산한다. W+R≥C이면 BUFFER_FULL을 반환한다. 슬롯이 있어도 AGV가 없으면 NO_VEHICLE이고 예약을 만들지 않는다. 성공 또는 동일 차체의 반복 요청은 approved=true / WAITING_PICKUP과 동일 transportId를 반환한다. 잘못된 출발 상태/공정·일시정지 요청은 ModelError로 거절한다.
 
@@ -76,7 +76,7 @@ inspect 출력에 buffers/vehicles/activeTransports와 차체의 활성 운송/�
 scripts/simulator.sh run --demo-transport
 ```
 
-`start_transport(transport_id)`는 승인된 AGV의 픽업 이동을 시작한다. tick에서 TO_PICKUP→LOADING→MOVING→UNLOADING→RETURNING→IDLE을 진행한다. LOADING 완료 때만 차체를 출발지에서 AGV로 옮기고 transport를 IN_TRANSIT으로 바꾼다. UNLOADING 완료 때 Bay의 예약을 실제 점유로 바꾸거나 GOOD/HOLD에 인계하고 transport를 COMPLETED로 기록한다. 차량은 비워져 귀환하며 IDLE 이후에만 다시 배차한다. 슬롯 점유에는 완료 운송/예약의 이력 ID를 보존한다.
+`start_transport(transport_id)`는 승인된 AGV의 픽업 이동을 시작한다. tick에서 TO_PICKUP→LOADING→MOVING→UNLOADING→RETURNING→IDLE을 진행한다. LOADING 완료 때만 차체를 출발지에서 AGV로 옮기고 transport를 IN_TRANSIT으로 바꾼다. UNLOADING 완료 때 Bay의 예약을 실제 점유로 바꾸거나 GOOD/HOLD에 인계하고 transport를 COMPLETED로 기록한다. 차량은 비워진 뒤 새 배차가 있으면 현재 위치에서 다음 픽업으로 이동한다. 배차할 작업이 없을 때는 RETURNING으로 시작점에 복귀한다. 귀환 중인 빈 AGV도 배차 대상이며, 픽업 지점과의 직선 거리가 가장 가까운 차량을 선택하고 동률이면 vehicleId 순서를 사용한다. 슬롯 점유에는 완료 운송/예약의 이력 ID를 보존한다.
 
 `enter_cell(body_id)`는 다음 셀의 Bay에 대기하는 차체를 빈 IDLE 셀로 인계하면서 작업 시작과 슬롯 반환을 함께 처리한다. CellEntry 로컬 기록에는 슬롯/선행 운송/새 작업 ID와 반환 직후 availableSlotsAfterRelease를 남긴다. 곧바로 재배차하므로 최종 조회의 A는 다시 0일 수 있다. Bay 도착과 셀 진입은 별도 동작이다.
 
@@ -156,6 +156,10 @@ SIGINT/SIGTERM은 중단을 요청하고 미확인 원본을 기록한다. 시�
 
 ## S07 정상 등록 P0 관측 시나리오
 
+현재 5대 시나리오는 **버퍼 용량을 초과하는 배차를 예방하는 동작**과 **의도적인 설비 장애·복구**를 한 실행에서 보여 준다. BUFFER_FULL은 정상적인 자원 대기이며 실행 오류가 아니다. ASM-02 진입을 잠시 보류해 대기 2대와 예약 1대로 용량 3을 채우고 신규 배차를 차단한다. 예약된 차체의 도착은 R→W 전환이며 슬롯 반환이 아니다. Bay 차체가 셀로 들어가야 슬롯을 반환하고 대기 운송을 재평가한다. 이후 ASM-01의 DOWN/복구는 별도로 주입한 장애다. 각 장면의 PAUSED는 관찰을 위한 실행 일시정지다.
+
+AGV의 즉시 재배차로 장면이 건너뛰지 않도록, 첫 두 차체의 도착을 기다린 뒤 세 번째 차체의 ASM-01 진입을 허용한다. 이 대기는 시연 드라이버의 투입 제어이며 일반 모델의 슬롯·배차 규칙을 변경하지 않는다.
+
 ```sh
 INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --connected-p0-demo
 ```
@@ -171,6 +175,8 @@ SourceSession은 의도적인 PAUSED에서 publish_snapshot만 허용한다. 물
 최소 신규2개와 송신 압력 회귀1개만 확인했다. 실제 구성은 작업200ms/경로1000ms로 줄여 흐름을 검증했으며 처리량/성능 성과가 아니다. [작업29](<../../docs/work-notes/작업 29. S07-01 실제 공장 SVG 지도와 차량·슬롯.md>) · [공유 검증](<../../docs/validation/최소 검증 시나리오와 도구.md>) · [Vue 안내](../factory-console/README.md).
 
 ## S09 완료와 재실행
+
+현재 정상 생산은 `--connected-demo`(1대)와 `--connected-three-demo`(3대)를 지원한다. 두 모드 모두 정상 등록과 실제 운송·공정·검사를 사용하고 PASS/GOOD으로 완료한다. 3대 실행도 기본 경로·용량 규칙을 사용한다. Windows 명령과 웹 시작 버튼은 [Windows 실행 안내](<../../docs/development/Windows Docker 없이 실행.md>)를 따른다.
 
 [실제 측정/P0 완료표](<../../docs/development/S09 측정·완료 기록.md>) · [처음 실행/기존 데이터/복구/시연](<../../docs/development/초기 실행·재실행·복구·시연.md>) · [새 실제 시연 캡처/단계 재생](<../../docs/development/s09-demo/index.html>).
 

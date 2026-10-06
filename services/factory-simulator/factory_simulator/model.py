@@ -430,7 +430,7 @@ class FactoryModel:
 
     def _available_agvs(self) -> tuple[Vehicle, ...]:
         return tuple(vehicle for vehicle in self.vehicles
-                     if vehicle.kind == 'AGV' and vehicle.state == VehicleState.IDLE
+                     if vehicle.kind == 'AGV' and vehicle.state in (VehicleState.IDLE, VehicleState.RETURNING)
                      and vehicle.transport_id is None
                      and not self.bodies_at(LocationType.VEHICLE, vehicle.vehicle_id))
 
@@ -487,7 +487,9 @@ class FactoryModel:
         if not vehicles:
             self._refresh_blocked_cells()
             return DispatchDecision(False, 'NO_VEHICLE')
-        vehicle = vehicles[0]
+        pickup_x, pickup_y = self._point(body.location)
+        vehicle = min(vehicles, key=lambda item: (
+            (item.x - pickup_x) ** 2 + (item.y - pickup_y) ** 2, item.vehicle_id))
         route = next((item for item in self.configuration.factory['routes']
                       if item['cargoType'] == 'BODY'
                       and item['source']['locationType'] == body.location.location_type
@@ -506,6 +508,9 @@ class FactoryModel:
         self._transports[transport.transport_id] = transport
         self._bodies[body_id] = allocated_body
         self._vehicles[vehicle.vehicle_id] = allocated_vehicle
+        # Interrupt an empty return only after the new allocation is valid.
+        # start_transport then builds the pickup motion from the actual position.
+        self._motions.pop(vehicle.vehicle_id, None)
         self._next_transport_number += 1
         self._dispatch_holds.discard(body_id)
         if reservation_id is not None:

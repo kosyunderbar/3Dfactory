@@ -1,0 +1,32 @@
+﻿{
+    "node":  {
+                 "url":  "https://nodejs.org/dist/v24.21.0/node-v24.21.0-win-x64.zip",
+                 "directory":  "node-v24.21.0-win-x64",
+                 "executable":  "node.exe",
+                 "sha256":  "158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541"
+             },
+    "jdk":  {
+                "url":  "https://cdn.azul.com/zulu/bin/zulu21.52.203-ca-jdk21.0.12.1-win_x64.zip",
+                "directory":  "zulu21.52.203-ca-jdk21.0.12.1-win_x64",
+                "executable":  "bin/java.exe",
+                "sha256":  "ebfe6ccb94a1a7c8743ed270c6a96dbb22f5abc48b2cc4785dbf067e02dbed22"
+            },
+    "python":  {
+                   "url":  "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
+                   "directory":  "python",
+                   "executable":  "python.exe",
+                   "sha256":  "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3"
+               },
+    "postgres":  {
+                     "url":  "https://sbp.enterprisedb.com/getfile.jsp?fileid=1260616",
+                     "directory":  "pgsql",
+                     "executable":  "bin/pg_ctl.exe",
+                     "sha256":  "80379b2c04d51c30225532e0ae04509899141e9957ed096fe749d7fd9df8f82f"
+                 },
+    "maven":  {
+                  "url":  "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/apache-maven-3.10.0-bin.zip",
+                  "directory":  "apache-maven-3.10.0",
+                  "executable":  "bin/mvn.cmd",
+                  "sha256":  "1f6d9909266510f039f59aa0e13dcd2c66da85f043e56276e41f2918f8bddaff"
+              }
+}

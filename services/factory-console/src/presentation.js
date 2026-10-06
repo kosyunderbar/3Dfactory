@@ -5,6 +5,13 @@ export const reasonLabels={BUFFER_FULL:'목적지 슬롯 만석',NO_VEHICLE:'빈
 export const slotLabels={FREE:'여유',RESERVED:'예약',OCCUPIED:'대기'}
 export const alarmLabels={BUFFER_FULL:'Bay 만석',EQUIPMENT_DOWN:'설비 정지',SOURCE_STALE:'보고 지연',SOURCE_DISCONNECTED:'소스 연결 끊김',PROCESSING_BLOCKED:'업무 반영 중단',QUALITY_WARNING:'품질 주의'}
 export function date(value){return value ? new Date(value).toLocaleString('ko-KR',{hour12:false}) : '—'}
+export function runLabel(item){
+ const started=new Date(item?.startedAt)
+ if(!item?.startedAt || !Number.isFinite(started.getTime()))return '시작 시각 미확인'
+ const parts=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(started)
+ const values=Object.fromEntries(parts.map(part=>[part.type,part.value]))
+ return `${values.year}.${values.month}.${values.day} ${values.hour}:${values.minute}:${values.second} 시작 · ${item.finishedAt ? '완료' : '종료 미확인'}`
+}
 export function percent(value){return value===null || value===undefined ? '—' : `${(value*100).toFixed(1)}%`}
 export function filteredBodies(view,query='',status=''){
  const needle=query.trim().toLowerCase()

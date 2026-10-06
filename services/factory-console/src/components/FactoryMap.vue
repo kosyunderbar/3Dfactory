@@ -2,9 +2,9 @@
 import {computed} from 'vue'
 import {mapEntities,cellLabels,vehicleLabels,slotLabels} from '../presentation.js'
 import {layoutMap} from '../map-layout.js'
-const props=defineProps({config:Object,view:Object,stale:Boolean,selection:Object})
+const props=defineProps({config:Object,view:Object,stale:Boolean,selection:Object,showParts:Boolean})
 const emit=defineEmits(['select'])
-const layout=computed(()=>layoutMap(props.config,mapEntities(props.config,props.view)))
+const layout=computed(()=>layoutMap(props.config,mapEntities(props.config,props.view),{showParts:props.showParts}))
 const shortBody=id=>id?.replace('body-','B-') || '차체 없음'
 const shortLabel=value=>value.length>18 ? `${value.slice(0,17)}…` : value
 function choose(kind,item){emit('select',{kind,id:item[`${kind}Id`] || item.equipmentId,cellId:item.cellId})}
@@ -13,7 +13,7 @@ function selected(kind,id){return props.selection?.kind===kind && props.selectio
 <template>
  <div class="map-wrap" tabindex="0" aria-label="공장 지도. 작은 화면에서는 좌우로 스크롤할 수 있습니다.">
   <svg v-if="layout" class="factory-map" :viewBox="`0 0 ${layout.width} ${layout.height}`" role="group" aria-labelledby="map-title map-description" data-testid="factory-map">
-   <title id="map-title">독립 셀·Bay·AGV·AMR 공장 지도</title>
+   <title id="map-title">독립 셀·Bay·AGV{{showParts ? '·AMR' : ''}} 공장 지도</title>
    <desc id="map-description">클릭 또는 Enter로 상세를 엽니다. 차량 카드는 겹침을 피해 배치하고 연결선 끝의 점이 실제 보고 위치를 나타냅니다. 차체가 많은 구역은 최대 네 대와 전체 대수를 표시합니다.</desc>
    <g class="routes" aria-hidden="true">
     <polyline v-for="route in layout.routes" :key="route.routeId" :points="route.points.map(p=>`${p.x},${p.y}`).join(' ')" :class="{parts:route.cargoType==='PARTS'}" />
@@ -66,6 +66,6 @@ function selected(kind,id){return props.selection?.kind===kind && props.selectio
   </svg>
   <p v-else class="empty">지도 설정과 첫 공장 관측을 기다립니다.</p>
  </div>
- <p class="map-legend small">실선: 차체 경로 · 점선: 부품 경로 · W 대기 / R 예약 / A 여유 / C 전체 · {{stale ? '마지막 확인 위치' : '관측 시각의 위치'}}</p>
+ <p class="map-legend small">실선: 차체 경로 · <template v-if="showParts">점선: 부품 경로 · </template>W 대기 / R 예약 / A 여유 / C 전체 · {{stale ? '마지막 확인 위치' : '관측 시각의 위치'}}</p>
  <p class="map-legend small">차량 카드의 연결선 끝 점이 보고 위치입니다. 같은 위치의 차량도 각각 선택할 수 있습니다. 구역 차체는 최대 4대 표시하며 전체 목록은 아래 스마트태그에서 조회합니다.</p>
 </template>

@@ -29,6 +29,13 @@ class P0Driver:
         change(model.tick)
         for cell in ('QC-01','ASM-02','ASM-01'):
             if cell=='ASM-02' and not self.entry_allowed:continue
+            # Keep the third inbound allocation observable even when AGVs
+            # can immediately reuse their dropoff position.
+            if cell=='ASM-01' and self.stage==0:
+                bay=model.buffer('BAY-ASM-02')
+                if (bay['waitingCount'] < bay['capacity']-1
+                        and bay['waitingCount']+bay['reservedInboundCount'] >= bay['capacity']-1):
+                    continue
             waiting=model.bodies_at(LocationType.BUFFER,'BAY-'+cell)
             if waiting and model.cell(cell).state==CellState.IDLE:change(model.enter_cell,waiting[0].body_id)
         bay=model.buffer('BAY-ASM-02')

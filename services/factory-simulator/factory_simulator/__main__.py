@@ -28,6 +28,7 @@ def main() -> int:
     mode.add_argument("--send-events", type=Path, help="Send original NDJSON file bytes to ingestion; one ACK-confirmed event at a time")
     mode.add_argument("--connected-p0-demo", action="store_true", help="Explicit registered-body P0 buffer stages, parts AMR, fault/recovery and quality")
     mode.add_argument("--connected-demo", action="store_true", help="Explicit wall-paced one-body model -> TCP -> outbox -> operations; no automatic startup production")
+    mode.add_argument("--connected-three-demo", action="store_true", help="Three normally registered bodies, all PASS, using real TCP delivery")
     mode.add_argument("--check-config", action="store_true")
     mode.add_argument("--healthcheck", action="store_true")
     mode.add_argument("--inspect-model", action="store_true", help="Print a local model description without network settings")
@@ -62,20 +63,23 @@ def main() -> int:
         configuration = RunConfiguration.from_path(args.config)
         if not 0 <= args.initial_bodies <= configuration.factory['maxBodies']:
             raise ValueError("--initial-bodies must be 0..maxBodies")
-        if (args.connected_demo or args.connected_p0_demo or args.demo_work or args.demo_dispatch or args.demo_transport or args.demo_scenarios) and args.initial_bodies != 0:
+        if (args.connected_demo or args.connected_three_demo or args.connected_p0_demo or args.demo_work or args.demo_dispatch or args.demo_transport or args.demo_scenarios) and args.initial_bodies != 0:
             raise ValueError("Demo modes cannot be combined with --initial-bodies")
         if not (args.inspect_model or args.demo_work or args.demo_dispatch or args.demo_transport or args.demo_scenarios):
             Settings.from_environment(os.environ)
     except (ValueError, OSError) as error:
         print(str(error), file=sys.stderr)
         return 2
-    if args.connected_demo or args.connected_p0_demo:
+    if args.connected_demo or args.connected_three_demo or args.connected_p0_demo:
         stopped = threading.Event()
         for signum in (signal.SIGTERM, signal.SIGINT):
             signal.signal(signum, lambda _signal, _frame: stopped.set())
         try:
-            runner = run_p0 if args.connected_p0_demo else run_connected
-            return runner(configuration, Settings.from_environment(os.environ), stopped=stopped)
+            if args.connected_p0_demo:
+                return run_p0(configuration, Settings.from_environment(os.environ), stopped=stopped)
+            return run_connected(configuration, Settings.from_environment(os.environ), stopped=stopped,
+                                 body_count=3 if args.connected_three_demo else 1,
+                                 max_seconds=600 if args.connected_three_demo else 300)
         except (ValueError, OSError, SenderPaused) as error:
             print(str(error), file=sys.stderr)
             return 2

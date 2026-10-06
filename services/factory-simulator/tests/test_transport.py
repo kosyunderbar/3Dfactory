@@ -63,7 +63,32 @@ class TransportTests(unittest.TestCase):
         buffer = model.buffer('BAY-ASM-02')
         self.assertEqual((buffer['waitingCount'], buffer['reservedInboundCount'], buffer['availableSlots']), (2, 1, 0))
         self.assertEqual(len(model.transports), 2)
-        self.assertEqual(model.vehicles[1].state, VehicleState.TO_PICKUP)
+        self.assertEqual(model.vehicles[0].state, VehicleState.TO_PICKUP)
+        self.assertEqual(model.vehicles[1].state, VehicleState.IDLE)
+        self.assertEqual(model._motions['AGV-001'].points[0], model._point(arrived.location))
+
+    def test_returning_vehicle_can_take_new_work_without_position_jump(self):
+        config = RunConfiguration.from_path().to_dict()
+        for cell in config['config']['equipment']:
+            cell['workDurationMs'] = 200
+        model = FactoryModel(RunConfiguration.from_dict(config), clock=lambda: NOW)
+        body = model.register_body()
+        model.redispatch()
+        while model.body(body.body_id).location.location_type != LocationType.BUFFER:
+            model.tick()
+        self.assertEqual(model.vehicles[0].state, VehicleState.RETURNING)
+        model.advance(500)
+        model.enter_cell(body.body_id)
+        model.tick()
+        before = (model.vehicles[0].x, model.vehicles[0].y)
+        model.tick()
+        transport = model.transport(model.body(body.body_id).transport_id)
+        self.assertEqual(transport.vehicle_id, 'AGV-001')
+        self.assertEqual(model.vehicles[0].state, VehicleState.TO_PICKUP)
+        origin = model._motions['AGV-001'].points[0]
+        self.assertNotEqual(origin, (0, 100))
+        self.assertLess(origin[0], before[0])
+        self.assertEqual((model.vehicles[0].x, model.vehicles[0].y), origin)
 
     def test_normal_input_to_good_hold_and_empty_return_without_fixture_moves(self):
         for result, destination in (('PASS', 'GOOD'), ('FAIL', 'HOLD')):

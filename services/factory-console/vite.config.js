@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {appendFile} from 'node:fs/promises'
+import {simulationLauncher} from './simulation-launcher.js'
 
 function measurements(env) {
   if(env.VITE_FACTORY_MEASUREMENT!=='true' || !env.FACTORY_BROWSER_MEASUREMENT_FILE)return []
@@ -28,7 +29,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const target = env.OPERATIONS_PROXY_TARGET || 'http://127.0.0.1:8082'
   return {
-    plugins: [vue(),...measurements(env)],
+    plugins: [vue(),simulationLauncher(env),...measurements(env)],
     server: {
       port: 5173,
       strictPort: true,

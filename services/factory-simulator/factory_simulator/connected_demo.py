@@ -1,11 +1,11 @@
-"""Explicit, wall-paced one-body run using the existing model and ACK-confirmed source session."""
+"""Explicit, wall-paced normal production using the model and ACK-confirmed source session."""
 import json
 import os
 from pathlib import Path
 import threading
 import time
 
-from .model import FactoryModel, LocationType
+from .model import FactoryModel, LocationType, CellState
 from .logistics import VehicleState
 from .sender import Sender, SourceSession
 
@@ -22,14 +22,40 @@ def artifact_root(evidence_root=None):
     return Path('/tmp/factory-connected-demo')
 
 
-def run_connected(configuration, settings, *, stopped=None, evidence_root=None, max_seconds=300):
+class NormalDriver:
+    def __init__(self, model, body_count=1):
+        if body_count not in (1, 3) or body_count > model.configuration.factory['maxBodies']:
+            raise ValueError('Normal demo requires capacity for 1 or 3 bodies')
+        self.model = model
+        self.body_count = body_count
+
+    def initialize(self, change):
+        for _ in range(self.body_count):
+            change(self.model.register_body)
+        change(self.model.redispatch)
+
+    def enter_waiting(self, change):
+        # Admit one waiting body per empty cell, downstream first; keep normal slot/dispatch rules.
+        for cell_id in ('QC-01', 'ASM-02', 'ASM-01'):
+            waiting = self.model.bodies_at(LocationType.BUFFER, 'BAY-' + cell_id)
+            if waiting and self.model.cell(cell_id).state == CellState.IDLE:
+                change(self.model.enter_cell, waiting[0].body_id)
+
+    def drained(self):
+        return (all(body.location.location_type == LocationType.RESULT for body in self.model.bodies)
+                and not self.model.active_transports
+                and all(vehicle.state == VehicleState.IDLE for vehicle in self.model.vehicles))
+
+
+def run_connected(configuration, settings, *, stopped=None, evidence_root=None, max_seconds=300, body_count=1):
     stopped = stopped or threading.Event()
     model = FactoryModel(configuration, quality_results=('PASS',))
+    driver = NormalDriver(model, body_count)
     evidence_root = artifact_root(evidence_root)
     evidence = evidence_root / model.run_id
     evidence.mkdir(parents=True, exist_ok=False)
     info = dict(runId=model.run_id, bodyId='body-00001', tagId='tag-00001', pid=os.getpid(),
-                evidence=str(evidence.resolve()), state='STARTING', guiConfirmed=False)
+                bodyCount=body_count, evidence=str(evidence.resolve()), state='STARTING', guiConfirmed=False)
     (evidence / 'run.json').write_text(json.dumps(info, indent=2) + '\n')
     print(json.dumps(info), flush=True)
     # Verification-only coordination: expose the generated run before the helper checks both DBs.
@@ -59,8 +85,7 @@ def run_connected(configuration, settings, *, stopped=None, evidence_root=None, 
             confirmed += 1
 
     try:
-        session.change(model.register_body)
-        session.change(model.redispatch)
+        driver.initialize(session.change)
         session.change(model.publish_snapshot)
         drain()
         tick_seconds = configuration.factory['tickMs'] / 1000
@@ -70,12 +95,8 @@ def run_connected(configuration, settings, *, stopped=None, evidence_root=None, 
             cycle = time.monotonic()
             session.tick()
             body = model.body('body-00001')
-            if body.location.location_type == LocationType.BUFFER:
-                session.change(model.enter_cell, body.body_id)
-            drained = (body.location.location_type == LocationType.RESULT
-                       and not model.active_transports
-                       and all(v.state == VehicleState.IDLE for v in model.vehicles))
-            if drained:
+            driver.enter_waiting(session.change)
+            if driver.drained():
                 session.change(model.finish_run)  # The model emits the final whole snapshot and RUN_FINISHED.
                 drain()
                 info.update(state='INGESTION_CONFIRMED', events=confirmed, sourceSeq=confirmed,

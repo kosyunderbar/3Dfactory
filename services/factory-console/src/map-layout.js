@@ -2,8 +2,14 @@
 const overlaps=(a,b,gap=12)=>a.x<b.x+b.width+gap && a.x+a.width+gap>b.x && a.y<b.y+b.height+gap && a.y+a.height+gap>b.y
 const box=(x,y,width,height)=>({x,y,width,height})
 
-export function layoutMap(config,entities){
+export function layoutMap(config,entities,{showParts=true}={}){
  if(!config || !entities)return null
+ if(!showParts){
+  const routes=config.routes.filter(route=>route.cargoType!=='PARTS')
+  const used=new Set(routes.flatMap(route=>[route.source.locationId,route.destination.locationId]))
+  config={...config,routes,locations:config.locations.filter(location=>['CELL','BUFFER','INPUT','RESULT'].includes(location.locationType) || used.has(location.locationId))}
+  entities={...entities,vehicles:entities.vehicles.filter(vehicle=>vehicle.kind!=='AMR')}
+ }
  const points=[...config.locations,...config.routes.flatMap(route=>route.points)]
  const minX=Math.min(0,...points.map(p=>p.x)),minY=Math.min(...points.map(p=>p.y))
  const project=p=>({x:150+(p.x-minX)*1.4,y:200+(p.y-minY)*2})
