@@ -2,6 +2,12 @@
 
 프로젝트 루트의 PowerShell에서 실행한다. 관리자 권한, Docker, WSL, 시스템 PATH 변경 없이 프로젝트 전용 도구를 `.build-cache/windows-tools`에 준비한다. Windows x64 기준이다.
 
+## 더블클릭으로 실행
+
+GitHub 전체 소스를 받은 뒤 [처음 실행 안내](../../WINDOWS-START.md)를 따른다. 최초 `01-prepare-windows.cmd` → `02-start-windows.cmd`, 다음부터 02번만 실행한다. 종료는 `03-stop-windows.cmd`, 상태 확인은 `04-status-windows.cmd`다. 압축파일 안에서 실행하지 않고 전체 해제한다. Git 설치나 `.git` 폴더는 필요하지 않다. 최신 소스와 이 파일들이 원격 브랜치에 포함되어야 한다.
+
+아래 PowerShell 명령은 같은 절차의 수동 실행 방법이다.
+
 ## 최초 준비
 
 ```powershell
@@ -14,27 +20,29 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 up
 
 `build`는 두 Java 서버 JAR과 Vue 화면을 빌드한다. Maven/npm 다운로드 캐시도 프로젝트 `.build-cache` 안에 둔다. `up`은 전용 DB, 관제 서버, 수집 서버, Vite 개발 화면 순으로 시작하고 HTTP 준비 상태를 기다린다. 화면 변경은 바로 반영된다. 첫 다운로드와 빌드는 인터넷 연결이 필요하다.
 
-## 테스트
+## 현재 시나리오 실행 · 2026-10-11
 
 화면: **http://127.0.0.1:5173**
 
-화면 상단의 **새로운 공장 실행**에서 시나리오를 선택하고 **새 시뮬레이션 시작**을 누르면 된다. 기본은 5대 버퍼·장애·복구·부품 운송이며, 1대 또는 3대 정상 생산을 선택할 수 있다. 3대 정상 생산은 세 차체를 정식 등록해 동일한 셀·버퍼·AGV 규칙으로 생산하며 최종 검사 세 건 모두 PASS, GOOD 도착으로 완료된다. 새 runId가 실제 관제 서버에 등록되면 화면이 자동으로 해당 실행에 연결된다. 버튼으로 시작한 시뮬레이션이 진행되는 동안 버튼을 비활성화해 중복 실행을 막으며, 브라우저를 새로고침해도 서버에서 진행 상태를 조회한다. 완료 후 다시 누르면 새 runId로 실행된다.
+화면 상단 **시나리오**에서 **1대 · 정상 생산 / 3대 · 정상 생산 / 5대 · 장애 / 수동 복구** 중 선택하고 **시뮬레이션 시작**을 누른다. 기본 선택은 5대다. 새 run 등록 후 자동 연결된다. 모든 일반 시나리오는 PASS 패턴이며 5대는 첫 ASM-01 작업에 장애를 한 차례 주입한다. **장애 확인 → 현장 점검 시작 → 조치 완료 · 재가동**을 사용하고 2초 확인 후 작업을 재개한다. 자동 복구하지 않는다.
+
+3D 공장과 2D 지도를 전환하고 AGV·AMR 선택으로 3인칭 추적을 사용한다. AGV는 전면 1인칭도 가능하다. ASM 부품 재고는 실제 키트 소비/AMR 배송으로 변한다. **중단**은 현재 실행기의 Python을 종료하며 다음 시작은 새 run이다.
 
 이 버튼은 `windows-dev.ps1 up`이 띄운 Vite 개발 화면에서 제공된다. 정적 배포/Docker 화면에는 로컬 프로세스 실행 기능이 없다. 화면을 처음 수정한 뒤에는 개발 서버를 다시 시작해야 한다. 버튼 실행과 아래 터미널 실행을 동시에 사용하지 않는다. 개발 화면 서버를 종료하거나 Vite 설정 변경으로 재시작하면 버튼으로 실행한 시뮬레이터도 중단되므로 완료를 기다린다. 버튼 실행 로그는 `.build-cache/windows-dev/logs/web-simulator.log`에 남는다.
 
-별도 PowerShell에서 차체 1대 정상 시나리오를 실행한다.
+별도 PowerShell의 정상 CLI도 사용할 수 있다. 현재 3D 교통 규칙을 사용하려면 일반 demo 별칭 대신 simulator에 --traffic을 전달한다.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 demo
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 simulator --connected-demo --traffic
 ```
 
 화면에서 목록을 새로고침하고 **시뮬레이션 기록**의 시작 시각으로 실행을 선택한다. 출력된 `runId`로 찾으려면 **실행 ID로 직접 연결**을 펼쳐 ID를 입력하고 **관측 연결**을 누른다. 완료 후 GOOD/PASS, 실행 상태 FINISHED를 확인한다. 차체 3대 정상 생산은 다음 명령이다.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 demo-three
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 simulator --connected-three-demo --traffic
 ```
 
-버퍼·장애·부품 AMR·검사 5대 시나리오는 다음 명령이다.
+아래 demo-p0는 과거 자동 검증 전용이다. 일반 5대 수동 시나리오는 웹 버튼을 사용한다. CLI 단독 실행은 Vite의 수동 명령 제어 연결을 만들지 않는다.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 demo-p0
@@ -52,24 +60,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-dev.ps1 si
 
 ### 5대 시나리오에서 확인할 것
 
-5대는 차체 수다. 차량 구성은 차체 AGV 2대와 부품 AMR 1대다. 이 시연은 버퍼를 초과해 오류를 내는 대신 **예약을 포함한 용량 판단으로 신규 배차를 차단하고, 슬롯 반환 후 재개하는 보호 동작**을 보여 준다.
+차체 5대·AGV 2대·AMR 1대다. ASM-01 작업 1초 후 위치 센서 불일치를 주입한다. 점검 대기와 현장 조치 중에는 남은 작업 시간이 보존된다. 조치 완료 후에만 재개하며 같은 작업의 부품을 중복 소비하지 않는다. 현재 5대 시나리오는 PASS 5/GOOD 5로 완료되도록 구성된다.
 
-| 단계 | 확인할 상태 | 의미 |
-|---|---|---|
-| FULL_RESERVED | ASM-02 Bay W2/R1/A0/C3 | 도착 전 예약도 용량에 포함해 추가 배차 차단 |
-| FULL_IN_TRANSIT | 같은 예약, 차체 위치 VEHICLE | 이미 예약한 운송은 만석 상태에서도 진행 |
-| FULL_ARRIVED | W3/R0/A0, 앞 셀 BUFFER_FULL | 예약을 대기로 전환하며 슬롯 점유 유지 |
-| CELL_DOWN | ASM-01 DOWN | 버퍼 만석과 별도로 의도적인 설비 장애 주입 |
-| SLOT_RELEASED | 설비 복구, ASM-02 셀 진입 | 대기 차체의 슬롯 반환 후 운송 재평가 |
-| FINISHED | GOOD 4대/PASS, HOLD 1대/FAIL | 지정 검사 결과와 모든 운송·귀환 완료 |
+AGV는 빈 셀 직접 인계, 대기 필요 시 Bay 사용, Bay에서 셀로 재운반한다. 적재 전진·통로 예약/양보를 적용하고 모든 생산·출고가 끝난 뒤 외곽으로 최종 복귀한다. AMR은 후면 통로로 ASM별 키트를 보충하며 재고+보급 중 수량 및 남은 생산 수요를 반영한다. 정상 실행에서도 부품 구역을 표시한다. 1대는 초기 재고로 충분해 AMR이 대기할 수 있다.
 
-BUFFER_FULL은 정상적인 배차 차단 사유이고, DOWN은 설비 장애 상태다. 각 관찰 단계의 PAUSED는 장면을 보여 주기 위한 일시정지이며 오류가 아니다. 버튼/일반 CLI 시연에서는 각 단계가 4초 뒤 자동 진행한다. SLOT_RELEASED에서 반환 직후 A1이 생겨도 새 예약이 바로 잡히면 최종 화면은 R1/A0일 수 있다. 알람 확인 버튼은 확인 기록만 남기며 설비를 복구하거나 슬롯을 반환하지 않는다.
-
-### AGV 배차와 지도 표시
-
-AGV는 픽업 지점에 가장 가까운 빈 차량을 배차한다. 운송을 마친 차량과 빈 차로 복귀 중인 차량도 새 작업을 맡을 수 있으며, 현재 위치에서 다음 픽업으로 이동한다. 배차할 작업이 없으면 시작점으로 복귀한다. 목적지 Bay 슬롯이 없는 작업에는 배차하지 않는다.
-
-정상 생산 화면에서는 사용하지 않는 AMR, 부품 보관·투입 위치와 부품 경로를 숨긴다. 부품 운송이 있는 5대 시나리오는 해당 구역을 표시하며, 운송 완료 후 실행을 다시 조회해도 표시를 유지한다.
+**알람 확인**은 수동 조치 버튼과 다르다. 장애 조치 이력은 `.build-cache/connected-demo/<runId>/maintenance.json`에 보존한다. 과거 P0의 FULL_RESERVED 등 marker와 자동 4초 진행을 현재 수동 시나리오에 적용하지 않는다.
 
 ### 서버 재실행과 종료
 
@@ -97,7 +92,9 @@ Java 코드를 변경하거나 pull로 서버 코드가 바뀌었으면 `down �
 
 오류가 나면 서버별 `.out.log`, `.err.log`, `postgres.log`를 확인한다. 데이터 폴더를 삭제하거나 `.env`를 재생성해서 해결하지 않는다. 실행 도구·DB·암호·빌드 결과는 Git 제외 대상이다. `.build-cache`를 정리하면 **이 구성의 DB 기록도 삭제**되므로 보존하거나 먼저 별도 백업한다.
 
-## 이 컴퓨터에서 확인한 결과
+## 과거 Windows 확인 결과 · 2026-10-06
+
+아래는 당시 2D/자동 P0 버전의 실측이다. 현재 3D·5대 수동 복구는 소스/스크립트 대조와 macOS 검증을 반영했으며 새 Windows에서 동일 검증을 재수행했다는 뜻이 아니다. [현재 검증 범위](<현재 기능과 검증 범위.md>)를 참고한다.
 
 AGV 배차 개선 후 Python 테스트 24개와 콘솔 테스트 7개, Vue 빌드가 통과했다. 기본 설정의 3대 정상 생산 실행 `run-20261006-79e877515a9243aba2cf4895cc13fcd9`는 GOOD/PASS 3대, FINISHED, 전달 대기 0건으로 완료됐다. 모델의 완료 시간은 이전 3대 실행의 150,000ms에서 79,100ms로 줄었다. 부품·장애·복구 연결 검증은 별도 임시 설정(작업 200ms, 운송 1,000ms)으로 실행했으며 `run-20261006-bf9bc74501e240dc97058daef107f86c`의 다섯 관찰 단계와 GOOD 4대/HOLD 1대 완료를 확인했다. 기본 설정 파일은 유지했다. 정상 생산에서는 부품 구역이 숨겨지고, 부품 운송 실행은 완료 후 새로고침해도 AMR와 부품 구역이 표시됐다.
 

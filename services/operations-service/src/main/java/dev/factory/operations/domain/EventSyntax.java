@@ -97,6 +97,7 @@ public final class EventSyntax {
             case "object" -> require(n.isObject());
             case "empty" -> object(n,"");
             case "one" -> integer(n,1,1);
+            case "trafficVersion" -> integer(n,1,4);
             case "zero" -> integer(n,0,9007199254740991L);
             case "positive" -> integer(n,1,9007199254740991L);
             case "seed" -> integer(n,0,2147483647);
@@ -122,9 +123,52 @@ public final class EventSyntax {
             case "scenario" -> pattern(n,"scenario-[a-z0-9-]{1,40}");
             case "code" -> pattern(n,"[A-Z0-9-]{1,32}");
             case "locationId" -> pattern(n,"BODY-IN|ASM-01|ASM-02|QC-01|BAY-(ASM-01|ASM-02|QC-01)|(AGV|AMR)-[0-9]{3,6}|GOOD|HOLD|PARTS-STORE|PARTS-ASM-0[12]");
+            case "boolean" -> require(n.isBoolean());
+            case "bounds" -> rectangle(n,false);
+            case "obstacle" -> rectangle(n,true);
+            case "trafficPolicy" -> {
+                object(n,"policyVersion:trafficVersion vehicleRadius:number clearance:number bounds:bounds obstacles:[obstacle]"+(n.path("policyVersion").intValue()>=3?" lanes:[lane] holdingPoints:[point]":""));
+                if(n.path("policyVersion").intValue()>=3) require(n.get("lanes").size()>0 && n.get("lanes").size()<=256 && !n.get("holdingPoints").isEmpty());
+                require(n.get("vehicleRadius").doubleValue()>=(n.get("policyVersion").intValue()>=2?30:24) && n.get("clearance").doubleValue()>=3);
+                require(n.get("obstacles").size()>=1 && n.get("obstacles").size()<=32);
+                Set<String> ids=new HashSet<>();
+                for(JsonNode r:n.get("obstacles")) require(ids.add(r.get("id").stringValue()));
+            }
+            case "lane" -> {
+                object(n,"start:point end:point");
+                require(!n.get("start").equals(n.get("end")));
+                require(n.get("start").get("x").doubleValue()==n.get("end").get("x").doubleValue() || n.get("start").get("y").doubleValue()==n.get("end").get("y").doubleValue());
+            }
+            case "motionSegment" -> {
+                object(n,"turnMs:zero travelMs:positive rampMs:number initialHeading:number heading:number peakSpeed:number");
+                require(n.get("rampMs").doubleValue()>0 && n.get("rampMs").doubleValue()<=n.get("travelMs").doubleValue()/2);
+                require(n.get("peakSpeed").doubleValue()>=0 && n.get("peakSpeed").doubleValue()<=0.037500001);
+                require(n.get("peakSpeed").doubleValue()/n.get("rampMs").doubleValue()<=0.000075001);
+            }
+            case "trafficMotion" -> {
+                object(n,"path:[point] elapsedMs:zero durationMs:positive waiting:boolean"+(n.has("segments")?" heading:number segments:[motionSegment]":""));
+                if(n.has("segments") && !n.get("segments").isEmpty()) {
+                    require(n.get("segments").size()==n.get("path").size()-1);
+                    long duration=0;
+                    for(JsonNode segment:n.get("segments")) duration+=segment.get("turnMs").longValue()+segment.get("travelMs").longValue();
+                    require(duration==n.get("durationMs").longValue());
+                }
+                require(n.get("path").size()>=2 && n.get("path").size()<=128);
+                require(n.get("elapsedMs").longValue()<=n.get("durationMs").longValue());
+            }
             case "point" -> object(n,"x:number y:number");
             case "location" -> object(n,"locationType:INPUT|CELL|BUFFER|VEHICLE|RESULT|STORE|PARTS_DOCK locationId:locationId");
             case "config" -> configuration(n);
+            case "partsSupplyConfig" -> {
+                object(n,"capacity:positive initialStock:zero");
+                require(n.get("capacity").intValue()<=2 && n.get("initialStock").longValue()<=n.get("capacity").longValue());
+            }
+            case "partsStock" -> {
+                object(n,"cellId:ASM-01|ASM-02 dockId:PARTS-ASM-01|PARTS-ASM-02 capacity:positive initialStock:zero available:zero inbound:zero delivered:zero consumed:zero stockoutMs:zero");
+                require(n.get("capacity").intValue()<=2 && n.get("available").longValue()+n.get("inbound").longValue()<=n.get("capacity").longValue());
+                require(n.get("available").longValue()+n.get("consumed").longValue()==n.get("initialStock").longValue()+n.get("delivered").longValue());
+                require(n.get("dockId").stringValue().equals("PARTS-"+n.get("cellId").stringValue()));
+            }
             case "equipmentConfig" -> object(n,"cellId:cell equipmentId:cell bufferId:buffer workDurationMs:positive");
             case "bufferConfig" -> object(n,"bufferId:buffer cellId:cell capacity:capacity slotIds:[slot]");
             case "vehicleConfig" -> object(n,"vehicleId:vehicle kind:AGV|AMR home:location initialPosition:point");
@@ -134,14 +178,19 @@ public final class EventSyntax {
             case "bufferState" -> object(n,"bufferId:buffer cellId:cell capacity:capacity waitingCount:count reservedInboundCount:count availableSlots:count slots:[slotState]");
             case "slotState" -> object(n,"slotId:slot status:FREE|RESERVED|OCCUPIED bodyId:body? vehicleId:vehicle? transportId:transport? reservationId:reserve?");
             case "bodyState" -> object(n,"bodyId:body tagId:tag modelCode:code specCode:code status:WAITING|PROCESSING|WAITING_UNLOAD|IN_TRANSIT|COMPLETED locationType:INPUT|CELL|BUFFER|VEHICLE|RESULT locationId:locationId locationSlotId:slot? currentCellId:cell? completedCellIds:[cell] nextCellId:cell? transportId:transport? reservationId:reserve? inspectionResult:NOT_INSPECTED|PASS|FAIL inspectedAt:time? lastObservedAt:time");
-            case "vehicleState" -> object(n,"vehicleId:vehicle kind:AGV|AMR state:IDLE|TO_PICKUP|LOADING|MOVING|UNLOADING|RETURNING position:point bodyId:body? partsKitId:kit? transportId:transport?");
-            case "transportState" -> object(n,"transportId:transport vehicleId:vehicle routeId:route cargoType:BODY|PARTS status:ASSIGNED|IN_TRANSIT|COMPLETED|CANCELLED bodyId:body? partsKitId:kit? source:location destination:location reservationId:reserve? slotId:slot? assignedAt:time startedAt:time? completedAt:time? cancelledAt:time? cancelReason:SCENARIO_CANCEL?");
+            case "vehicleState" -> object(n,"vehicleId:vehicle kind:AGV|AMR state:IDLE|TO_PICKUP|LOADING|MOVING|UNLOADING|RETURNING position:point bodyId:body? partsKitId:kit? transportId:transport?"+(n.has("traffic")?" traffic:trafficMotion":""));
+            case "transportState" -> object(n,"transportId:transport vehicleId:vehicle routeId:route cargoType:BODY|PARTS status:ASSIGNED|IN_TRANSIT|COMPLETED|CANCELLED bodyId:body? partsKitId:kit? source:location destination:location reservationId:reserve? slotId:slot? assignedAt:time startedAt:time? completedAt:time? cancelledAt:time? cancelReason:SCENARIO_CANCEL|PRIORITY_REDISPATCH|DIRECT_DELIVERY_AVAILABLE?");
             default -> throw new IllegalArgumentException("Unknown internal validator type: "+type);
         }
     }
+    private static void rectangle(JsonNode n,boolean obstacle) {
+        object(n,(obstacle?"id:locationId ":"")+"minX:number minY:number maxX:number maxY:number");
+        require(n.get("minX").doubleValue()<n.get("maxX").doubleValue() && n.get("minY").doubleValue()<n.get("maxY").doubleValue());
+    }
     private static void configuration(JsonNode n) {
-        object(n,"tickMs:positive snapshotIntervalMs:positive speed:speed maxBodies:maxBodies failProbability:probability locations:[configuredLocation] equipment:[equipmentConfig] buffers:[bufferConfig] vehicles:[vehicleConfig] routes:[routeConfig]");
+        object(n,"tickMs:positive snapshotIntervalMs:positive speed:speed maxBodies:maxBodies failProbability:probability locations:[configuredLocation] equipment:[equipmentConfig] buffers:[bufferConfig] vehicles:[vehicleConfig] routes:[routeConfig]"+(n.has("traffic")?" traffic:trafficPolicy":"")+(n.has("partsSupply")?" partsSupply:partsSupplyConfig":""));
         require(n.get("snapshotIntervalMs").longValue()%n.get("tickMs").longValue()==0);
+        if(n.has("partsSupply")) require(n.path("traffic").path("policyVersion").intValue()==4 && n.get("partsSupply").get("initialStock").longValue()<=n.get("maxBodies").longValue());
         for(JsonNode b:n.get("buffers")) require(b.get("slotIds").size()==b.get("capacity").intValue());
         // Registration, unique factory IDs and ownership are validated by S04, not reconstructed here.
     }
@@ -149,11 +198,11 @@ public final class EventSyntax {
         switch(kind) {
             case "RUN_STARTED" -> object(p,"seed:seed config:config");
             case "RUN_STATE_CHANGED" -> object(p,"previousState:RUNNING|PAUSED|FINISHED state:RUNNING|PAUSED|FINISHED reason:PAUSE_REQUEST|RESUME_REQUEST|DRAINED");
-            case "FACTORY_SNAPSHOT" -> object(p,"runState:RUNNING|PAUSED|FINISHED capturedAt:time simElapsedMs:zero equipment:[equipment] buffers:[bufferState] bodies:[bodyState] vehicles:[vehicleState] activeTransports:[transportState]");
+            case "FACTORY_SNAPSHOT" -> object(p,"runState:RUNNING|PAUSED|FINISHED capturedAt:time simElapsedMs:zero equipment:[equipment] buffers:[bufferState] bodies:[bodyState] vehicles:[vehicleState] activeTransports:[transportState]"+(p.has("partsSupply")?" partsSupply:[partsStock]":""));
             case "BODY_REGISTERED" -> object(p,"bodyId:body tagId:tag modelCode:code specCode:code createdAt:time initialLocation:location");
             case "SLOT_RESERVED" -> object(p,"reservationId:reserve transportId:transport bufferId:buffer slotId:slot bodyId:body vehicleId:vehicle");
-            case "SLOT_RELEASED" -> object(p,"bufferId:buffer slotId:slot bodyId:body reservationId:reserve? transportId:transport? reason:BODY_ENTERED_CELL|CANCEL_BEFORE_DEPARTURE");
-            case "BODY_ENTERED_CELL" -> object(p,"bodyId:body cellId:cell bufferId:buffer slotId:slot operationId:operation");
+            case "SLOT_RELEASED" -> object(p,"bufferId:buffer slotId:slot bodyId:body reservationId:reserve? transportId:transport? reason:BODY_ENTERED_CELL|CANCEL_BEFORE_DEPARTURE|BODY_PICKED_UP");
+            case "BODY_ENTERED_CELL" -> object(p,"bodyId:body cellId:cell bufferId:buffer? slotId:slot? operationId:operation");
             case "EQUIPMENT_STATE_CHANGED" -> object(p,"cellId:cell equipmentId:cell previousState:IDLE|RUNNING|BLOCKED|DOWN state:IDLE|RUNNING|BLOCKED|DOWN bodyId:body? reason:WORK_STARTED|WORK_COMPLETED|BUFFER_FULL|NO_VEHICLE|WAITING_PICKUP|PICKUP_COMPLETED|FAILURE_INJECTED|RECOVERED");
             case "OPERATION_COMPLETED" -> object(p,"operationId:operation cellId:cell equipmentId:cell unitId:body durationMs:zero");
             case "INSPECTION_COMPLETED" -> object(p,"inspectionId:inspection equipmentId:QC-01 unitId:body result:PASS|FAIL defectCode:SIM_DEFECT_01?");

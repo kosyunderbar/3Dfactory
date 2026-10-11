@@ -1,0 +1,34 @@
+{
+  "requireForward": true,
+  "requireFinalHome": true,
+  "finalReturns": [
+    "AGV-002",
+    "AGV-001"
+  ],
+  "loadedLegObservations": 1005,
+  "runId": "run-20261010-dda79acbf3ff4039a6418e248c30cc7b",
+  "events": 692,
+  "snapshots": 598,
+  "compatiblePairs": 555,
+  "renderedFleetSamples": 4186,
+  "minVehicleCenterDistance": 80.0008264420122,
+  "finished": true,
+  "bodyResults": [
+    {
+      "id": "body-00001",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00002",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00003",
+      "result": "PASS",
+      "location": "GOOD"
+    }
+  ],
+  "maxFrameBytes": 12099
+}

@@ -8,6 +8,9 @@ import static dev.factory.operations.domain.RuleViolation.*;
 public final class ModelRules {
     public static final List<String> CELLS=List.of("ASM-01","ASM-02","QC-01");
     private ModelRules() {}
+    public static boolean directDelivery(JsonNode config) {
+        return config.has("traffic") && config.get("traffic").get("policyVersion").intValue()>=2;
+    }
     public static String text(JsonNode n,String key) { JsonNode v=n.get(key); return v==null||v.isNull()?null:v.stringValue(); }
     public static Map<String,JsonNode> index(JsonNode array,String key) {
         var result=new LinkedHashMap<String,JsonNode>();
@@ -38,6 +41,10 @@ public final class ModelRules {
         model(agv==2 && amr==1);
         var routes=index(config.get("routes"),"routeId"); var signatures=new HashSet<String>();
         var allowed=new HashSet<>(List.of("BODY:INPUT:BODY-IN>BUFFER:BAY-ASM-01","BODY:CELL:ASM-01>BUFFER:BAY-ASM-02","BODY:CELL:ASM-02>BUFFER:BAY-QC-01", "BODY:CELL:QC-01>RESULT:GOOD","BODY:CELL:QC-01>RESULT:HOLD","PARTS:STORE:PARTS-STORE>PARTS_DOCK:PARTS-ASM-01","PARTS:STORE:PARTS-STORE>PARTS_DOCK:PARTS-ASM-02"));
+        if(directDelivery(config)) {
+            allowed.addAll(List.of("BODY:INPUT:BODY-IN>CELL:ASM-01","BODY:CELL:ASM-01>CELL:ASM-02","BODY:CELL:ASM-02>CELL:QC-01"));
+            for(String cell:CELLS) allowed.add("BODY:BUFFER:BAY-"+cell+">CELL:"+cell);
+        }
         for(var r:routes.values()) {
             String source=place(r.get("source")),destination=place(r.get("destination"));
             model(locations.containsKey(source) && locations.containsKey(destination));
@@ -62,13 +69,36 @@ public final class ModelRules {
         }
         boolean started=Set.of("IN_TRANSIT","COMPLETED").contains(state),complete=state.equals("COMPLETED"),cancelled=state.equals("CANCELLED");
         model((text(t,"startedAt")!=null)==started && (text(t,"completedAt")!=null)==complete && (text(t,"cancelledAt")!=null)==cancelled);
-        model(Objects.equals(text(t,"cancelReason"),cancelled?"SCENARIO_CANCEL":null) && (!cancelled||body));
+        String cancelReason=text(t,"cancelReason");
+        model(cancelled ? body && cancelReason!=null && Set.of("SCENARIO_CANCEL","PRIORITY_REDISPATCH","DIRECT_DELIVERY_AVAILABLE").contains(cancelReason) : cancelReason==null);
+        if("PRIORITY_REDISPATCH".equals(cancelReason))
+            model(config.has("traffic") && "INPUT".equals(text(t.get("source"),"locationType")));
+        if("DIRECT_DELIVERY_AVAILABLE".equals(cancelReason))
+            model(directDelivery(config) && "BUFFER".equals(text(t.get("destination"),"locationType")));
         for(String field:List.of("startedAt","completedAt","cancelledAt")) if(text(t,field)!=null)
             model(!EventSyntax.timestamp(t.get(field)).isBefore(EventSyntax.timestamp(t.get("assignedAt"))));
         if(complete) model(!EventSyntax.timestamp(t.get("completedAt")).isBefore(EventSyntax.timestamp(t.get("startedAt"))));
     }
     public static boolean contains(JsonNode array,String value) { for(var item:array) if(item.isString() && item.stringValue().equals(value)) return true; return false; }
     public static void snapshot(JsonNode state,JsonNode config,Map<String,JsonNode> registered) {
+        model(state.has("partsSupply")==config.has("partsSupply"));
+        if(state.has("partsSupply")) {
+            var supply=index(state.get("partsSupply"),"cellId");
+            model(supply.keySet().equals(Set.of("ASM-01","ASM-02")));
+            for(var stock:supply.values()) {
+                model(stock.get("capacity").equals(config.get("partsSupply").get("capacity")));
+                model(stock.get("initialStock").equals(config.get("partsSupply").get("initialStock")));
+                long inbound=0,used=0;
+                for(var t:state.get("activeTransports")) if("PARTS".equals(text(t,"cargoType")) && text(t.get("destination"),"locationId").equals(text(stock,"dockId"))) inbound++;
+                for(var b:state.get("bodies")) {
+                    boolean consumed=false;
+                    for(var id:b.get("completedCellIds")) if(id.stringValue().equals(text(stock,"cellId"))) consumed=true;
+                    if("CELL".equals(text(b,"locationType")) && text(b,"locationId").equals(text(stock,"cellId"))) consumed=true;
+                    if(consumed)used++;
+                }
+                model(inbound==stock.get("inbound").longValue() && used==stock.get("consumed").longValue());
+            }
+        }
         var cells=index(state.get("equipment"),"cellId"); var bays=index(state.get("buffers"),"bufferId");
         var bodies=index(state.get("bodies"),"bodyId"); var vehicles=index(state.get("vehicles"),"vehicleId"); var trips=index(state.get("activeTransports"),"transportId");
         var configuredBays=index(config.get("buffers"),"bufferId"); var configuredVehicles=index(config.get("vehicles"),"vehicleId");
@@ -138,8 +168,14 @@ public final class ModelRules {
             else model(text(body,"reservationId")==null && !kind.equals("VEHICLE"));
         }
         var expectedReservations=new HashSet<String>(); var usedVehicles=new HashSet<String>(); var usedBodies=new HashSet<String>();
+        var inboundCells=new HashSet<String>();
         for(var t:trips.values()) {
             transport(t,config); model(Set.of("ASSIGNED","IN_TRANSIT").contains(text(t,"status")));
+            if("CELL".equals(text(t.get("destination"),"locationType"))) {
+                String cell=text(t.get("destination"),"locationId");
+                model(directDelivery(config) && inboundCells.add(cell));
+                model(text(cells.get(cell),"bodyId")==null);
+            }
             model(usedVehicles.add(text(t,"vehicleId"))); var v=vehicles.get(text(t,"vehicleId")); model(Objects.equals(text(v,"transportId"),text(t,"transportId")));
             boolean body=text(t,"cargoType").equals("BODY"),assigned=text(t,"status").equals("ASSIGNED");
             if(body) {

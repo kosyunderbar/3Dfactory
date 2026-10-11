@@ -89,7 +89,7 @@ P0는 물리 계산을 실시간 1배속으로 진행한다. PAUSED 중 상태 �
 
 `location`은 `{locationType, locationId}`다. 차체 현재 위치의 종류는 INPUT / CELL / BUFFER / VEHICLE / RESULT이며 각각 BODY-IN / cellId / bufferId / 차체 AGV ID / GOOD 또는 HOLD를 참조한다. BUFFER일 때 차체 객체의 locationSlotId로 실제 면을 함께 지정한다.
 
-운송의 source/destination도 이 객체를 사용하되, source는 BODY 운송에서 INPUT 또는 CELL, PARTS 운송에서 STORE(PARTS-STORE)다. destination은 BODY 운송에서 BUFFER 또는 RESULT, PARTS 운송에서 PARTS_DOCK(PARTS-ASM-01/02)이다. 부품 도착 지점은 차체 셀 자리·Bay와 다른 공간이다. 경로의 양 끝과 운송의 위치가 일치해야 한다.
+운송의 source/destination도 이 객체를 사용하되, source는 BODY 운송에서 INPUT 또는 CELL (traffic policyVersion>=2는 BUFFER도 허용), PARTS 운송에서 STORE(PARTS-STORE)다. destination은 BODY 운송에서 BUFFER 또는 RESULT (traffic policyVersion>=2는 CELL도 허용), PARTS 운송에서 PARTS_DOCK(PARTS-ASM-01/02)이다. 부품 도착 지점은 차체 셀 자리·Bay와 다른 공간이다. 경로의 양 끝과 운송의 위치가 일치해야 한다.
 
 ### 5.2 상태 열거형
 
@@ -120,9 +120,11 @@ P0는 물리 계산을 실시간 1배속으로 진행한다. PAUSED 중 상태 �
 | reservationId, slotId | 문자열?; BODY+BUFFER 목적지는 둘 다 필수, BODY+RESULT 및 PARTS는 둘 다 null |
 | assignedAt | UTC 시각 |
 | startedAt, completedAt, cancelledAt | UTC 시각? |
-| cancelReason | `SCENARIO_CANCEL` 또는 null |
+| cancelReason | `SCENARIO_CANCEL`, `PRIORITY_REDISPATCH`, `DIRECT_DELIVERY_AVAILABLE` 또는 null |
 
 ASSIGNED는 시작/완료/취소 시각이 null이다. IN_TRANSIT은 startedAt만 값이 있다. COMPLETED는 startedAt·completedAt이 있고 cancelledAt/cancelReason은 null이다. CANCELLED는 startedAt/completedAt이 null이고 cancelledAt·cancelReason이 있다. 각 전환 시각은 assignedAt 이후이며 해당 사건의 전환 시각은 occurredAt과 같다. 같은 물리 tick에 시작과 종료가 있으면 시각이 같을 수 있다. 취소는 아직 차체가 출발지에 있는 ASSIGNED에서만 가능하다.
+
+`PRIORITY_REDISPATCH`는 traffic 구성에서 아직 적재를 시작하지 않은 INPUT 픽업 배차를 취소하고 완료된 CELL의 픽업으로 전환할 때 사용한다. 기존 슬롯 예약을 해제하고 새로운 transportId로 배차하며, 미투입 차체는 이후 자동 배차 대상으로 남는다. 사용자 시나리오 취소와 달리 SCENARIO_CHANGED를 발생시키지 않는다.
 
 ## 6. 사건 17종의 payload
 
@@ -135,8 +137,8 @@ ASSIGNED는 시작/완료/취소 시각이 null이다. IN_TRANSIT은 startedAt�
 | FACTORY_SNAPSHOT | 8절의 스냅샷 객체 | 전체 현재 상태. 누적 생산/품질 카운터를 fact 대용으로 넣지 않음 |
 | BODY_REGISTERED | bodyId, tagId, modelCode, specCode: 문자열, createdAt: 시각, initialLocation: 위치 | createdAt=occurredAt. 정상 투입은 INPUT/BODY-IN. 초기 검증 fixture만 CELL/BUFFER에서 시작 가능하며 초기 상태와 일치 |
 | SLOT_RESERVED | reservationId, transportId, bufferId, slotId, bodyId, vehicleId: ID | AGV와 목적지 슬롯을 함께 확보한 전환의 이력. 아직 차체 위치는 출발지 |
-| SLOT_RELEASED | bufferId, slotId, bodyId: ID, reservationId, transportId: ID?, reason: 반환 사유 | BODY_ENTERED_CELL 또는 CANCEL_BEFORE_DEPARTURE. 초기 점유 fixture의 과거 예약/운송이 없을 때만 두 ID 모두 null |
-| BODY_ENTERED_CELL | bodyId, cellId, bufferId, slotId, operationId: ID | 해당 셀 Bay에서 차체를 셀로 인계. 새로운 공정 작업 ID 연결 |
+| SLOT_RELEASED | bufferId, slotId, bodyId: ID, reservationId, transportId: ID?, reason: 반환 사유 | BODY_ENTERED_CELL, CANCEL_BEFORE_DEPARTURE 또는 정책 2의 BODY_PICKED_UP. 초기 점유 fixture의 과거 예약/운송이 없을 때만 두 ID 모두 null |
+| BODY_ENTERED_CELL | bodyId, cellId, operationId: ID, bufferId, slotId: ID? | 새로운 공정 작업 ID 연결. 기존 Bay 인계는 bufferId/slotId 필수. 정책 2의 AGV 직접 인계는 두 필드 모두 null |
 | TELEMETRY_UPDATED | entityType: EQUIPMENT/VEHICLE, entityId: ID, measurements: 객체, position: 좌표? | EQUIPMENT는 position=null, measurements에 선택 키 temperatureC(숫자)·cycleTimeMs(0 이상 정수) 중 1개 이상. VEHICLE은 measurements={}와 position={x,y}. 현재 물리 상태는 이 사건으로 덮지 않음 |
 | EQUIPMENT_STATE_CHANGED | cellId, equipmentId: ID, previousState, state: 셀 state, bodyId: ID?, reason: 문자열 | cellId=equipmentId. reason은 WORK_STARTED / WORK_COMPLETED / BUFFER_FULL / NO_VEHICLE / WAITING_PICKUP / PICKUP_COMPLETED / FAILURE_INJECTED / RECOVERED. 같은 상태 변경은 생성하지 않음 |
 | OPERATION_COMPLETED | operationId, cellId, equipmentId, unitId: ID, durationMs: 0 이상 정수 | cellId=equipmentId, unitId=bodyId. 조립/검사 작업 완료이며 배출 완료가 아님 |
@@ -144,7 +146,7 @@ ASSIGNED는 시작/완료/취소 시각이 null이다. IN_TRANSIT은 startedAt�
 | TRANSPORT_ASSIGNED | T | status=ASSIGNED, assignedAt=occurredAt |
 | TRANSPORT_STARTED | T | status=IN_TRANSIT, startedAt=occurredAt. 출발지 차체 제거+AGV 적재 완료 |
 | TRANSPORT_COMPLETED | T | status=COMPLETED, completedAt=occurredAt. Bay에서는 RESERVED→OCCUPIED이며 슬롯 반환 아님 |
-| TRANSPORT_CANCELLED | T | status=CANCELLED, cancelledAt=occurredAt. P0는 BODY의 출발 전 SCENARIO_CANCEL만 지원 |
+| TRANSPORT_CANCELLED | T | status=CANCELLED, cancelledAt=occurredAt. BODY의 출발 전 취소. SCENARIO_CANCEL, traffic 구성의 PRIORITY_REDISPATCH, 정책 2의 DIRECT_DELIVERY_AVAILABLE |
 | SCENARIO_CHANGED | scenarioId, action, targetId: 문자열, parameters: 객체 | 아래 action별 규격. 대상이 없는 공장 전체 설정은 targetId=runId |
 | RUN_FINISHED | reason: DRAINED/MODEL_ERROR, uniqueEventCount: 양의 정수 | 마지막 새 사건. P0 단일 생산자에서 자신을 포함한 생성 사건 수=sourceSeq. 재전송 횟수와 다름 |
 
@@ -229,3 +231,65 @@ activeTransports의 각 요소는 5.3절 T다. RESERVED 슬롯과 활성 BODY+BU
 JSON 구조의 표준 키워드로 기계 판독 스키마를 만드는 방법은 [JSON Schema 공식 규격](https://json-schema.org/draft/2020-12/json-schema-validation)을 참고할 수 있다. 이번 산출물의 필드 규격은 이 문서의 표이며 별도 JSON Schema 파일이나 라이브러리 도입은 하지 않는다. 검증 도구는 [최소 검증 계획](<../../docs/validation/최소 검증 시나리오와 도구.md>), 실제 입력 검증 구현은 S03/S04에서 진행한다.
 
 S00-03에서 ACK/내부 REST 필드, ID·내용 충돌의 비교 방식, 순서/등록 선행 처리, 재시도·격리·큐/프레임 상한·호환성 정책을 [v1 전달 계약](delivery.md)에 확정했다. 본 문서에서 S00-03으로 미뤘던 항목은 그 계약을 따른다. 수집 committedAt은 이번 응답에서 커밋을 확인한 시각이다. S00-04에서 외부 REST/SSE DTO, 신선도·반영 지연·조회 시간 구간은 [화면 계약](monitoring.md), 검증 도구는 최소 검증 계획에 확정했다. 구체적인 사건 데이터는 본 문서를 기준으로 사용한다. 쉬운 작업 설명은 [작업 2 해설](<../../docs/work-notes/작업 2. 식별자와 사건 데이터 규격.md>)에 있다.
+
+## 선택적 3D 교통 확장 (2026-10-10)
+
+기존 v1 실행과 이벤트는 계속 유효하다. 새 교통 실행을 보내기 전에 수신·운영 서비스의 확장 validator를 함께 배포한다. 기존 schemaVersion=1 필드를 바꾸지 않고 아래 선택적 필드만 허용한다.
+
+- `RUN_STARTED.payload.config.traffic`: `policyVersion: 1, 2, 3 또는 4`, `vehicleRadius >= 24` (정책 2 이상은 30 이상), `clearance >= 3`, `bounds: {minX,minY,maxX,maxY}`, `obstacles: [{id,minX,minY,maxX,maxY}]`. 직사각형 좌표는 유한 수, min < max, 장애물 ID 중복 금지, 1~32개다. 단위는 기존 모델 좌표다.
+- `FACTORY_SNAPSHOT.payload.vehicles[].traffic`: `path: [{x,y},...]` (2~128점), `elapsedMs` (0 이상 정수), `durationMs` (양의 정수), `waiting` (boolean). `elapsedMs <= durationMs`. 차량 위치와 동일한 Python 운동 모델의 확정 경로·진행량이다. 경로 미확정·정지 시 현재 위치를 두 번 넣고 진행량 0을 보낸다.
+- 예약 경로는 현재 위치부터 목적지까지 남은 경로의 통행 영역을 독점한다. 이미 지난 구간은 다음 tick부터 해제하되, 같은 tick에서 지나간 영역은 모든 차량의 갱신이 끝날 때까지 보호한다. 다른 차량의 현재 안전영역과 예약 경로를 침범하지 않는 경로만 승인하며, 공간이 없으면 정지한다. 서로 목적지를 점유한 경우 비어 있는 양보 지점을 탐색한다.
+- 슬롯 예약과 통행 예약은 서로 다른 개념이다. 기존 `reservationId`, `W/R/A` 및 소유권 규칙은 변경하지 않는다. 차체 인계는 접안 후 기존 상태 전환으로 표현한다.
+- 운영 서비스는 이 정보를 그대로 전달한다. 프런트에서 경로를 새로 계산하거나 과거 실행에 충돌 회피가 있었던 것처럼 보정하지 않는다.
+- 이 확장은 운동학적 충돌 회피이며 강체 충격·가속도·조향 한계의 물리 재현을 주장하지 않는다.
+
+
+### 3D 교통 정책 2: 직접 공정 투입과 대기 Bay 운반
+
+직접 공정 투입은 `traffic.policyVersion=2`부터 지원한다. 기존 정책 1과 traffic 없는 실행의 설정·경로·인계 규칙은 그대로 읽는다.
+
+- 정책 2에는 기존 경로 7개에 BODY-IN→ASM-01, ASM-01→ASM-02, ASM-02→QC-01, 각 BAY→대응 CELL의 BODY 경로 6개가 추가된다.
+- 비어 있고 정상인 셀에 다른 입고 운송이 없으며 앞선 Bay 대기/입고가 없으면 목적지는 CELL이다. 셀이 사용 중·고장·입고 예약 상태면 여유 슬롯을 확보해 BUFFER로 보낸다. Bay 차체는 AGV가 픽업하여 CELL로 운반한다.
+- CELL행 활성 운송 자체가 해당 셀의 입고 예약이다. 같은 셀로 활성 운송을 중복 배정하지 않는다. CELL행 운송의 reservationId/slotId는 null이고 Bay 슬롯을 소비하지 않는다. 도중 셀이 고장 나면 AGV에 적재를 유지하고 복구 후 인계한다.
+- AGV가 CELL 접안 위치에서 하차를 끝내야 차체 소유가 CELL로 옮겨지고 작업이 시작된다. `BODY_ENTERED_CELL`의 bufferId/slotId는 이 경우 모두 null이다. 관제는 정책 2 및 해당 CELL로 실제 운송된 이력을 확인한다.
+- Bay 슬롯은 셀 도착 시점이 아니라 Bay에서 AGV가 차체를 적재하는 순간 `SLOT_RELEASED(reason=BODY_PICKED_UP)`으로 반환한다. 사건은 이전 Bay 입고의 transportId/reservationId를 참조한다.
+- 모델 외형은 정책 1 대비 1.25배다. vehicleRadius는 30 이상, clearance는 3 이상이다. 확대한 설비·Bay·보관 구역은 obstacles와 일치하며 접안 공간·외곽 경계·개별 주차 위치도 조정한다.
+
+정책 2에서는 적재 직전에도 목적지를 재평가한다. 설비가 비었고 다른 선행 Bay 대기가 없으면 기존 Bay행 ASSIGNED 운송을 `DIRECT_DELIVERY_AVAILABLE`로 취소하고 슬롯 예약을 반환한 뒤 CELL행 운송을 새로 배정한다. 적재 후 운송을 취소하거나 차체 위치를 순간 변경하지 않는다.
+
+### 3D 교통 정책 3: 통로 예약과 운동 제약
+
+정책 3은 `traffic.policyVersion=3`으로 구별한다. 현재 새 실행 기본값은 아래 정책 4다. 정책 1·2 및 traffic 없는 기존 실행은 기존 배치·운동·인계 규칙으로 재생한다. 정책 2의 직접 CELL 인계와 물리적 Bay 픽업 규칙은 정책 3에도 적용한다.
+
+- 정책 3의 `traffic`에는 `lanes: [{start:{x,y}, end:{x,y}}]`와 `holdingPoints: [{x,y}]`가 추가된다. lanes는 방향성이 있는 축 정렬 구간이고, 양방향 구간은 반대 방향 항목을 함께 둔다. 현재 공장용 통로망을 설정에 저장하여 과거 배치를 재현한다.
+- 기본 공장: CELL 접안 y=100, 동쪽 주행 y=180, 서쪽 주행 y=260, BAY 접안 y=340. BAY 실물은 접안점 뒤쪽에 있다. 부품 접안 y=510, STORE y=560, 차량 주차는 (-90,260), (-90,420), (-90,760)이다. 경계 maxY=820으로 확장한다. 접안점과 주행선 중심의 80 간격은 차량 간 기준 63보다 크다.
+- 차량의 `traffic`에 `heading:number`와 `segments:[]`를 추가한다. heading은 모델 평면의 +x 기준 라디안이다. 정지 시에도 마지막 방향을 보존한다. 3D y축 회전에는 부호를 반대로 사용한다.
+- 각 segment 필드: `turnMs`(0 이상 정수), `travelMs`(양의 정수), `rampMs`(0 초과, travelMs/2 이하), `initialHeading`, `heading`(유한 라디안), `peakSpeed`(0~0.0375 모델 좌표/ms). segment 수는 path 점 수-1이며 모든 turnMs+travelMs의 합은 durationMs다. 정지·상하차 상태는 segments=[]다.
+- 회전은 최단 각도 방향으로 제자리에서 수행한다. 정확히 반대 방향은 -π를 택한다. 이동은 선형 가속→정속→선형 감속의 사다리꼴 속도 곡선이며 각 구간 끝에서 정지한다. 최고 속도 37.5 모델 좌표/s, 가속도 상한 75 모델 좌표/s², 회전 속도 상한 120°/s다. 모델 좌표를 미터 단위로 해석하지 않는다.
+- path는 전체 계획 경로이며, 허가된 이동 거리나 점유 영역 자체를 뜻하지 않는다. 다음 한 구간만 통행 예약하고 대기 중 elapsedMs는 증가시키지 않는다. 현재 tick의 예약은 모든 차량의 갱신이 끝날 때까지 보호한다.
+- A*는 거리와 정차 비용, 현재 통행 충돌의 예상 대기 비용을 사용한다. 한 주행 구간 중간에는 경로를 바꾸지 않는다. 3초 이상 막힌 정차 지점에서만 통행 가능한 대체 경로를 검토한다. 경로 변경 비용 75 모델 좌표(최대 속도 2초)를 추가하여 작은 이득 때문에 바꾸지 않고, 교착은 지정 holdingPoint로 양보하여 해소한다. 경로가 항상 존재하거나 모든 임의 배치의 교착이 해소된다는 보장은 하지 않는다.
+- 정책 3에서는 이동/회전 도중 빈 복귀 차량의 재배차와 선행 입력 작업 취소를 하지 않는다. 다음 정차 노드에서 다시 평가한다. 명시적 운송 취소도 정차 노드 또는 상차 대기 때만 허용한다.
+- 충돌 검사는 적재물까지 포함하는 반경 30의 원형 안전 영역으로 수행한다. 이는 충돌 없는 평면 운동 모델이며, 타이어 접지·충격·센서 인식 모델은 포함하지 않는다.
+
+### 3D 교통 정책 4: 가까운 작업 연결과 접안 후진
+
+새 `--traffic` 실행의 기본값은 `traffic.policyVersion=4`다. 정책 3의 메시지 필드·안전거리·구간 예약·가감속 상한을 유지한다.
+
+- 주행 통로는 양방향이며 교차/대향 차량의 안전 영역이 겹치는 구간은 동시에 허가하지 않는다. 직선 위 중간 노드는 하나의 운동 구간으로 합쳐 불필요한 정차를 없앤다.
+- 빈 차량이 재료 접안점에서 출발하는 첫 구간에 한해, 길이 100 이하이고 진행 방향과 차체 방향의 차이가 90도를 넘으면 후진한다. 적재 상태(MOVING)는 후진하지 않으며 정지 회전 후 전진한다. 교차로·중간 구간 후진도 금지한다. 후진 최고 속도는 18.75 모델 좌표/s다. `segments.heading`은 차체 방향이며 이동 벡터와 반대일 수 있다. 위치 보간은 path, 차체 회전은 heading을 사용한다.
+- 공정 인계 후 바로 IDLE로 현장 대기한다. 남은 작업이 8초 이하이면 해당 공정 완료 픽업을 기다린다. 고장/긴 작업은 이 대기 예약에서 제외한다. 출고 접안점만 가까운 개별 대기점으로 비운다. 다른 배정 차량의 목적지를 막는 IDLE 차량도 지정 대기점으로 비킨다.
+- 기본 출고 대기점은 AGV-001 (780,260), AGV-002 (780,340)이다. 기존 차량 초기 주차점은 유지한다. 과거 실행의 규칙은 policyVersion으로 보존한다.
+- 개발 관제의 중단 명령은 소유한 로컬 Python 실행에 SIGTERM을 보낸다. 정상 생산 완료 사건 RUN_FINISHED를 만들지 않는다. 실행기 STOPPED와 생산 FINISHED는 구별한다.
+
+- 모든 차체가 RESULT이고 활성 운송이 없으며 차량이 정지한 뒤, AGV를 한 대씩 최종 복귀시킨다. (845,650) → (0,650)의 외곽 통로를 지나 각 initialPosition으로 복귀한다. 외곽 복귀 중에는 내부 지름길로 재계획하지 않는다. AGV 초기 위치 복귀까지 실행을 FINISHED로 만들지 않는다. 부품 AMR은 이 AGV 최종 복귀 대상에서 제외한다.
+
+
+### 후면 AMR 부품 공급 확장 (선택 필드)
+
+신규 정책 4 정상/수동 복구 실행은 RUN_STARTED.config에 `partsSupply: {capacity: 2, initialStock: 2}`를 포함한다. `capacity`는 1~2, `initialStock`은 0~capacity 및 maxBodies 이하 정수다. 초기 재고는 시뮬레이션 시작 조건으로 공급대에 명시적으로 배치된 키트다. 과거 실행에는 필드가 없으며 기존 동작을 유지한다.
+
+해당 실행의 FACTORY_SNAPSHOT에는 `partsSupply` 배열이 필수다. ASM-01/02 각 한 행이며 필드는 `cellId`, `dockId`, `capacity`, `initialStock`, `available`, `inbound`, `delivered`, `consumed`, `stockoutMs`다. 후자의 수량/시간은 음이 아닌 정수다. `dockId`는 PARTS-{cellId}. `available + consumed = initialStock + delivered`, `available + inbound <= capacity`를 유지한다. inbound는 해당 공급대의 활성 PARTS 운송 수와 같고, consumed는 해당 ASM 작업을 시작한 차체 수와 같다.
+
+부품은 실제 AMR 상하차로 공급대에 도착한 후 사용 가능하며, ASM 작업 시작 때 키트 1개를 소비한다. 소비한 키트는 복구/재시도에서 재소비하지 않는다. 재고가 없으면 차체의 직접 공정 배차를 막고 실제 보급을 기다린다. stockoutMs는 사용 가능한 부품 없이 빈 ASM으로 진입을 기다리는 차체가 있는 시간의 누적값이다.
+
+관제 전체 스냅샷/SSE는 partsSupply를 그대로 전달한다. 과거 실행은 빈 배열을 전달한다. 현재 구현은 조립용 키트 단위이며 개별 BOM 품목·부품 창고 입고/유한 총재고는 아직 모델링하지 않는다.

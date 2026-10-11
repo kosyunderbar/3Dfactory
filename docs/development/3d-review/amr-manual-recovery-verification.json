@@ -1,0 +1,56 @@
+{
+  "runId": "run-20261010-95f05fc36e894e8cbd5a2259b1da561c",
+  "eventCount": 855,
+  "fault": {
+    "faultId": "fault-00001",
+    "cellId": "ASM-01",
+    "bodyId": "body-00001",
+    "operationId": "operation-00001",
+    "code": "CLAMP_POSITION_MISMATCH",
+    "cause": "체결 장치 위치 센서 불일치",
+    "explanation": "체결 장치의 목표 위치와 센서 신호가 일치하지 않아 조립을 정지했습니다.",
+    "action": "위치 센서 재정렬 및 체결 장치 원점 복귀",
+    "occurredMs": 22700,
+    "elapsedWorkMs": 1000,
+    "requiredWorkMs": 4000,
+    "resolvedMs": 83500,
+    "history": [
+      {
+        "stage": "DETECTED",
+        "message": "위치 센서 불일치 감지. 해당 설비를 정지하고 작업 진행량을 보존했습니다.",
+        "actor": "SCENARIO",
+        "simElapsedMs": 22700,
+        "at": "2026-10-10T15:31:04.647668+00:00"
+      },
+      {
+        "stage": "INSPECTING",
+        "message": "사용자가 현장 점검을 시작했습니다. 조치 완료 확인을 기다립니다.",
+        "actor": "USER",
+        "simElapsedMs": 43400,
+        "at": "2026-10-10T15:31:26.067802+00:00"
+      },
+      {
+        "stage": "VERIFYING",
+        "message": "사용자가 센서 재정렬·원점 복귀 완료를 확인했습니다. 재가동 전 동작을 확인합니다.",
+        "actor": "USER",
+        "simElapsedMs": 81500,
+        "at": "2026-10-10T15:32:05.474000+00:00"
+      },
+      {
+        "stage": "RESOLVED",
+        "message": "동작 확인 완료. 정지 시점의 남은 조립 작업을 재개했습니다.",
+        "actor": "SIMULATOR",
+        "simElapsedMs": 83500,
+        "at": "2026-10-10T15:32:07.535947+00:00"
+      }
+    ],
+    "stage": "RESOLVED",
+    "verifyUntilMs": 83500
+  },
+  "downSnapshotsChecked": 122,
+  "workPreserved": true,
+  "resumedRemainingWorkMs": 3000,
+  "completedExactlyOnce": true,
+  "finished": true,
+  "goodBodies": 3
+}

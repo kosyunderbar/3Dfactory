@@ -1,0 +1,37 @@
+{
+  "runId": "run-20261010-00661b6a1e9a44329886f8c68195791d",
+  "events": 736,
+  "snapshots": 541,
+  "compatiblePairs": 433,
+  "renderedFleetSamples": 3787,
+  "minVehicleCenterDistance": 55.30626078179184,
+  "finished": true,
+  "bodyResults": [
+    {
+      "id": "body-00001",
+      "result": "FAIL",
+      "location": "HOLD"
+    },
+    {
+      "id": "body-00002",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00003",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00004",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00005",
+      "result": "PASS",
+      "location": "GOOD"
+    }
+  ],
+  "maxFrameBytes": 6752
+}

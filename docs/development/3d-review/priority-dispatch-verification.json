@@ -1,0 +1,33 @@
+{
+  "runId": "run-20261010-8f338338acd84ddfb10e572aaba6242d",
+  "status": "FINISHED",
+  "events": 434,
+  "bothDatabasesMatchEveryOriginal": true,
+  "pendingCount": 0,
+  "before": {
+    "vehicleId": "AGV-002",
+    "completionToLoadedMs": 23441
+  },
+  "after": {
+    "vehicleId": "AGV-001",
+    "completionToLoadedMs": 2791
+  },
+  "priorityCancellations": 3,
+  "bodyResults": [
+    {
+      "bodyId": "body-00001",
+      "locationId": "GOOD",
+      "inspectionResult": "PASS"
+    },
+    {
+      "bodyId": "body-00002",
+      "locationId": "GOOD",
+      "inspectionResult": "PASS"
+    },
+    {
+      "bodyId": "body-00003",
+      "locationId": "GOOD",
+      "inspectionResult": "PASS"
+    }
+  ]
+}

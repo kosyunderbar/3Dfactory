@@ -1,0 +1,1689 @@
+{
+  "tickMs": 100,
+  "snapshotIntervalMs": 500,
+  "speed": 1,
+  "maxBodies": 100,
+  "failProbability": 0.01,
+  "locations": [
+    {
+      "locationType": "INPUT",
+      "locationId": "BODY-IN",
+      "x": 0,
+      "y": 100
+    },
+    {
+      "locationType": "BUFFER",
+      "locationId": "BAY-ASM-01",
+      "x": 100,
+      "y": 340
+    },
+    {
+      "locationType": "CELL",
+      "locationId": "ASM-01",
+      "x": 150,
+      "y": 100
+    },
+    {
+      "locationType": "BUFFER",
+      "locationId": "BAY-ASM-02",
+      "x": 300,
+      "y": 340
+    },
+    {
+      "locationType": "CELL",
+      "locationId": "ASM-02",
+      "x": 350,
+      "y": 100
+    },
+    {
+      "locationType": "BUFFER",
+      "locationId": "BAY-QC-01",
+      "x": 500,
+      "y": 340
+    },
+    {
+      "locationType": "CELL",
+      "locationId": "QC-01",
+      "x": 550,
+      "y": 100
+    },
+    {
+      "locationType": "RESULT",
+      "locationId": "GOOD",
+      "x": 700,
+      "y": 70
+    },
+    {
+      "locationType": "RESULT",
+      "locationId": "HOLD",
+      "x": 700,
+      "y": 130
+    },
+    {
+      "locationType": "STORE",
+      "locationId": "PARTS-STORE",
+      "x": 0,
+      "y": 560
+    },
+    {
+      "locationType": "PARTS_DOCK",
+      "locationId": "PARTS-ASM-01",
+      "x": 150,
+      "y": 510
+    },
+    {
+      "locationType": "PARTS_DOCK",
+      "locationId": "PARTS-ASM-02",
+      "x": 350,
+      "y": 510
+    }
+  ],
+  "equipment": [
+    {
+      "cellId": "ASM-01",
+      "equipmentId": "ASM-01",
+      "bufferId": "BAY-ASM-01",
+      "workDurationMs": 4000
+    },
+    {
+      "cellId": "ASM-02",
+      "equipmentId": "ASM-02",
+      "bufferId": "BAY-ASM-02",
+      "workDurationMs": 6000
+    },
+    {
+      "cellId": "QC-01",
+      "equipmentId": "QC-01",
+      "bufferId": "BAY-QC-01",
+      "workDurationMs": 3000
+    }
+  ],
+  "buffers": [
+    {
+      "bufferId": "BAY-ASM-01",
+      "cellId": "ASM-01",
+      "capacity": 3,
+      "slotIds": [
+        "BAY-ASM-01-S1",
+        "BAY-ASM-01-S2",
+        "BAY-ASM-01-S3"
+      ]
+    },
+    {
+      "bufferId": "BAY-ASM-02",
+      "cellId": "ASM-02",
+      "capacity": 3,
+      "slotIds": [
+        "BAY-ASM-02-S1",
+        "BAY-ASM-02-S2",
+        "BAY-ASM-02-S3"
+      ]
+    },
+    {
+      "bufferId": "BAY-QC-01",
+      "cellId": "QC-01",
+      "capacity": 3,
+      "slotIds": [
+        "BAY-QC-01-S1",
+        "BAY-QC-01-S2",
+        "BAY-QC-01-S3"
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "vehicleId": "AGV-001",
+      "kind": "AGV",
+      "home": {
+        "locationType": "INPUT",
+        "locationId": "BODY-IN"
+      },
+      "initialPosition": {
+        "x": -90,
+        "y": 260
+      }
+    },
+    {
+      "vehicleId": "AGV-002",
+      "kind": "AGV",
+      "home": {
+        "locationType": "INPUT",
+        "locationId": "BODY-IN"
+      },
+      "initialPosition": {
+        "x": -90,
+        "y": 420
+      }
+    },
+    {
+      "vehicleId": "AMR-001",
+      "kind": "AMR",
+      "home": {
+        "locationType": "STORE",
+        "locationId": "PARTS-STORE"
+      },
+      "initialPosition": {
+        "x": -90,
+        "y": 760
+      }
+    }
+  ],
+  "routes": [
+    {
+      "routeId": "ROUTE-INPUT-ASM-01",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "INPUT",
+        "locationId": "BODY-IN"
+      },
+      "destination": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-01"
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 100
+        },
+        {
+          "x": 100,
+          "y": 340
+        }
+      ],
+      "travelDurationMs": 10400
+    },
+    {
+      "routeId": "ROUTE-ASM-01-ASM-02",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "CELL",
+        "locationId": "ASM-01"
+      },
+      "destination": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02"
+      },
+      "points": [
+        {
+          "x": 150,
+          "y": 100
+        },
+        {
+          "x": 300,
+          "y": 340
+        }
+      ],
+      "travelDurationMs": 7600
+    },
+    {
+      "routeId": "ROUTE-ASM-02-QC-01",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "CELL",
+        "locationId": "ASM-02"
+      },
+      "destination": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-QC-01"
+      },
+      "points": [
+        {
+          "x": 350,
+          "y": 100
+        },
+        {
+          "x": 500,
+          "y": 340
+        }
+      ],
+      "travelDurationMs": 7600
+    },
+    {
+      "routeId": "ROUTE-QC-01-GOOD",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "CELL",
+        "locationId": "QC-01"
+      },
+      "destination": {
+        "locationType": "RESULT",
+        "locationId": "GOOD"
+      },
+      "points": [
+        {
+          "x": 550,
+          "y": 100
+        },
+        {
+          "x": 700,
+          "y": 70
+        }
+      ],
+      "travelDurationMs": 4000
+    },
+    {
+      "routeId": "ROUTE-QC-01-HOLD",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "CELL",
+        "locationId": "QC-01"
+      },
+      "destination": {
+        "locationType": "RESULT",
+        "locationId": "HOLD"
+      },
+      "points": [
+        {
+          "x": 550,
+          "y": 100
+        },
+        {
+          "x": 700,
+          "y": 130
+        }
+      ],
+      "travelDurationMs": 4000
+    },
+    {
+      "routeId": "ROUTE-PARTS-ASM-01",
+      "cargoType": "PARTS",
+      "source": {
+        "locationType": "STORE",
+        "locationId": "PARTS-STORE"
+      },
+      "destination": {
+        "locationType": "PARTS_DOCK",
+        "locationId": "PARTS-ASM-01"
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 560
+        },
+        {
+          "x": 150,
+          "y": 510
+        }
+      ],
+      "travelDurationMs": 4100
+    },
+    {
+      "routeId": "ROUTE-PARTS-ASM-02",
+      "cargoType": "PARTS",
+      "source": {
+        "locationType": "STORE",
+        "locationId": "PARTS-STORE"
+      },
+      "destination": {
+        "locationType": "PARTS_DOCK",
+        "locationId": "PARTS-ASM-02"
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 560
+        },
+        {
+          "x": 350,
+          "y": 510
+        }
+      ],
+      "travelDurationMs": 4000
+    },
+    {
+      "routeId": "ROUTE-DIRECT-BODY-IN-ASM-01",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "INPUT",
+        "locationId": "BODY-IN"
+      },
+      "destination": {
+        "locationType": "CELL",
+        "locationId": "ASM-01"
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 100
+        },
+        {
+          "x": 150,
+          "y": 100
+        }
+      ],
+      "travelDurationMs": 4000
+    },
+    {
+      "routeId": "ROUTE-DIRECT-ASM-01-ASM-02",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "CELL",
+        "locationId": "ASM-01"
+      },
+      "destination": {
+        "locationType": "CELL",
+        "locationId": "ASM-02"
+      },
+      "points": [
+        {
+          "x": 150,
+          "y": 100
+        },
+        {
+          "x": 350,
+          "y": 100
+        }
+      ],
+      "travelDurationMs": 5400
+    },
+    {
+      "routeId": "ROUTE-DIRECT-ASM-02-QC-01",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "CELL",
+        "locationId": "ASM-02"
+      },
+      "destination": {
+        "locationType": "CELL",
+        "locationId": "QC-01"
+      },
+      "points": [
+        {
+          "x": 350,
+          "y": 100
+        },
+        {
+          "x": 550,
+          "y": 100
+        }
+      ],
+      "travelDurationMs": 5400
+    },
+    {
+      "routeId": "ROUTE-DIRECT-BAY-ASM-01-ASM-01",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-01"
+      },
+      "destination": {
+        "locationType": "CELL",
+        "locationId": "ASM-01"
+      },
+      "points": [
+        {
+          "x": 100,
+          "y": 340
+        },
+        {
+          "x": 150,
+          "y": 100
+        }
+      ],
+      "travelDurationMs": 6600
+    },
+    {
+      "routeId": "ROUTE-DIRECT-BAY-ASM-02-ASM-02",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-ASM-02"
+      },
+      "destination": {
+        "locationType": "CELL",
+        "locationId": "ASM-02"
+      },
+      "points": [
+        {
+          "x": 300,
+          "y": 340
+        },
+        {
+          "x": 350,
+          "y": 100
+        }
+      ],
+      "travelDurationMs": 6600
+    },
+    {
+      "routeId": "ROUTE-DIRECT-BAY-QC-01-QC-01",
+      "cargoType": "BODY",
+      "source": {
+        "locationType": "BUFFER",
+        "locationId": "BAY-QC-01"
+      },
+      "destination": {
+        "locationType": "CELL",
+        "locationId": "QC-01"
+      },
+      "points": [
+        {
+          "x": 500,
+          "y": 340
+        },
+        {
+          "x": 550,
+          "y": 100
+        }
+      ],
+      "travelDurationMs": 6600
+    }
+  ],
+  "traffic": {
+    "policyVersion": 4,
+    "vehicleRadius": 30.0,
+    "clearance": 3,
+    "bounds": {
+      "minX": -160,
+      "maxX": 880,
+      "minY": -100,
+      "maxY": 820
+    },
+    "obstacles": [
+      {
+        "id": "BODY-IN",
+        "minX": -122.5,
+        "maxX": -52.5,
+        "minY": 67.5,
+        "maxY": 132.5
+      },
+      {
+        "id": "BAY-ASM-01",
+        "minX": 76.875,
+        "maxX": 123.125,
+        "minY": 387.5,
+        "maxY": 472.5
+      },
+      {
+        "id": "ASM-01",
+        "minX": 120.0,
+        "maxX": 180.0,
+        "minY": -17.5,
+        "maxY": 57.5
+      },
+      {
+        "id": "BAY-ASM-02",
+        "minX": 276.875,
+        "maxX": 323.125,
+        "minY": 387.5,
+        "maxY": 472.5
+      },
+      {
+        "id": "ASM-02",
+        "minX": 320.0,
+        "maxX": 380.0,
+        "minY": -17.5,
+        "maxY": 57.5
+      },
+      {
+        "id": "BAY-QC-01",
+        "minX": 476.875,
+        "maxX": 523.125,
+        "minY": 387.5,
+        "maxY": 472.5
+      },
+      {
+        "id": "QC-01",
+        "minX": 520.0,
+        "maxX": 580.0,
+        "minY": -17.5,
+        "maxY": 57.5
+      },
+      {
+        "id": "GOOD",
+        "minX": 752.5,
+        "maxX": 822.5,
+        "minY": 37.5,
+        "maxY": 102.5
+      },
+      {
+        "id": "HOLD",
+        "minX": 752.5,
+        "maxX": 822.5,
+        "minY": 97.5,
+        "maxY": 162.5
+      },
+      {
+        "id": "PARTS-STORE",
+        "minX": -117.5,
+        "maxX": -57.5,
+        "minY": 533.75,
+        "maxY": 586.25
+      },
+      {
+        "id": "PARTS-ASM-01",
+        "minX": 120.0,
+        "maxX": 180.0,
+        "minY": 558.75,
+        "maxY": 611.25
+      },
+      {
+        "id": "PARTS-ASM-02",
+        "minX": 320.0,
+        "maxX": 380.0,
+        "minY": 558.75,
+        "maxY": 611.25
+      }
+    ],
+    "lanes": [
+      {
+        "start": {
+          "x": 0,
+          "y": 180
+        },
+        "end": {
+          "x": 150,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 150,
+          "y": 180
+        },
+        "end": {
+          "x": 0,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 150,
+          "y": 180
+        },
+        "end": {
+          "x": 200,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 180
+        },
+        "end": {
+          "x": 150,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 180
+        },
+        "end": {
+          "x": 350,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 350,
+          "y": 180
+        },
+        "end": {
+          "x": 200,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 350,
+          "y": 180
+        },
+        "end": {
+          "x": 400,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 180
+        },
+        "end": {
+          "x": 350,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 180
+        },
+        "end": {
+          "x": 550,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 550,
+          "y": 180
+        },
+        "end": {
+          "x": 400,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 550,
+          "y": 180
+        },
+        "end": {
+          "x": 600,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 180
+        },
+        "end": {
+          "x": 550,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 180
+        },
+        "end": {
+          "x": 700,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 180
+        },
+        "end": {
+          "x": 600,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 100,
+          "y": 260
+        },
+        "end": {
+          "x": 0,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 260
+        },
+        "end": {
+          "x": 100,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 260
+        },
+        "end": {
+          "x": 100,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 100,
+          "y": 260
+        },
+        "end": {
+          "x": 200,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 300,
+          "y": 260
+        },
+        "end": {
+          "x": 200,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 260
+        },
+        "end": {
+          "x": 300,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 260
+        },
+        "end": {
+          "x": 300,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 300,
+          "y": 260
+        },
+        "end": {
+          "x": 400,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 500,
+          "y": 260
+        },
+        "end": {
+          "x": 400,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 260
+        },
+        "end": {
+          "x": 500,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 260
+        },
+        "end": {
+          "x": 500,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 500,
+          "y": 260
+        },
+        "end": {
+          "x": 600,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 260
+        },
+        "end": {
+          "x": 600,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 260
+        },
+        "end": {
+          "x": 700,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 150,
+          "y": 180
+        },
+        "end": {
+          "x": 150,
+          "y": 100
+        }
+      },
+      {
+        "start": {
+          "x": 150,
+          "y": 100
+        },
+        "end": {
+          "x": 150,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 350,
+          "y": 180
+        },
+        "end": {
+          "x": 350,
+          "y": 100
+        }
+      },
+      {
+        "start": {
+          "x": 350,
+          "y": 100
+        },
+        "end": {
+          "x": 350,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 550,
+          "y": 180
+        },
+        "end": {
+          "x": 550,
+          "y": 100
+        }
+      },
+      {
+        "start": {
+          "x": 550,
+          "y": 100
+        },
+        "end": {
+          "x": 550,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 100,
+          "y": 260
+        },
+        "end": {
+          "x": 100,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 100,
+          "y": 340
+        },
+        "end": {
+          "x": 100,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 300,
+          "y": 260
+        },
+        "end": {
+          "x": 300,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 300,
+          "y": 340
+        },
+        "end": {
+          "x": 300,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 500,
+          "y": 260
+        },
+        "end": {
+          "x": 500,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 500,
+          "y": 340
+        },
+        "end": {
+          "x": 500,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 180
+        },
+        "end": {
+          "x": 200,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 260
+        },
+        "end": {
+          "x": 200,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 180
+        },
+        "end": {
+          "x": 400,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 260
+        },
+        "end": {
+          "x": 400,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 180
+        },
+        "end": {
+          "x": 600,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 260
+        },
+        "end": {
+          "x": 600,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 260
+        },
+        "end": {
+          "x": 0,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 180
+        },
+        "end": {
+          "x": 0,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 180
+        },
+        "end": {
+          "x": 0,
+          "y": 100
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 100
+        },
+        "end": {
+          "x": 0,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 180
+        },
+        "end": {
+          "x": 700,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 260
+        },
+        "end": {
+          "x": 700,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 180
+        },
+        "end": {
+          "x": 700,
+          "y": 130
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 130
+        },
+        "end": {
+          "x": 700,
+          "y": 180
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 130
+        },
+        "end": {
+          "x": 700,
+          "y": 70
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 70
+        },
+        "end": {
+          "x": 700,
+          "y": 130
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 260
+        },
+        "end": {
+          "x": 0,
+          "y": 420
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 420
+        },
+        "end": {
+          "x": 0,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 420
+        },
+        "end": {
+          "x": 0,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 510
+        },
+        "end": {
+          "x": 0,
+          "y": 420
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 510
+        },
+        "end": {
+          "x": 0,
+          "y": 560
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 560
+        },
+        "end": {
+          "x": 0,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 260
+        },
+        "end": {
+          "x": -90,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": -90,
+          "y": 260
+        },
+        "end": {
+          "x": 0,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 420
+        },
+        "end": {
+          "x": -90,
+          "y": 420
+        }
+      },
+      {
+        "start": {
+          "x": -90,
+          "y": 420
+        },
+        "end": {
+          "x": 0,
+          "y": 420
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 760
+        },
+        "end": {
+          "x": -90,
+          "y": 760
+        }
+      },
+      {
+        "start": {
+          "x": -90,
+          "y": 760
+        },
+        "end": {
+          "x": 0,
+          "y": 760
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 510
+        },
+        "end": {
+          "x": 150,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 150,
+          "y": 510
+        },
+        "end": {
+          "x": 0,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 150,
+          "y": 510
+        },
+        "end": {
+          "x": 200,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 510
+        },
+        "end": {
+          "x": 150,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 510
+        },
+        "end": {
+          "x": 350,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 350,
+          "y": 510
+        },
+        "end": {
+          "x": 200,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 350,
+          "y": 510
+        },
+        "end": {
+          "x": 400,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 510
+        },
+        "end": {
+          "x": 350,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 510
+        },
+        "end": {
+          "x": 600,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 510
+        },
+        "end": {
+          "x": 400,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 510
+        },
+        "end": {
+          "x": 700,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 510
+        },
+        "end": {
+          "x": 600,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 260
+        },
+        "end": {
+          "x": 200,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 200,
+          "y": 510
+        },
+        "end": {
+          "x": 200,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 260
+        },
+        "end": {
+          "x": 400,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 400,
+          "y": 510
+        },
+        "end": {
+          "x": 400,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 260
+        },
+        "end": {
+          "x": 600,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 600,
+          "y": 510
+        },
+        "end": {
+          "x": 600,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 260
+        },
+        "end": {
+          "x": 700,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 340
+        },
+        "end": {
+          "x": 700,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 340
+        },
+        "end": {
+          "x": 700,
+          "y": 510
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 510
+        },
+        "end": {
+          "x": 700,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 260
+        },
+        "end": {
+          "x": 780,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 780,
+          "y": 260
+        },
+        "end": {
+          "x": 700,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 700,
+          "y": 340
+        },
+        "end": {
+          "x": 780,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 780,
+          "y": 340
+        },
+        "end": {
+          "x": 700,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 780,
+          "y": 260
+        },
+        "end": {
+          "x": 845,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 260
+        },
+        "end": {
+          "x": 780,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 780,
+          "y": 340
+        },
+        "end": {
+          "x": 845,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 340
+        },
+        "end": {
+          "x": 780,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 260
+        },
+        "end": {
+          "x": 845,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 340
+        },
+        "end": {
+          "x": 845,
+          "y": 260
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 340
+        },
+        "end": {
+          "x": 845,
+          "y": 650
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 650
+        },
+        "end": {
+          "x": 845,
+          "y": 340
+        }
+      },
+      {
+        "start": {
+          "x": 845,
+          "y": 650
+        },
+        "end": {
+          "x": 0,
+          "y": 650
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 650
+        },
+        "end": {
+          "x": 845,
+          "y": 650
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 560
+        },
+        "end": {
+          "x": 0,
+          "y": 650
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 650
+        },
+        "end": {
+          "x": 0,
+          "y": 560
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 650
+        },
+        "end": {
+          "x": 0,
+          "y": 760
+        }
+      },
+      {
+        "start": {
+          "x": 0,
+          "y": 760
+        },
+        "end": {
+          "x": 0,
+          "y": 650
+        }
+      }
+    ],
+    "holdingPoints": [
+      {
+        "x": -90,
+        "y": 260
+      },
+      {
+        "x": -90,
+        "y": 420
+      },
+      {
+        "x": -90,
+        "y": 760
+      },
+      {
+        "x": 200,
+        "y": 510
+      },
+      {
+        "x": 400,
+        "y": 510
+      },
+      {
+        "x": 600,
+        "y": 510
+      },
+      {
+        "x": 700,
+        "y": 510
+      },
+      {
+        "x": 780,
+        "y": 260
+      },
+      {
+        "x": 780,
+        "y": 340
+      }
+    ]
+  }
+}

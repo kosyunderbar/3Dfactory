@@ -1,0 +1,44 @@
+{
+  "requireForward": true,
+  "requireFinalHome": true,
+  "finalReturns": [
+    "AGV-002",
+    "AGV-001"
+  ],
+  "loadedLegObservations": 3355,
+  "runId": "run-20261010-222f1c6ef7fc4c2aaab347372d5a994d",
+  "events": 1283,
+  "snapshots": 1083,
+  "compatiblePairs": 994,
+  "renderedFleetSamples": 7581,
+  "minVehicleCenterDistance": 80,
+  "finished": true,
+  "bodyResults": [
+    {
+      "id": "body-00001",
+      "result": "FAIL",
+      "location": "HOLD"
+    },
+    {
+      "id": "body-00002",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00003",
+      "result": "FAIL",
+      "location": "HOLD"
+    },
+    {
+      "id": "body-00004",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00005",
+      "result": "FAIL",
+      "location": "HOLD"
+    }
+  ],
+  "maxFrameBytes": 12099
+}

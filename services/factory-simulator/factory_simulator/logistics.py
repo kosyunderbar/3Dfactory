@@ -80,8 +80,8 @@ class DispatchDecision:
 class CellEntry:
     body_id: str
     cell_id: str
-    buffer_id: str
-    slot_id: str
+    buffer_id: str | None
+    slot_id: str | None
     operation_id: str
     transport_id: str | None
     reservation_id: str | None
@@ -100,3 +100,4 @@ class PartsKit:
     parts_kit_id: str
     location: Location
     transport_id: str | None = None
+    consumed_by: str | None = None

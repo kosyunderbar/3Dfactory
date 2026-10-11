@@ -1,0 +1,25 @@
+{
+  "runId": "run-20261010-17e3fdbfd8ea4307a84b90f7f13776a9",
+  "events": 517,
+  "allOriginalBytesSequencesHashesMatch": true,
+  "deliveryPending": 0,
+  "status": "FINISHED",
+  "policyVersion": 4,
+  "bodies": [
+    {
+      "id": "body-00001",
+      "location": "GOOD",
+      "quality": "PASS"
+    },
+    {
+      "id": "body-00002",
+      "location": "GOOD",
+      "quality": "PASS"
+    },
+    {
+      "id": "body-00003",
+      "location": "GOOD",
+      "quality": "PASS"
+    }
+  ]
+}

@@ -54,11 +54,22 @@ def transition_facts(before, after):
             del payload['inspectedAt']
             yield 'INSPECTION_COMPLETED', inspection.inspected_at, payload
     for entry in after['entries'][len(before['entries']):]:
-        yield 'SLOT_RELEASED', entry.entered_at, {'bufferId': entry.buffer_id, 'slotId': entry.slot_id,
-            'bodyId': entry.body_id, 'reservationId': entry.reservation_id, 'transportId': entry.transport_id,
-            'reason': 'BODY_ENTERED_CELL'}
+        if entry.buffer_id is not None:
+            yield 'SLOT_RELEASED', entry.entered_at, {'bufferId': entry.buffer_id, 'slotId': entry.slot_id,
+                'bodyId': entry.body_id, 'reservationId': entry.reservation_id, 'transportId': entry.transport_id,
+                'reason': 'BODY_ENTERED_CELL'}
         yield 'BODY_ENTERED_CELL', entry.entered_at, {'bodyId': entry.body_id, 'cellId': entry.cell_id,
             'bufferId': entry.buffer_id, 'slotId': entry.slot_id, 'operationId': entry.operation_id}
+    for key, body in after['bodies'].items():
+        prior = before['bodies'].get(key)
+        if prior and prior.location.location_type == 'BUFFER' and body.location.location_type == 'VEHICLE':
+            arrival = next((t for t in reversed(list(before['transports'].values())) if t.body_id == key
+                            and t.status == 'COMPLETED' and t.destination.location_id == prior.location.location_id
+                            and t.slot_id == prior.location.slot_id),None)
+            trip = after['transports'][body.transport_id]
+            yield 'SLOT_RELEASED', trip.started_at, {'bufferId':prior.location.location_id,'slotId':prior.location.slot_id,
+                'bodyId':key,'reservationId':arrival.reservation_id if arrival else None,
+                'transportId':arrival.transport_id if arrival else None,'reason':'BODY_PICKED_UP'}
     for key, transport in after['transports'].items():
         prior = before['transports'].get(key)
         if prior is not None and prior.status == transport.status:

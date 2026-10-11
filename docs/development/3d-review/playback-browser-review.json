@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-11",
+  "sourceRunId": "run-20261010-224a53bb565e42e9a4cec7996f54b5fb",
+  "sourceIntervalMs": [
+    30000,
+    55000
+  ],
+  "mode": "recorded snapshots with synthetic receipt jitter; overview then AGV-001 third-person at 11 seconds",
+  "beforeCameraBounds": {
+    "renderCallbacks": 1589,
+    "renderCpuP95Ms": 22.9,
+    "renderCpuMaxMs": 243.2
+  },
+  "afterCameraBounds": {
+    "renderCallbacks": 1848,
+    "renderCpuP95Ms": 19.8,
+    "renderCpuMaxMs": 95.2
+  },
+  "measurement": "performance.now around requestAnimationFrame render callback; exclude initial 2 seconds",
+  "limitations": [
+    "Sequential single browser runs, not controlled performance benchmark",
+    "CPU callback wall duration includes scheduling/driver effects, not GPU timer or FPS guarantee",
+    "Not a new connected production or proof that every stutter is eliminated"
+  ]
+}

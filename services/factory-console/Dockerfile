@@ -2,7 +2,7 @@ FROM node:24.21.0-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea41952009
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci
-COPY index.html vite.config.js ./
+COPY index.html vite.config.js simulation-launcher.js ./
 COPY src/ ./src/
 RUN npm run build
 

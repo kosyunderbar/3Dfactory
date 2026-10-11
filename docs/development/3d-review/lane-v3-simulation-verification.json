@@ -1,0 +1,46 @@
+[
+  {
+    "policy": 3,
+    "totalDistance": 15520.00000000091,
+    "totalRotationDegrees": 12420.000000000002,
+    "scenario": "normal",
+    "simElapsedMs": 346500,
+    "ticks": 3465,
+    "minSweptDistance": 80.0,
+    "waitingVehicleTicks": 195,
+    "stoppedReroutes": 2,
+    "pullovers": 2,
+    "stages": [],
+    "results": [
+      "GOOD",
+      "GOOD",
+      "GOOD"
+    ]
+  },
+  {
+    "policy": 3,
+    "totalDistance": 35859.99999999965,
+    "totalRotationDegrees": 28440.0,
+    "scenario": "p0",
+    "simElapsedMs": 806000,
+    "ticks": 8060,
+    "minSweptDistance": 80.0,
+    "waitingVehicleTicks": 1308,
+    "stoppedReroutes": 9,
+    "pullovers": 9,
+    "stages": [
+      "FULL_RESERVED",
+      "FULL_IN_TRANSIT",
+      "FULL_ARRIVED",
+      "CELL_DOWN",
+      "SLOT_RELEASED"
+    ],
+    "results": [
+      "HOLD",
+      "GOOD",
+      "GOOD",
+      "HOLD",
+      "HOLD"
+    ]
+  }
+]

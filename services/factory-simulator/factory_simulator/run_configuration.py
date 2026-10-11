@@ -59,7 +59,12 @@ def _unique(items: list, field: str, label: str) -> None:
 
 def _validate_factory(config: dict) -> None:
     _keys(config, {'tickMs', 'snapshotIntervalMs', 'speed', 'maxBodies', 'failProbability',
-                   'locations', 'equipment', 'buffers', 'vehicles', 'routes'}, 'config')
+                   'locations', 'equipment', 'buffers', 'vehicles', 'routes'} | ({'traffic'} if 'traffic' in config else set()) | ({'partsSupply'} if 'partsSupply' in config else set()), 'config')
+    if 'partsSupply' in config:
+        _keys(config['partsSupply'], {'capacity','initialStock'}, 'partsSupply')
+        _integer(config['partsSupply']['capacity'], 1, 2, 'capacity')
+        _integer(config['partsSupply']['initialStock'], 0, min(config['partsSupply']['capacity'],config['maxBodies']), 'initialStock')
+        if config.get('traffic',{}).get('policyVersion') != 4: raise ValueError('partsSupply requires policy 4')
     limit = 9_007_199_254_740_991
     for field in ('tickMs', 'snapshotIntervalMs'):
         _integer(config[field], 1, limit, field)
@@ -133,6 +138,55 @@ def _validate_factory(config: dict) -> None:
                        ('BODY', ('CELL', 'QC-01'), ('RESULT', 'HOLD')),
                        ('PARTS', ('STORE', 'PARTS-STORE'), ('PARTS_DOCK', 'PARTS-ASM-01')),
                        ('PARTS', ('STORE', 'PARTS-STORE'), ('PARTS_DOCK', 'PARTS-ASM-02'))}
+    if 'traffic' in config:
+        policy = config['traffic']
+        _keys(policy, {'policyVersion','vehicleRadius','clearance','bounds','obstacles'} | ({'lanes','holdingPoints'} if policy['policyVersion']>=3 else set()), 'traffic')
+        _integer(policy['policyVersion'], 1, 4, 'traffic.policyVersion')
+        if policy['policyVersion'] >= 2:
+            expected_routes.update({('BODY', ('INPUT','BODY-IN'), ('CELL','ASM-01')),
+                                    ('BODY', ('CELL','ASM-01'), ('CELL','ASM-02')),
+                                    ('BODY', ('CELL','ASM-02'), ('CELL','QC-01'))})
+            expected_routes.update(('BODY', ('BUFFER','BAY-'+cell), ('CELL',cell)) for cell in CELLS)
+        for field in ('vehicleRadius','clearance'):
+            _number(policy[field], field)
+            if policy[field] < ((30 if policy['policyVersion']>=2 else 24) if field == 'vehicleRadius' else 3): raise ValueError('traffic envelope below model size')
+        _keys(policy['bounds'], {'minX','minY','maxX','maxY'}, 'traffic.bounds')
+        if not 1 <= len(policy['obstacles']) <= 32: raise ValueError('traffic obstacle count')
+        for item in [policy['bounds'], *policy['obstacles']]:
+            if item is not policy['bounds']: _keys(item, {'id','minX','minY','maxX','maxY'}, 'traffic.obstacle')
+            for field in ('minX','minY','maxX','maxY'): _number(item[field], field)
+            if item['minX']>=item['maxX'] or item['minY']>=item['maxY']: raise ValueError('traffic rectangle order')
+        _unique(policy['obstacles'], 'id', 'traffic.obstacles')
+        if policy['policyVersion'] >= 3:
+            from .lane_traffic import graph
+            from .traffic import intersects, expanded
+            if not 1 <= len(policy['lanes']) <= 256: raise ValueError('lane count')
+            for edge in policy['lanes']:
+                _keys(edge, {'start','end'}, 'lane')
+                for p in edge.values():
+                    _keys(p, {'x','y'}, 'lane point')
+                    for value in p.values(): _number(value, 'coordinate')
+                    bounds=policy['bounds']; margin=policy['vehicleRadius']+policy['clearance']
+                    if not bounds['minX']+margin<=p['x']<=bounds['maxX']-margin or not bounds['minY']+margin<=p['y']<=bounds['maxY']-margin: raise ValueError('lane outside bounds')
+                a,b=((p['x'],p['y']) for p in (edge['start'],edge['end']))
+                if a==b or (a[0]!=b[0] and a[1]!=b[1]): raise ValueError('lane must be rectilinear')
+                if any(intersects(a,b,expanded(o,policy['vehicleRadius']+policy['clearance'])) for o in policy['obstacles']): raise ValueError('lane intersects obstacle')
+            if not 1<=len(policy['holdingPoints'])<=32: raise ValueError('holding point count')
+            for p in policy['holdingPoints']:
+                _keys(p, {'x','y'}, 'holding point')
+                for value in p.values(): _number(value, 'holding coordinate')
+            network=graph(policy)
+            for p in [*policy['holdingPoints'],*[v['initialPosition'] for v in vehicles],*config['locations']]:
+                if (p['x'],p['y']) not in network: raise ValueError('lane graph missing dock or holding point')
+            for start in network:
+                seen={start}; todo=[start]
+                while todo:
+                    for nxt in network[todo.pop()]:
+                        if nxt not in seen:seen.add(nxt);todo.append(nxt)
+                if len(seen)!=len(network): raise ValueError('lane graph is not strongly connected')
+        from .traffic import validate_positions
+        from .logistics import Vehicle
+        validate_positions(policy, {v['vehicleId']: Vehicle(v['vehicleId'],v['kind'],v['initialPosition']['x'],v['initialPosition']['y']) for v in vehicles})
     actual_routes = set()
     routes = _array(config['routes'], 'routes')
     for item in routes:

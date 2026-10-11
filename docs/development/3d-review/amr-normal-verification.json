@@ -1,0 +1,35 @@
+{
+  "runId": "run-20261010-224a53bb565e42e9a4cec7996f54b5fb",
+  "events": 698,
+  "snapshots": 598,
+  "loadedAmrSnapshots": 63,
+  "partsDeliveries": 2,
+  "finalStock": [
+    {
+      "cellId": "ASM-01",
+      "dockId": "PARTS-ASM-01",
+      "capacity": 2,
+      "initialStock": 2,
+      "available": 0,
+      "inbound": 0,
+      "delivered": 1,
+      "consumed": 3,
+      "stockoutMs": 0
+    },
+    {
+      "cellId": "ASM-02",
+      "dockId": "PARTS-ASM-02",
+      "capacity": 2,
+      "initialStock": 2,
+      "available": 0,
+      "inbound": 0,
+      "delivered": 1,
+      "consumed": 3,
+      "stockoutMs": 0
+    }
+  ],
+  "allGood": true,
+  "allVehiclesHome": true,
+  "partsWaitMs": 0,
+  "operationsSnapshotMatches": true
+}

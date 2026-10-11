@@ -1,16 +1,28 @@
 # 가상 제조공장 실시간 통합 관제 시스템
 
+**Windows에서 처음 실행한다면:** [WINDOWS-START.md](WINDOWS-START.md)를 읽고 `01-prepare-windows.cmd` → `02-start-windows.cmd`를 더블클릭하세요. GitHub 소스 전체가 필요하며 최초 준비에는 인터넷이 필요합니다.
+
 현대오토에버 OT 시스템 개발 및 운영 직무 지원을 위한 프로젝트입니다. 독립 셀·AGV/AMR의 실제 데이터 관측, 스마트태그·버퍼·품질·알람을 Spring/Python/Vue의 소규모 MSA로 구현했습니다.
 
 저장소: [kosyunderbar/smartfactorysimul](https://github.com/kosyunderbar/smartfactorysimul). 다른 컴퓨터에서 시작할 때는 [clone·실행·개발 안내](<가상 제조공장 실시간 통합 관제 시스템 - 다른 컴퓨터 실행·개발 안내.md>)를 따릅니다.
 
-현재 **S00~S09의 P0 단계 완료**입니다. S00~S09의 P0 구현·검증·문서·재현 산출물을 완료했다. 정상300초×3·스트레스120초×3×3을 측정하고 원본151,073건을 두 DB와 대조했다. 정상 실제 입력은25.63~25.72건/s, 작은 전경 화면의 반영 p95는98.20~98.50ms였다. 높은 입력 목표는 미생성이고 실제96.64~128.19건/s에서 관제 전달 대기와 최대 약54초 SSE 지연을 관측했다. 10만 로그 조회·기존 데이터 재시작·새5대 시연·캡처7장/21초 단계 영상, 작업37~40·ADR-002를 정리했다. 스택·흰색/네이비/파랑 UI·개발 DB/볼륨을 유지했다. 성능 목표의 달성/미검증과 수백 대 차량 등 후속 범위를 구분한다.
+현재 **S00~S09 P0 + 작업 59까지** 구현했습니다. 상세 Three.js 공장, AGV·AMR 3인칭 추적과 AGV 전면 시점, 통로 예약/양보·적재 전진·최종 외곽 복귀, ASM 부품 재고와 AMR 실제 보급, 사용자 점검·조치 기반 수동 복구를 제공합니다.
+
+[작업 61](<docs/work-notes/작업 61. 3D 관측 재생 끊김과 추적 카메라 부하 개선.md>)에서 관측 버퍼 기반 3D 연속 재생과 추적 카메라 부하를 개선했습니다.
+
+일반 시나리오는 **1대 정상 / 3대 정상 / 5대 장애·수동 복구**입니다. 5대는 차체 수이며 차량은 AGV 2대·AMR 1대입니다. 실제 사용 방법은 [기능과 시연](<가상 제조공장 실시간 통합 관제 시스템 - 기능 설명 및 시연 시나리오.md>), 구현 한계와 증거는 [현재 기능과 검증 범위](<docs/development/현재 기능과 검증 범위.md>)를 참고합니다.
+
+S08의 차체 100대와 S09의 원본 151,073건 대조·약 98ms 조건부 화면 측정은 과거 버전의 검증 기록입니다. 최신 3D 성능이나 차량 100대 제어 성과로 해석하지 않습니다.
 
 [S07-01 설명](<docs/work-notes/작업 29. S07-01 실제 공장 SVG 지도와 차량·슬롯.md>) · [S07-02 설명](<docs/work-notes/작업 30. S07-02 스마트태그 검색과 대상별 상세·이력.md>) · [S07-03 설명](<docs/work-notes/작업 31. S07-03 품질 차트와 알람 확인·기록 조회.md>) · [S07-04 설명](<docs/work-notes/작업 32. S07-04 선택·조회 순서와 모바일·키보드 접근.md>)
 
 ## 문서와 화면
 
-2026-10-06에는 [Windows Docker 없는 실행과 웹 시작 버튼](<docs/development/Windows Docker 없이 실행.md>), 3대 정상 생산, AGV의 가장 가까운 빈 차량 배차·귀환 중 재배차, 미사용 부품 구역 숨김을 반영했다. 5대 시나리오는 예약을 포함한 만석 판단으로 **용량 초과를 예방하는 정상적인 배차 차단과 재개**를 보여 주며, 설비 장애·복구는 별도로 주입한다. [작업 42 설명과 검증 근거](<docs/work-notes/작업 42. Windows 로컬 시연과 AGV 재배차 개선.md>)를 참고한다.
+- [현재 기능과 검증 범위](<docs/development/현재 기능과 검증 범위.md>): 작업 59까지의 구현, 실제 연결/오프라인 검증과 남은 범위.
+- [작업 60 — 문서 갱신](<docs/work-notes/작업 60. 현재 3D·AMR·수동 복구 기준 문서 갱신.md>): 기획·해설·실행·시연·포트폴리오를 현재 기준으로 정리.
+- [3D 개발 계획](<가상 제조공장 실시간 통합 관제 시스템 - 3D 관제 화면 개발 계획.md>): 초기 계획과 현재 완료 판정.
+
+2026-10-11 현재 사용 안내는 3D·AMR 실제 공급·5대 수동 복구 기준입니다. 작업 42의 2D/자동 P0 결과는 당시 이력으로 보존합니다.
 
 - [기획서](<가상 제조공장 실시간 통합 관제 시스템 - 기획서.md>): 목적, 요구사항, 시스템 설계와 검증 계획.
 - [해설집](<가상 제조공장 실시간 통합 관제 시스템 - 해설집.md>): 처음 읽는 사람을 위한 동작 설명, 사례, 용어와 예상 질문.
@@ -151,6 +163,21 @@ GUI v0.2는 독립 작업 셀, 차체 AGV/부품 AMR, 가상 스마트태그 상
 - [작업27/S06-02: REST/SSE 전체 상태](<docs/work-notes/작업 27. S06-02 REST와 SSE 전체 상태 연결.md>)
 - [작업28/S06-03: Vue 셀·태그 상세](<docs/work-notes/작업 28. S06-03 Vue 셀 관측과 차체·태그 상세.md>)
 
+## 현재 3D·수동 복구 시연
+
+서버/DB 준비 후 호스트 Python 3.12 가상환경과 Node 24를 사용합니다. 정적 Docker 5173은 관측용이고, 로컬 Vite 5174에서 실행·중단·수동 조치 버튼을 사용합니다.
+
+```sh
+# 최초 1회: Python 3.12 및 Node 24 준비 후
+sh scripts/simulator.sh setup
+sh scripts/console.sh install
+FACTORY_SIMULATOR_PYTHON="$PWD/.build-cache/simulator-venv/bin/python" sh scripts/console.sh dev --port 5174
+```
+
+http://127.0.0.1:5174 에서 5대 장애 시나리오를 시작하고 **현장 점검 시작 → 조치 완료 · 재가동**으로 복구합니다. Windows 네이티브는 [전용 안내](<docs/development/Windows Docker 없이 실행.md>)의 `up`이 Vite 5173과 Python 경로를 준비합니다. 버튼 실행기는 기본 수집 TCP 9090을 사용합니다. Vite 종료/재시작은 관리 중인 Python도 중단하므로 실행 중 설정을 바꾸지 않습니다.
+
+![AGV 상세 추적](docs/development/3d-review/third-person-agv-loaded.png)
+
 ## 전체 기동과 실제 Vue 관측
 
 새 컴퓨터에서 시작한다면 [다른 컴퓨터 실행·개발 안내](<가상 제조공장 실시간 통합 관제 시스템 - 다른 컴퓨터 실행·개발 안내.md>)를 먼저 따릅니다. Docker 준비·환경 파일 생성·Python 3.12 설정부터 설명하며, 기존 데이터가 있는 pull 환경의 절차도 구분합니다.
@@ -166,7 +193,7 @@ scripts/dev-stack.sh down
 기동된 [Vue 관측 앱](http://127.0.0.1:5173)에서 실제 실행을 선택합니다. 새 차체를 시연하려면 다음 명령을 실행하고 출력된 runId를 선택하세요. 일반 기동은 자동 생산하지 않습니다.
 
 ```sh
-INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --connected-demo
+INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --connected-demo --traffic
 ```
 
 [실제 LIVE 화면](services/factory-console/preview-s06-live.jpg) · [소스 중단](services/factory-console/preview-s06-source-stopped.jpg) · [GOOD/PASS 태그 창](services/factory-console/preview-s06-tag.jpg)을 남겼습니다. 성공한 검증 run은 자기 데이터만 정리했으므로 화면에서 새 실행을 선택하세요. 기존 factory-gui는 독립 디자인/시나리오 샘플입니다.

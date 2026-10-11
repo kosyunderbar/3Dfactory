@@ -1,0 +1,10 @@
+{
+  "runId": "run-20261010-224a53bb565e42e9a4cec7996f54b5fb",
+  "mode": "recorded source replay with receipt jitter, not new connected production",
+  "snapshots": 598,
+  "renderSamples": 17925,
+  "minVehicleCenterDistance": 80.0008264420122,
+  "monotonicPresentation": true,
+  "cargoConsistent": true,
+  "finished": true
+}

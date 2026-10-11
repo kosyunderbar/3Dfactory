@@ -5,6 +5,10 @@ param(
     [Parameter(ValueFromRemainingArguments = $true)][string[]]$SimulatorArgs
 )
 $ErrorActionPreference = 'Stop'
+if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'This launcher requires Windows x64.' }
+$factoryArchitecture = $env:PROCESSOR_ARCHITEW6432
+if (!$factoryArchitecture) { $factoryArchitecture = $env:PROCESSOR_ARCHITECTURE }
+if ($factoryArchitecture -ne 'AMD64') { throw 'The bundled tool manifest supports Windows x64 (Intel/AMD), not ARM64 or 32-bit Windows.' }
 $root = Split-Path $PSScriptRoot -Parent
 $cache = Join-Path $root '.build-cache'
 $tools = Join-Path $cache 'windows-tools'
@@ -22,6 +26,9 @@ function Configure {
     foreach ($name in @('node','jdk','python','postgres','maven')) {
         if (!(Test-Path (Tool $name))) { throw 'Tools missing. Run: .\scripts\windows-dev.ps1 setup' }
     }
+    if (!(Test-Path (Join-Path $root '.env'))) { throw 'Local settings missing. Run 01-prepare-windows.cmd first.' }
+    # Rebind embeddable Python after the extracted project folder has moved.
+    [IO.File]::WriteAllLines((Join-Path $tools 'python/python312._pth'),@('python312.zip','.',(Join-Path $root 'services/factory-simulator'),$root,'import site'))
     $env:JAVA_HOME = Join-Path $tools $manifest.jdk.directory
     # Do not inherit a global DEBUG flag into Spring Boot's development servers.
     $env:DEBUG = 'false'
@@ -94,6 +101,9 @@ function WaitHttp([string]$name,[string]$url) {
     throw "$name readiness timeout. Check $logs"
 }
 function Build {
+    foreach ($name in @('operations','ingestion','console')) {
+        if (ProcessRecord $name) { throw 'Stop this project with 03-stop-windows.cmd before rebuilding.' }
+    }
     foreach ($svc in @('operations-service','ingestion-service')) {
         Push-Location (Join-Path $root "services/$svc")
         try { Run (Tool 'maven') @('-B','--no-transfer-progress',"-Dmaven.repo.local=$cache/maven-repository",'-DskipTests','package') } finally { Pop-Location }
@@ -134,7 +144,6 @@ if ($Action -eq 'setup') {
         Set-Content $complete $manifest.$name.sha256
     }
     # Embeddable Python is sufficient: the simulator has no third-party dependencies.
-    [IO.File]::WriteAllLines((Join-Path $tools 'python/python312._pth'),@('python312.zip','.',(Join-Path $root 'services/factory-simulator'),$root,'import site'))
     if (!(Test-Path (Join-Path $root '.env'))) { Run (Tool 'python') @((Join-Path $PSScriptRoot 'create-dev-env.py')) }
     Configure
     Run (Tool 'node') @('--version')
@@ -162,7 +171,7 @@ switch ($Action) {
         $console = Join-Path $root 'services/factory-console'
         StartApp 'console' (Tool 'node') @(('"'+(Join-Path $console 'node_modules/vite/bin/vite.js')+'"'),'--host','127.0.0.1','--port','5173') $console
         WaitHttp 'console' 'http://127.0.0.1:5173'
-        Write-Host 'Ready: http://127.0.0.1:5173 (run demo or demo-p0 to generate production data)'
+        Write-Host 'Ready: http://127.0.0.1:5173 - select 1/3 normal or 5 manual-recovery bodies in the browser.'
     }
     'down' {
         # Windows Stop-Process on Vite does not terminate its Python child automatically.

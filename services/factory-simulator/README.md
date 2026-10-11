@@ -1,5 +1,24 @@
 # Python 공장 시뮬레이터 실행 기반
 
+## 현재 시나리오와 모델 · 2026-10-11
+
+일반 웹은 1대 정상 / 3대 정상 / **5대 장애·수동 복구**다. `--connected-demo`, `--connected-three-demo`, `--connected-maintenance-demo`에 각각 대응하며 웹 실행기가 --traffic을 추가한다. 마지막 모드는 실제 차체 5대를 등록한다. 아래 S단계 설명은 초기 구현 기록이고, 최신 모델에는 정책 4와 partsSupply가 적용된다.
+
+```sh
+INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --connected-demo --traffic
+# 3대: --connected-three-demo --traffic
+```
+
+수동 5대는 Python 경로를 설정한 Vite의 시작 버튼으로 실행한다. 단독 CLI는 사용자 명령을 표준입력으로 보내는 제어 채널이 필요하고, 이미 실행 중인 CLI의 run을 조회한다고 웹 실행기에 연결되지는 않는다. [실행·시연 안내](<../../가상 제조공장 실시간 통합 관제 시스템 - 기능 설명 및 시연 시나리오.md>)를 따른다.
+
+- 정책 4: 통로 A*·구간 예약·양보, 정지 회전/가감속, 적재 전진, 빈 셀 직접 인계, Bay→셀 AGV 운반, 생산 종료 후 외곽 복귀.
+- `parts_supply.py`: 후면 AMR 통로, ASM별 용량/초기 2키트, 작업 시작 1개 소비, 실제 배송 후 보충. 실제 재고+운송 중 수량과 남은 수요를 반영한다. maxBodies 설정이 1인 경우에만 초기 1키트다.
+- `maintenance.py`: ASM-01 위치 센서 불일치 → DETECTED → 사용자 inspect → INSPECTING → 사용자 repair → VERIFYING 2초 → RESOLVED. 진행량·이미 소비한 키트를 보존한다. 수동 대기 시간은 생산 실행 제한에서 제외한다.
+- 수동 조치 이력은 `maintenance.json`, 원본은 `originals.ndjson`, 최종은 `result.json`에 기록한다. Python 비정상 종료 후 메모리 공장을 자동 복원하는 기능은 없다.
+- `--connected-p0-demo`는 과거 자동 P0 검증용이며 일반 5대 수동 복구와 다르다.
+
+현재 Python 58개 테스트와 5대 오프라인 완료/복귀를 확인했다. 실제 연결 증거와 한계는 [현재 검증 범위](<../../docs/development/현재 기능과 검증 범위.md>)를 따른다.
+
 > S01-04 · Python 3.12 · 제삼자 패키지 없음 · S02 전체 공장 모델·취소/장애·부품 AMR·v1 사건/전체 스냅샷 완료; S03 송신/ACK/제한 재전송 완료; 일반 기동의 실시간 생산 자동 구동은 후속
 
 이 프로그램은 셀·차체·태그·차량·버퍼 예약의 물리 상태를 결정한다. 현재는 설정 검사, run·차체/태그·단일 위치, 셀 작업/검사·예약·운송·취소/장애·부품 AMR와 로컬 v1 보고, 종료 신호 처리와 실행 상태 확인이 있다. 기동 로그의 `MODEL_INITIALIZED`는 공장 운전 시작이 아니다. 일반 기동은 TCP 송신을 자동 시작하지 않는다. --send-events와 SourceSession으로 명시적인 송신을 지원한다. 차체 등록은 명시적인 --initial-bodies 옵션으로 확인할 수 있다.
@@ -98,7 +117,7 @@ scripts/simulator.sh run --demo-scenarios
 
 `cancel_transport(id)`는 BODY/ASSIGNED이고 차체가 출발지에 있을 때만 예약/차량을 함께 반환한다. TO_PICKUP/LOADING에서 가능하고 IN_TRANSIT 이후는 거절한다. 반복 취소는 이전 결과를 반환하며 새 배정을 건드리지 않는다. 취소된 차체만 자동 재배차를 보류하고 명시적 assign_transport 재시도로 새 번호를 받는다. `complete_transport(id)`도 완료 후 반복 요청에 기존 결과만 반환하며 인계 전 호출은 거절한다.
 
-`assign_parts('ASM-01'|'ASM-02')`는 IDLE AMR과 kit 번호로 STORE→PARTS_DOCK 운송을 만든다. bodyId/예약/slotId는 null이다. start_transport로 운송하고 parts 조회로 실제 키트 위치를 확인한다. 차체/태그/Bay 카운터와 분리하며 조립의 재고 조건에 연결하지 않는다. 키트 등록 상한은 maxBodies×2다. v1의 취소는 BODY만 지원한다.
+`assign_parts('ASM-01'|'ASM-02')`는 IDLE AMR과 kit 번호로 STORE→PARTS_DOCK 운송을 만든다. bodyId/예약/slotId는 null이다. start_transport로 운송하고 parts 조회로 실제 키트 위치를 확인한다. 차체/태그/Bay 카운터와 분리하며 기존 partsSupply 없는 실행에서는 조립 재고 조건과 분리된다. 현재 partsSupply 실행은 작업 시작 시 키트를 소비하고 재고 없이는 작업을 시작하지 않는다. 키트 등록 상한은 maxBodies×2다. v1의 취소는 BODY만 지원한다.
 
 `fail_cell`은 DOWN/resumeState로 차체/작업 번호/남은 시간을 보존한다. source DOWN이면 적재 완료를 보류하고 target DOWN이어도 예약한 Bay 도착은 가능하다. enter_cell은 복구 전까지 거절한다. recover_cell 후 같은 작업을 이어 간다. `delay_transport(id, milliseconds)`는 ASSIGNED의 적재 운반 시간에 누적 지연을 넣고 `set_quality_pattern(('FAIL','PASS'))`는 이후 검사 배열을 시작한다. 고장/복구·품질·지연은 명시적 SCENARIO_CHANGED로 기록한다.
 
@@ -110,7 +129,7 @@ scripts/simulator.sh run --demo-scenarios
 
 새 테스트 4개 포함 총 17개가 통과했다. C=2/3/4 각각 100대에서 작업 300·검사 100·운송 400·진입 300건과 최종 보존/보고를 확인했다. 검증 설정은 작업/적재 경로 200ms로 단축한 모델 시간이며 성능 실적이 아니다. 기본 데모는 기존 4/6/3초 구성으로 취소·고장/복구·부품 인계·HOLD 결과와 v1 사건을 출력한다. 모델 시간 계산이며 실제 장비/네트워크 연결이 아니다.
 
-[작업 14 설명](<../../docs/work-notes/작업 14. 취소와 장애 복구 및 공장 모델 검증.md>) · S02~S07 완료 · 다음 S08-01. 명시적 송신 뒤 수집 worker가 관제에 자동 전달한다. 최소 SSE/Vue 연결은 S06에서 완료했고 일반 기동의 상시 생산은 후속이다.
+[작업 14 설명](<../../docs/work-notes/작업 14. 취소와 장애 복구 및 공장 모델 검증.md>) · 당시 S02~S07 기록. 현재는 작업 59까지 반영. 명시적 송신 뒤 수집 worker가 관제에 자동 전달한다. 최소 SSE/Vue 연결은 S06에서 완료했고 일반 기동의 상시 생산은 후속이다.
 
 ## S03-04 원본 송신과 ACK
 
@@ -170,7 +189,7 @@ INGESTION_TCP_HOST=127.0.0.1 INGESTION_TCP_PORT=9090 scripts/simulator.sh run --
 
 SourceSession은 의도적인 PAUSED에서 publish_snapshot만 허용한다. 물리 tick이나 자동 재개는 허용하지 않으며 READY/미확인 대기 상한을 유지한다. 보고 중 BudgetPressure가 생겨도 정상 상태로 조작하거나 원본을 버리지 않는다. Python 미확인 목록은 계속 메모리이므로 비정상 프로세스 종료 후 물리 상태 복원은 보장하지 않는다.
 
-`P0_DEMO_MARKERS`는 개발 검증에서 해당 단계의 .continue 파일을 기다리는 옵션이다. 단계660초 상한이며 관측 대기는 기본600초의 실제 진행 예산에서 제외한다. helper의 UI 확인 대기는600초다. 검증 소유 프로세스만 중단/재개하며 기존 서비스나 사용자의 실행을 멈추지 않는다. START_GATE는 새 UUID가 두 DB에 없음을 확인하기 전 TCP 쓰기를 막는다.
+`P0_DEMO_MARKERS`는 개발 검증에서 해당 단계의 .continue 파일을 기다리는 옵션이다. 단계660초 상한이며 관측 대기는 기본1,200초의 실제 진행 예산에서 제외한다. helper의 UI 확인 대기는600초다. 검증 소유 프로세스만 중단/재개하며 기존 서비스나 사용자의 실행을 멈추지 않는다. START_GATE는 새 UUID가 두 DB에 없음을 확인하기 전 TCP 쓰기를 막는다.
 
 최소 신규2개와 송신 압력 회귀1개만 확인했다. 실제 구성은 작업200ms/경로1000ms로 줄여 흐름을 검증했으며 처리량/성능 성과가 아니다. [작업29](<../../docs/work-notes/작업 29. S07-01 실제 공장 SVG 지도와 차량·슬롯.md>) · [공유 검증](<../../docs/validation/최소 검증 시나리오와 도구.md>) · [Vue 안내](../factory-console/README.md).
 
@@ -181,3 +200,18 @@ SourceSession은 의도적인 PAUSED에서 publish_snapshot만 허용한다. 물
 [실제 측정/P0 완료표](<../../docs/development/S09 측정·완료 기록.md>) · [처음 실행/기존 데이터/복구/시연](<../../docs/development/초기 실행·재실행·복구·시연.md>) · [새 실제 시연 캡처/단계 재생](<../../docs/development/s09-demo/index.html>).
 
 S09-01~04를 완료했습니다. 측정은 별도 네이티브 검증 DB/임의 loopback 포트를 사용하며 개발 Compose DB/볼륨은 유지했습니다. 정상25.63~25.72건/s·작은 화면 반영 p95 약98ms, 높은 입력 목표 미생성·업무 전달 지연을 구분합니다. SQL 병목이 확인되지 않아 새 index/DDL/의존성은 추가하지 않았습니다. 수집 Flyway1/2·관제1 그대로이며 같은 기존 data 재시작의 선택8개 표 지문이 일치했습니다. 일반 기동은 자동 생산하지 않습니다.
+
+
+### 통로 기반 3D 주행 (교통 정책 3)
+
+`--traffic`는 현재 공장용 방향성 통로망에서 A*로 경로를 계획하고 다음 한 구간을 예약한다. 공정/Bay 접안 공간과 주행선을 분리하며, 적재물 포함 안전 반경·가감속·제자리 회전을 적용한다. 재배차 및 경로 변경은 정차 노드에서만 일어난다. 이동 중 명시적 취소는 거부된다. 과거 정책 1·2 데이터는 보존한다. 검증과 모델 한계는 `docs/work-notes/작업 49. 통로 기반 경로와 구간 예약.md`에 기록했다.
+
+
+### 동선 효율 복구 (교통 정책 4, 현재 기본값)
+
+양방향 통로와 직선 구간 병합으로 우회·정차를 줄이고, 빈 차량의 접안점 출발 첫 구간만 100 이하일 때 18.75 좌표/s 이하 후진을 허용한다. 적재 주행은 정지 회전 후 전진한다. 셀 인계 후 남은 작업 8초 이하는 현장에서 완료를 기다렸다가 픽업한다. 출고와 다른 배정 차량의 접안 방해 상황에서만 가까운 대기점으로 이동한다. 안전 반경·예약·가감속 제약은 유지한다. 모든 임의 배치의 최적 경로나 교착 해소를 보장하는 범용 자율주행기는 아니다.
+
+`PYTHONPATH=services/factory-simulator .build-cache/simulator-venv/bin/python scripts/verify-lane-traffic.py --policy 4`로 정상 3대와 P0를 오프라인 검증한다. `--policy 3`으로 이전 동작과 비교할 수 있다. P0의 만석 예약 관측은 W+R=C이고 ASSIGNED 운송이 있는 순간을 기준으로 하며, 해당 운송이 IN_TRANSIT으로 바뀌는 단계까지 추적한다.
+
+
+전체 생산·출고가 끝나고 활성 운송이 없으면 AGV-002, AGV-001 순서로 외곽 (845,650)→(0,650)을 돌아 초기 위치에 복귀한다. 초기 위치에 있는 차량은 건너뛴다. 마지막 주차까지 정상 실행 종료를 보류한다. 생산 중에는 이 최종 복귀를 수행하지 않는다. 수정 검증은 `verify-lane-traffic.py --policy 4 --label forward`와 `verify-3d-motion.mjs <원본> --require-forward`로 재현한다.

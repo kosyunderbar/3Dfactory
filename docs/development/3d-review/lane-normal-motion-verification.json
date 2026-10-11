@@ -1,0 +1,27 @@
+{
+  "runId": "run-20261010-bc0e01722157482fa219549d8e22bcf3",
+  "events": 806,
+  "snapshots": 695,
+  "compatiblePairs": 636,
+  "renderedFleetSamples": 4865,
+  "minVehicleCenterDistance": 80,
+  "finished": true,
+  "bodyResults": [
+    {
+      "id": "body-00001",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00002",
+      "result": "PASS",
+      "location": "GOOD"
+    },
+    {
+      "id": "body-00003",
+      "result": "PASS",
+      "location": "GOOD"
+    }
+  ],
+  "maxFrameBytes": 10315
+}

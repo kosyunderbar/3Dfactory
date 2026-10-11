@@ -140,7 +140,12 @@ public final class EventApplication {
         if(p.has("cellId")) model(Objects.equals(text(bay,"cellId"),text(p,"cellId")));
     }
     private String introduceOperation(EventSyntax.Event e,JsonNode p,JsonNode config) {
-        String run=e.identity().runId(); bodyRef(run,text(p,"bodyId")); cellRef(config,text(p,"cellId")); baySlot(config,p);
+        String run=e.identity().runId(); bodyRef(run,text(p,"bodyId")); cellRef(config,text(p,"cellId"));
+        if(text(p,"bufferId")!=null) baySlot(config,p);
+        else {
+            model(directDelivery(config) && text(p,"slotId")==null);
+            reference(jdbc.queryForObject("SELECT count(*) FROM transport_history WHERE run_id=? AND body_id=? AND destination_location->>'locationType'='CELL' AND destination_location->>'locationId'=? AND status IN ('IN_TRANSIT','COMPLETED')",Long.class,run,text(p,"bodyId"),text(p,"cellId"))>0);
+        }
         var old=jdbc.queryForList("SELECT unit_id,equipment_id FROM operation_history WHERE run_id=? AND operation_id=?",run,text(p,"operationId"));
         if(!old.isEmpty()) { conflict(old.getFirst().get("unit_id").equals(text(p,"bodyId")) && old.getFirst().get("equipment_id").equals(text(p,"cellId")));
             var original=jdbc.queryForList("SELECT payload::text,occurred_at FROM event_projection WHERE run_id=? AND type='BODY_ENTERED_CELL' AND payload->>'operationId'=? AND apply_status='APPLIED' ORDER BY record_ordinal LIMIT 1",run,text(p,"operationId"));
@@ -248,6 +253,7 @@ public final class EventApplication {
         if(text(p,"vehicleId")!=null) reference(index(config.get("vehicles"),"vehicleId").containsKey(text(p,"vehicleId")));
         if(kind.equals("SLOT_RESERVED")) model(text(p,"vehicleId").startsWith("AGV-"));
         if(kind.equals("SLOT_RELEASED")) {
+            if("BODY_PICKED_UP".equals(text(p,"reason"))) model(directDelivery(config));
             model((text(p,"reservationId")==null)==(text(p,"transportId")==null));
             if(text(p,"transportId")!=null) reference(jdbc.queryForObject("SELECT count(*) FROM transport_history WHERE run_id=? AND transport_id=? AND reservation_id=? AND slot_id=? AND body_id=?",Long.class,run,text(p,"transportId"),text(p,"reservationId"),text(p,"slotId"),text(p,"bodyId"))==1);
         }

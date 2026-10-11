@@ -1,0 +1,9 @@
+{
+  "runId": "run-20261010-b065b3747b924195a8984fe0d53728c2",
+  "sourceState": "SOURCE_STOPPED",
+  "childExited": true,
+  "recordedEvents": 44,
+  "lastSnapshotSourceSeq": 44,
+  "viewRunState": "RUNNING",
+  "observedStopAndRestartInBrowser": true
+}

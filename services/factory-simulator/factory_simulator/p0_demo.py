@@ -7,6 +7,7 @@ import time
 from .connected_demo import artifact_root
 from .model import FactoryModel, LocationType, CellState
 from .logistics import VehicleState
+from . import lane_traffic
 from .sender import Sender, SourceSession
 
 STAGES=('FULL_RESERVED','FULL_IN_TRANSIT','FULL_ARRIVED','CELL_DOWN','SLOT_RELEASED','FINISHED')
@@ -16,7 +17,10 @@ class P0Driver:
         self.model=model
         self.stage=0
         self.entry_allowed=False
+        self.observed_inbound=None
     def initialize(self, change):
+        if self.model.direct_delivery:
+            change(self.model.fail_cell,'ASM-02')  # Force the waiting-Bay observation stages.
         capacity=self.model.buffer('BAY-ASM-02')['capacity']
         if self.model.configuration.factory['maxBodies']<capacity+2:
             raise ValueError('P0 demo requires maxBodies >= ASM-02 capacity + 2')
@@ -28,6 +32,7 @@ class P0Driver:
         model=self.model
         change(model.tick)
         for cell in ('QC-01','ASM-02','ASM-01'):
+            if model.direct_delivery: break
             if cell=='ASM-02' and not self.entry_allowed:continue
             # Keep the third inbound allocation observable even when AGVs
             # can immediately reuse their dropoff position.
@@ -39,14 +44,18 @@ class P0Driver:
             waiting=model.bodies_at(LocationType.BUFFER,'BAY-'+cell)
             if waiting and model.cell(cell).state==CellState.IDLE:change(model.enter_cell,waiting[0].body_id)
         bay=model.buffer('BAY-ASM-02')
-        incoming=next((t for t in model.active_transports if t.destination.location_id=='BAY-ASM-02'),None)
+        incoming=next((t for t in model.active_transports if t.destination.location_id=='BAY-ASM-02'
+                       and (t.transport_id==self.observed_inbound if self.observed_inbound else t.status.value=='ASSIGNED')),None)
         stage=None
-        if self.stage==0 and bay['waitingCount']==bay['capacity']-1 and bay['reservedInboundCount']==1 and incoming and incoming.status.value=='ASSIGNED':
+        if self.stage==0 and bay['waitingCount']+bay['reservedInboundCount']==bay['capacity'] and incoming and incoming.status.value=='ASSIGNED':
             stage='FULL_RESERVED'
+            self.observed_inbound=incoming.transport_id
         elif self.stage==1 and incoming and incoming.status.value=='IN_TRANSIT':
             stage='FULL_IN_TRANSIT'
         elif self.stage==2 and bay['waitingCount']==bay['capacity'] and bay['reservedInboundCount']==0 and model.cell('ASM-01').blocked_reason=='BUFFER_FULL':
             stage='FULL_ARRIVED'
+        elif model.direct_delivery and self.stage==4 and bay['availableSlots']>0:
+            stage='SLOT_RELEASED'
         if stage:self.stage+=1
         return stage
     def after(self, stage, change):
@@ -54,15 +63,19 @@ class P0Driver:
             change(self.model.fail_cell,'ASM-01');self.stage+=1;return 'CELL_DOWN'
         if stage=='CELL_DOWN':
             change(self.model.recover_cell,'ASM-01')
+            if self.model.direct_delivery:
+                change(self.model.recover_cell,'ASM-02')
+                self.entry_allowed=True
+                return None
             waiting=self.model.bodies_at(LocationType.BUFFER,'BAY-ASM-02')
             change(self.model.enter_cell,waiting[0].body_id)
             self.entry_allowed=True;self.stage+=1;return 'SLOT_RELEASED'
         return None
     def drained(self):
-        return all(b.location.location_type==LocationType.RESULT for b in self.model.bodies) and not self.model.active_transports and all(v.state==VehicleState.IDLE for v in self.model.vehicles)
+        return all(b.location.location_type==LocationType.RESULT for b in self.model.bodies) and not self.model.active_transports and all(v.state==VehicleState.IDLE for v in self.model.vehicles) and lane_traffic.final_return_complete(self.model)
 
 
-def run_p0(configuration,settings,*,stopped=None,max_seconds=600):
+def run_p0(configuration,settings,*,stopped=None,max_seconds=1200):
     stopped=stopped or threading.Event()
     model=FactoryModel(configuration,quality_results=('FAIL','PASS','PASS','PASS','PASS','PASS'))
     evidence=artifact_root()/model.run_id;evidence.mkdir(parents=True,exist_ok=False)

@@ -1,0 +1,27 @@
+{
+  "runId": "run-20261010-c16fea6d4899489fbf2935dd2793cdc9",
+  "status": "FINISHED",
+  "events": 375,
+  "bothDatabasesMatchEveryOriginal": true,
+  "pendingCount": 0,
+  "directCellDeliveries": 9,
+  "physicalBayPickups": 2,
+  "destinationsReevaluatedBeforeLoading": 1,
+  "bodyResults": [
+    {
+      "bodyId": "body-00001",
+      "locationId": "GOOD",
+      "inspectionResult": "PASS"
+    },
+    {
+      "bodyId": "body-00002",
+      "locationId": "GOOD",
+      "inspectionResult": "PASS"
+    },
+    {
+      "bodyId": "body-00003",
+      "locationId": "GOOD",
+      "inspectionResult": "PASS"
+    }
+  ]
+}

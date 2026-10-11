@@ -75,7 +75,7 @@ HTTP 주소/포트는 서비스별 `INGESTION_HTTP_ADDRESS/PORT`, `OPERATIONS_HT
 
 ## 실제 관제 화면 — S07 완료
 
-현재 factory-console은 SVG 지도·태그 검색/대상 상세·관련 이력·품질 ECharts·알람 확인/복구 관측·사건/알람 기록을 실제 REST/SSE에 연결한다. S07은 기존 Java/DB/서비스 책임·Flyway를 바꾸지 않았다. [Vue 안내](factory-console/README.md)와 [작업32](<../docs/work-notes/작업 32. S07-04 선택·조회 순서와 모바일·키보드 접근.md>)를 따른다. S07 완료 당시 다음은 S08-01이었다.
+현재 factory-console은 Three.js 3D/2D 대체 지도·AGV/AMR 추적·태그 검색/상세·품질 ECharts·알람·기록을 REST/SSE에 연결한다. 로컬 Vite에서 1대/3대 정상, 5대 장애·수동 복구를 시작·중단하고 점검·조치할 수 있다. AMR 실제 재고 공급을 포함한 [현재 기능과 검증 범위](<../docs/development/현재 기능과 검증 범위.md>)를 따른다. S07은 기존 Java/DB/서비스 책임·Flyway를 바꾸지 않았다. [Vue 안내](factory-console/README.md)와 [작업32](<../docs/work-notes/작업 32. S07-04 선택·조회 순서와 모바일·키보드 접근.md>)를 따른다. S07 완료 당시 다음은 S08-01이었다.
 
 ## S08 장애·복구 통합 완료
 

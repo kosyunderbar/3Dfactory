@@ -14,6 +14,8 @@ from .run_configuration import CELLS, RunConfiguration
 from .logistics import PartsKit, CellEntry, DispatchDecision, Transport, TransportStatus, Vehicle, VehicleState
 from .motion import Motion, empty_motion, route_speed
 from .events import EventJournal, transition_facts
+from . import lane_traffic
+from .traffic import reserve_motion, remaining_path, yield_if_deadlocked, validate_positions
 
 
 class ModelError(ValueError):
@@ -216,6 +218,15 @@ class FactoryModel:
         self._next_reservation_number = 1
         self._cell_entries: list[CellEntry] = []
         self._motions: dict[str, Motion] = {}
+        self._traffic_reserved = {}
+        self._traffic_tick_paths = {}
+        self._traffic_waiting = set()
+        self._traffic_yield = {}
+        self._traffic_heading = {}
+        self._lane_wait_since = {}
+        self._cell_waiters = {}
+        self._final_returning = set()
+        self._lane_graph = lane_traffic.graph(configuration.factory['traffic']) if lane_traffic.enabled(self) else {}
         self._flow_started = False
         self._sim_elapsed_ms = 0
         self._paused = False
@@ -225,6 +236,9 @@ class FactoryModel:
         self._event_sink = None
         self._parts: dict[str, PartsKit] = {}
         self._next_parts_number = 1
+        self._parts_wait_ms = {'ASM-01':0, 'ASM-02':0}
+        from . import parts_supply
+        parts_supply.initialize(self)
         self._dispatch_holds: set[str] = set()
         self._scenarios: list[dict] = []
         self._transport_delays: dict[str, int] = {}
@@ -423,8 +437,25 @@ class FactoryModel:
                 'waitingCount': waiting, 'reservedInboundCount': reserved,
                 'availableSlots': config['capacity'] - waiting - reserved, 'slots': slots}
 
+    @property
+    def direct_delivery(self) -> bool:
+        return self.configuration.factory.get('traffic', {}).get('policyVersion', 1) >= 2
+
+    def _cell_accepts_delivery(self, cell_id: str) -> bool:
+        from .parts_supply import has_parts
+        return (self.cell(cell_id).state == CellState.IDLE
+                and has_parts(self, cell_id)
+                and not self.bodies_at(LocationType.CELL, cell_id)
+                and not any(t.destination == Location(LocationType.CELL,cell_id) for t in self.active_transports))
+
     def _dispatch_destination(self, body: Body) -> Location:
         if body.next_cell_id is not None:
+            if (self.direct_delivery and self._cell_accepts_delivery(body.next_cell_id)
+                    and (body.location.location_type == LocationType.BUFFER
+                         or (not self.bodies_at(LocationType.BUFFER,'BAY-'+body.next_cell_id)
+                             and not any(t.body_id != body.body_id and t.destination == Location(LocationType.BUFFER,'BAY-'+body.next_cell_id)
+                                         for t in self.active_transports)))):
+                return Location(LocationType.CELL,body.next_cell_id)
             return Location(LocationType.BUFFER, 'BAY-' + body.next_cell_id)
         return Location(LocationType.RESULT, 'GOOD' if body.inspection_result == InspectionResult.PASS else 'HOLD')
 
@@ -432,6 +463,8 @@ class FactoryModel:
         return tuple(vehicle for vehicle in self.vehicles
                      if vehicle.kind == 'AGV' and vehicle.state in (VehicleState.IDLE, VehicleState.RETURNING)
                      and vehicle.transport_id is None
+                     and lane_traffic.stopped(self, vehicle.vehicle_id)
+                     and not lane_traffic.waiting_for_work(self, vehicle.vehicle_id)
                      and not self.bodies_at(LocationType.VEHICLE, vehicle.vehicle_id))
 
     def _blocked_reason(self, body: Body) -> str:
@@ -473,6 +506,12 @@ class FactoryModel:
                     or self._operations[cell.operation_id].completed_at is None
                     or body.status not in (BodyStatus.WAITING_UNLOAD, BodyStatus.COMPLETED)):
                 raise ModelError('Cell dispatch requires completed work and a held body')
+        elif self.direct_delivery and body.location.location_type == LocationType.BUFFER:
+            if (body.status != BodyStatus.WAITING or body.next_cell_id is None
+                    or body.location.location_id != 'BAY-'+body.next_cell_id):
+                raise ModelError('Bay pickup requires a body waiting for its next cell')
+            if not self._cell_accepts_delivery(body.next_cell_id):
+                return DispatchDecision(False,'CELL_BUSY')
         else:
             raise ModelError('Body dispatch source must be INPUT or completed CELL')
         destination = self._dispatch_destination(body)
@@ -511,6 +550,11 @@ class FactoryModel:
         # Interrupt an empty return only after the new allocation is valid.
         # start_transport then builds the pickup motion from the actual position.
         self._motions.pop(vehicle.vehicle_id, None)
+        self._cell_waiters.pop(vehicle.vehicle_id, None)
+        self._traffic_reserved.pop(vehicle.vehicle_id, None)
+        self._traffic_waiting.discard(vehicle.vehicle_id)
+        self._lane_wait_since.pop(vehicle.vehicle_id, None)
+        self._traffic_yield.pop(vehicle.vehicle_id, None)
         self._next_transport_number += 1
         self._dispatch_holds.discard(body_id)
         if reservation_id is not None:
@@ -521,8 +565,8 @@ class FactoryModel:
     @contextmanager
     def _state_change(self):
         """Rollback one writer transition, including any immediate redispatch."""
-        collections = ('_parts', '_dispatch_holds', '_scenarios', '_transport_delays', '_bodies', '_cells', '_operations', '_inspections', '_vehicles',
-                       '_transports', '_motions', '_cell_entries')
+        collections = ('_parts', '_parts_wait_ms', '_dispatch_holds', '_scenarios', '_transport_delays', '_bodies', '_cells', '_operations', '_inspections', '_vehicles',
+                       '_transports', '_motions', '_cell_entries', '_traffic_reserved', '_traffic_waiting', '_traffic_yield', '_traffic_tick_paths', '_traffic_heading', '_lane_wait_since', '_cell_waiters', '_final_returning')
         values = ('_next_body_number', '_next_operation_number', '_next_inspection_number',
                   '_next_transport_number', '_next_reservation_number', '_sim_elapsed_ms',
                   '_paused', '_flow_started', '_has_started_activity', '_finished', '_quality_results',
@@ -585,9 +629,15 @@ class FactoryModel:
             raise ModelError('Redispatch is unavailable while paused')
         self._flow_started = True
         candidates = []
+        from .parts_supply import replenish
+        replenish(self)
         for cell_id in reversed(CELLS):
             if self.cell(cell_id).state == CellState.BLOCKED:
                 candidates.extend(self.bodies_at(LocationType.CELL, cell_id))
+        if self.direct_delivery:
+            for cell_id in reversed(CELLS):
+                if self._cell_accepts_delivery(cell_id):
+                    candidates.extend(self.bodies_at(LocationType.BUFFER,'BAY-'+cell_id))
         candidates.extend(body for body in self.bodies_at(LocationType.INPUT, 'BODY-IN')
                           if body.status == BodyStatus.WAITING and not body.completed_cell_ids)
         decisions = []
@@ -595,11 +645,19 @@ class FactoryModel:
         for body in candidates:
             if body.transport_id is not None or body.body_id in self._dispatch_holds:
                 continue
-            if not self._available_agvs():
-                break
             destination = self._dispatch_destination(body)
             if destination in full_destinations:
                 continue
+            if not self._available_agvs():
+                # A completed cell outranks an empty trip fetching new input.
+                # Loaded cargo and pickups already loading are never interrupted.
+                if not self.configuration.factory.get('traffic') or body.location.location_type == LocationType.INPUT:
+                    break
+                if (destination.location_type == LocationType.BUFFER
+                        and self.buffer(destination.location_id)['availableSlots'] <= 0):
+                    continue
+                if not self._prioritize_completed_body(body):
+                    continue
             decision = self.assign_transport(body.body_id)
             if decision.reason == 'BUFFER_FULL':
                 full_destinations.add(destination)
@@ -609,20 +667,45 @@ class FactoryModel:
         self._refresh_blocked_cells()
         return tuple(decisions)
 
+    @recorded
+    def _prioritize_completed_body(self, body: Body) -> bool:
+        if not self.configuration.factory.get('traffic') or body.location.location_type != LocationType.CELL:
+            return False
+        candidates = [trip for trip in self._transports.values()
+                      if trip.status == TransportStatus.ASSIGNED and trip.cargo_type == 'BODY'
+                      and trip.source.location_type == LocationType.INPUT
+                      and self._vehicles[trip.vehicle_id].state == VehicleState.TO_PICKUP
+                      and trip.vehicle_id not in self._traffic_yield
+                      and lane_traffic.stopped(self, trip.vehicle_id)]
+        if not candidates:
+            return False
+        x, y = self._point(body.location)
+        trip = min(candidates, key=lambda t: ((self._vehicles[t.vehicle_id].x-x)**2
+                                              + (self._vehicles[t.vehicle_id].y-y)**2, t.vehicle_id))
+        self._cancel_transport(trip.transport_id, reason='PRIORITY_REDISPATCH', hold=False)
+        return True
+
     @property
     def cell_entries(self) -> tuple[CellEntry, ...]:
         return tuple(self._cell_entries)
 
     @recorded
-    def enter_cell(self, body_id: str) -> Operation:
+    def enter_cell(self, body_id: str) -> Operation | DispatchDecision:
         self._assert_writer()
         with self._state_change():
             return self._enter_cell(body_id)
 
-    def _enter_cell(self, body_id: str) -> Operation:
+    def _enter_cell(self, body_id: str) -> Operation | DispatchDecision:
         """Bay ownership -> processing cell + operation + free slot, together."""
         self._assert_writer()
         body = self.body(body_id)
+        if self.direct_delivery:
+            if body.location.location_type != LocationType.BUFFER:
+                raise ModelError('Cell admission requires physical AGV delivery')
+            decision = self.assign_transport(body_id)
+            if decision.approved and self.transport(decision.transport_id).vehicle_id not in self._motions:
+                self.start_transport(decision.transport_id)
+            return decision
         if (self._paused or body.location.location_type != LocationType.BUFFER
                 or body.status != BodyStatus.WAITING or body.transport_id is not None
                 or body.inspection_result != InspectionResult.NOT_INSPECTED
@@ -666,16 +749,38 @@ class FactoryModel:
         return body
 
     def _advance_vehicles(self, tick_ms: int) -> None:
-        for vehicle_id, motion in tuple(self._motions.items()):
+        # Retain completed paths through this whole tick. A later vehicle must not
+        # enter space swept earlier in the same simultaneous simulation interval.
+        self._traffic_tick_paths = dict(self._traffic_reserved)
+        lane_traffic.clear_idle_docks(self)
+        motions = tuple(self._motions.items())
+        if lane_traffic.enabled(self):
+            motions = sorted(motions, key=lambda pair:(pair[0] not in self._traffic_reserved, self._lane_wait_since.get(pair[0], self.sim_elapsed_ms), pair[0]))
+        for vehicle_id, motion in motions:
             vehicle = self._vehicles[vehicle_id]
+            motion = reserve_motion(self, vehicle_id, motion)
+            if motion is None:
+                continue
+            self._motions[vehicle_id] = motion
             advanced = replace(motion, elapsed_ms=min(motion.required_ms, motion.elapsed_ms + tick_ms))
             x, y = advanced.position()
+            if advanced.segments: lane_traffic.progressed(self, vehicle_id, advanced)
             updated_vehicle = replace(vehicle, x=x, y=y)
             if advanced.elapsed_ms < advanced.required_ms:
                 self._vehicles[vehicle_id] = updated_vehicle
                 self._motions[vehicle_id] = advanced
+                if vehicle_id in self._traffic_reserved and not advanced.segments:
+                    self._traffic_reserved[vehicle_id] = remaining_path(advanced)
+                continue
+            self._traffic_reserved.pop(vehicle_id, None)
+            self._traffic_waiting.discard(vehicle_id)
+            if vehicle_id in self._traffic_yield:
+                original = self._traffic_yield.pop(vehicle_id)
+                self._vehicles[vehicle_id] = updated_vehicle
+                self._motions[vehicle_id] = Motion(original.phase, ((x,y), original.points[-1]), tick_ms)
                 continue
             if motion.phase == VehicleState.RETURNING:
+                self._final_returning.discard(vehicle_id)
                 self._vehicles[vehicle_id] = replace(updated_vehicle, state=VehicleState.IDLE)
                 del self._motions[vehicle_id]
                 continue
@@ -688,6 +793,14 @@ class FactoryModel:
                 if transport.source.location_type == LocationType.CELL and self.cell(transport.source.location_id).state == CellState.DOWN:
                     continue
                 body = self._validate_cargo(transport, vehicle, at_source=True)
+                if (self.direct_delivery and transport.destination.location_type == LocationType.BUFFER
+                        and self._dispatch_destination(body).location_type == LocationType.CELL):
+                    # Recheck immediately before loading: an initially busy cell
+                    # may now be empty. Release the Bay reservation explicitly.
+                    self._cancel_transport(transport.transport_id,reason='DIRECT_DELIVERY_AVAILABLE',hold=False)
+                    decision = self.assign_transport(body.body_id)
+                    self.start_transport(decision.transport_id)
+                    continue
                 if self.bodies_at(LocationType.VEHICLE, vehicle_id) or (x, y) != self._point(transport.source):
                     raise ModelError('Pickup requires an empty AGV at the source')
                 timestamp = _timestamp(_utc_time(self._clock))
@@ -709,6 +822,9 @@ class FactoryModel:
                 self._vehicles[vehicle_id] = replace(updated_vehicle, state=VehicleState.UNLOADING)
                 self._motions[vehicle_id] = Motion(VehicleState.UNLOADING, ((x, y), (x, y)), tick_ms)
             elif motion.phase == VehicleState.UNLOADING:
+                if (transport.destination.location_type == LocationType.CELL
+                        and self.cell(transport.destination.location_id).state == CellState.DOWN):
+                    continue
                 self._motions[vehicle_id] = advanced
                 self._vehicles[vehicle_id] = updated_vehicle
                 self.complete_transport(transport.transport_id)
@@ -763,8 +879,11 @@ class FactoryModel:
 
     def _new_operation(self, cell_id: str, body: Body) -> Operation:
         duration = next(item['workDurationMs'] for item in self.configuration.factory['equipment'] if item['cellId'] == cell_id)
+        timestamp = _timestamp(_utc_time(self._clock))
+        from .parts_supply import consume
+        consume(self, cell_id, body.body_id)
         return Operation(f'operation-{self._next_operation_number:05d}', cell_id, body.body_id,
-                              duration, 0, _timestamp(_utc_time(self._clock)))
+                              duration, 0, timestamp)
 
     def tick(self) -> tuple[Operation, ...]:
         return self.advance(self.configuration.factory['tickMs'])
@@ -786,6 +905,8 @@ class FactoryModel:
     @recorded
     def _advance_tick(self, tick_ms: int) -> tuple[Operation, ...]:
         # A tick stages its changes before publishing them on the single writer.
+        from .parts_supply import count_wait
+        count_wait(self, tick_ms)
         operations, bodies, cells, inspections = {}, {}, {}, {}
         completing = [self._operations[cell.operation_id] for cell in self._cells.values()
                       if cell.state == CellState.RUNNING and
@@ -822,7 +943,11 @@ class FactoryModel:
         self._cells.update(cells)
         self._inspections.update(inspections)
         self._next_inspection_number += len(inspections)
+        lane_traffic.queue_final_return(self)
         self._advance_vehicles(tick_ms)
+        if self.configuration.factory.get('traffic'):
+            validate_positions(self.configuration.factory['traffic'], self._vehicles)
+            yield_if_deadlocked(self)
         self._sim_elapsed_ms += tick_ms
         self._refresh_blocked_cells()
         if self._flow_started:
@@ -864,10 +989,26 @@ class FactoryModel:
 
     def _inspect_vehicle(self, vehicle: Vehicle) -> dict:
         owners = self.bodies_at(LocationType.VEHICLE, vehicle.vehicle_id)
-        return {'vehicleId': vehicle.vehicle_id, 'kind': vehicle.kind, 'state': vehicle.state.value,
+        result = {'vehicleId': vehicle.vehicle_id, 'kind': vehicle.kind, 'state': vehicle.state.value,
                 'position': {'x': vehicle.x, 'y': vehicle.y},
                 'bodyId': owners[0].body_id if owners else None, 'partsKitId': next((kit.parts_kit_id for kit in self._parts.values() if kit.location == Location(LocationType.VEHICLE, vehicle.vehicle_id)), None),
                 'transportId': vehicle.transport_id}
+        if self.configuration.factory.get('traffic'):
+            motion = self._motions.get(vehicle.vehicle_id)
+            moving = motion is not None and vehicle.vehicle_id in self._traffic_reserved
+            result['traffic'] = {'path': [{'x':x,'y':y} for x,y in (motion.points if moving else ((vehicle.x,vehicle.y),(vehicle.x,vehicle.y)))],
+                                 'elapsedMs': motion.elapsed_ms if moving else 0,
+                                 'durationMs': motion.required_ms if moving else self.configuration.factory['tickMs'],
+                                 'waiting': vehicle.vehicle_id in self._traffic_waiting}
+            if lane_traffic.enabled(self):
+                active = motion is not None and bool(motion.segments)
+                result['traffic'].update(
+                    path=[dict(x=x,y=y) for x,y in motion.points] if active else [dict(x=vehicle.x,y=vehicle.y)]*2,
+                    elapsedMs=motion.elapsed_ms if active else 0,
+                    durationMs=motion.required_ms if active else self.configuration.factory['tickMs'],
+                    heading=self._traffic_heading.get(vehicle.vehicle_id,0.),
+                    segments=[dict(turnMs=s[0],travelMs=s[1],rampMs=s[2],initialHeading=s[3],heading=s[4],peakSpeed=s[5]) for s in motion.segments] if active else [])
+        return result
     def _cargo(self, transport: Transport) -> Body | PartsKit:
         return self.body(transport.body_id) if transport.cargo_type == 'BODY' else self._parts[transport.parts_kit_id]
 
@@ -881,7 +1022,13 @@ class FactoryModel:
             raise ModelError('Parts assignment requires an unpaused assembly destination')
         if len(self._parts) >= self.configuration.factory['maxBodies'] * 2:
             raise ModelError('Synthetic parts registration limit reached')
-        vehicle = next((v for v in self.vehicles if v.kind == 'AMR' and v.state == VehicleState.IDLE
+        from . import parts_supply
+        if parts_supply.enabled(self):
+            stock = next(s for s in parts_supply.snapshot(self) if s['cellId']==cell_id)
+            if stock['available'] + stock['inbound'] >= stock['capacity']:
+                return DispatchDecision(False, 'PARTS_FULL')
+        vehicle = next((v for v in self.vehicles if v.kind == 'AMR' and (v.state == VehicleState.IDLE or
+                        (parts_supply.enabled(self) and v.state == VehicleState.RETURNING and lane_traffic.stopped(self,v.vehicle_id)))
                         and v.transport_id is None and not any(k.location == Location(LocationType.VEHICLE, v.vehicle_id) for k in self.parts)), None)
         if vehicle is None:
             return DispatchDecision(False, 'NO_VEHICLE')
@@ -895,6 +1042,10 @@ class FactoryModel:
         self._parts[kit_id] = PartsKit(kit_id, source, transport.transport_id)
         self._transports[transport.transport_id] = transport
         self._vehicles[vehicle.vehicle_id] = replace(vehicle, state=VehicleState.TO_PICKUP, transport_id=transport.transport_id)
+        self._motions.pop(vehicle.vehicle_id, None)
+        self._traffic_reserved.pop(vehicle.vehicle_id, None)
+        self._traffic_waiting.discard(vehicle.vehicle_id)
+        self._lane_wait_since.pop(vehicle.vehicle_id, None)
         self._next_parts_number += 1
         self._next_transport_number += 1
         return DispatchDecision(True, 'WAITING_PICKUP', transport.transport_id)
@@ -905,6 +1056,9 @@ class FactoryModel:
 
     @recorded
     def cancel_transport(self, transport_id: str) -> Transport:
+        return self._cancel_transport(transport_id, reason='SCENARIO_CANCEL', hold=True)
+
+    def _cancel_transport(self, transport_id: str, *, reason: str, hold: bool) -> Transport:
         transport = self.transport(transport_id)
         if transport.status == TransportStatus.CANCELLED:
             return transport
@@ -913,17 +1067,31 @@ class FactoryModel:
         vehicle = self._vehicles[transport.vehicle_id]
         if vehicle.state not in (VehicleState.TO_PICKUP, VehicleState.LOADING):
             raise ModelError('Cancellation is only available before loading completes')
+        if not lane_traffic.stopped(self, vehicle.vehicle_id):
+            raise ModelError('Cancellation requires a stopped lane node')
         body = self._validate_cargo(transport, vehicle, at_source=True)
         timestamp = _timestamp(_utc_time(self._clock))
         if timestamp < transport.assigned_at:
             raise ModelError('Cancellation clock precedes assignment')
-        cancelled = replace(transport, status=TransportStatus.CANCELLED, cancelled_at=timestamp, cancel_reason='SCENARIO_CANCEL')
+        cancelled = replace(transport, status=TransportStatus.CANCELLED, cancelled_at=timestamp, cancel_reason=reason)
         self._transports[transport_id] = cancelled
         self._bodies[body.body_id] = replace(body, transport_id=None, reservation_id=None)
         self._vehicles[vehicle.vehicle_id] = replace(vehicle, state=VehicleState.IDLE, transport_id=None)
         self._motions.pop(vehicle.vehicle_id, None)
-        self._dispatch_holds.add(body.body_id)
-        self._scenario('CANCEL_BEFORE_DEPARTURE', transport_id, {})
+        self._cell_waiters.pop(vehicle.vehicle_id, None)
+        self._traffic_reserved.pop(vehicle.vehicle_id, None)
+        self._traffic_waiting.discard(vehicle.vehicle_id)
+        self._lane_wait_since.pop(vehicle.vehicle_id, None)
+        self._traffic_yield.pop(vehicle.vehicle_id, None)
+        if self.configuration.factory.get('traffic'):
+            config = next(v for v in self.configuration.factory['vehicles'] if v['vehicleId'] == vehicle.vehicle_id)
+            home = (config['initialPosition']['x'], config['initialPosition']['y'])
+            self._vehicles[vehicle.vehicle_id] = replace(vehicle, state=VehicleState.RETURNING, transport_id=None)
+            self._motions[vehicle.vehicle_id] = empty_motion(VehicleState.RETURNING, (vehicle.x,vehicle.y), home,
+                                                            0.0375, self.configuration.factory['tickMs'])
+        if hold:
+            self._dispatch_holds.add(body.body_id)
+            self._scenario('CANCEL_BEFORE_DEPARTURE', transport_id, {})
         self._refresh_blocked_cells()
         return cancelled
 
@@ -945,15 +1113,39 @@ class FactoryModel:
             raise ModelError('Arrival clock precedes departure')
         completed = replace(transport, status=TransportStatus.COMPLETED, completed_at=timestamp)
         destination = replace(transport.destination, slot_id=transport.slot_id)
+        if destination.location_type == LocationType.CELL:
+            if self.cell(destination.location_id).state != CellState.IDLE or self.bodies_at(LocationType.CELL,destination.location_id):
+                raise ModelError('Direct arrival requires an empty operational cell')
         self._transports[transport_id] = completed
         if transport.cargo_type == 'BODY':
             status = BodyStatus.COMPLETED if cargo.status == BodyStatus.COMPLETED else BodyStatus.WAITING
             self._bodies[cargo.body_id] = replace(cargo, location=destination, status=status, transport_id=None, reservation_id=None)
+            if destination.location_type == LocationType.CELL:
+                body = self._bodies[cargo.body_id]
+                operation = self._new_operation(destination.location_id,body)
+                self._operations[operation.operation_id] = operation
+                self._bodies[body.body_id] = replace(body,status=BodyStatus.PROCESSING)
+                self._cells[destination.location_id] = CellWork(destination.location_id,CellState.RUNNING,operation.operation_id)
+                self._next_operation_number += 1
+                self._cell_entries.append(CellEntry(body.body_id,destination.location_id,None,None,operation.operation_id,
+                    completed.transport_id,None,operation.started_at,0))
         else:
             self._parts[cargo.parts_kit_id] = replace(cargo, location=destination, transport_id=None)
+        if lane_traffic.efficient(self):
+            self._vehicles[vehicle.vehicle_id] = replace(vehicle, state=VehicleState.IDLE, transport_id=None)
+            self._motions.pop(vehicle.vehicle_id,None)
+            if destination.location_type == LocationType.CELL:
+                self._cell_waiters[vehicle.vehicle_id] = destination.location_id
+            elif destination.location_type == LocationType.RESULT:
+                # Only clear the shared outbound dock; no lap back to distant home.
+                self._vehicles[vehicle.vehicle_id] = replace(vehicle,state=VehicleState.RETURNING,transport_id=None)
+                self._motions[vehicle.vehicle_id] = empty_motion(VehicleState.RETURNING,(vehicle.x,vehicle.y),(780,260 if vehicle.vehicle_id=='AGV-001' else 340),.0375,self.configuration.factory['tickMs'])
+            return completed
         self._vehicles[vehicle.vehicle_id] = replace(vehicle, state=VehicleState.RETURNING, transport_id=None)
         config = next(v for v in self.configuration.factory['vehicles'] if v['vehicleId'] == vehicle.vehicle_id)
-        home = self._point(Location(config['home']['locationType'], config['home']['locationId']))
+        home = ((config['initialPosition']['x'], config['initialPosition']['y'])
+                if self.configuration.factory.get('traffic') else
+                self._point(Location(config['home']['locationType'], config['home']['locationId'])))
         self._motions[vehicle.vehicle_id] = empty_motion(VehicleState.RETURNING, (vehicle.x, vehicle.y), home,
                                   route_speed(self._route(transport)), self.configuration.factory['tickMs'])
         return completed
@@ -1060,7 +1252,12 @@ class FactoryModel:
                 'capturedAt': captured, 'simElapsedMs': self.sim_elapsed_ms, 'equipment': equipment,
                 'buffers': [self.buffer(b['bufferId']) for b in self.configuration.factory['buffers']],
                 'bodies': bodies, 'vehicles': [self._inspect_vehicle(v) for v in self.vehicles],
-                'activeTransports': [t.to_dict() for t in self.active_transports]}
+                'activeTransports': [t.to_dict() for t in self.active_transports],
+                **self._parts_snapshot()}
+
+    def _parts_snapshot(self):
+        from . import parts_supply
+        return {'partsSupply': parts_supply.snapshot(self)} if parts_supply.enabled(self) else {}
 
     @recorded
     def publish_snapshot(self):
@@ -1076,7 +1273,8 @@ class FactoryModel:
             return
         if (self._paused or not self.bodies or any(b.location.location_type != LocationType.RESULT for b in self.bodies)
                 or self.active_transports or self._motions or any(v.state != VehicleState.IDLE for v in self.vehicles)
-                or any(c.state != CellState.IDLE for c in self._cells.values())):
+                or any(c.state != CellState.IDLE for c in self._cells.values())
+                or not lane_traffic.final_return_complete(self)):
             raise ModelError('Run can finish only after bodies, cells and empty vehicles have drained')
         self._finished = True
         self._flow_started = False
